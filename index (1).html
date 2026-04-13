@@ -1,0 +1,1898 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>건강창고 맞춤 추천</title>
+<style>
+:root {
+  --gd:#1a4a2e; --gm:#2d7a4f; --gl:#4caf77;
+  --gp:#e8f5ee; --gp2:#d0eddb;
+  --rd:#ef4444; --yw:#f59e0b; --yw-p:#fef3c7;
+  --gy9:#111827; --gy7:#374151; --gy6:#4b5563;
+  --gy4:#9ca3af; --gy3:#d1d5db; --gy1:#f9fafb;
+  --wh:#ffffff;
+  --sh:0 2px 16px rgba(0,0,0,0.08);
+  --sh2:0 4px 24px rgba(26,74,46,0.15);
+  --r:16px;
+  --fs:14px; --fsq:15px; --fsb:14px;
+}
+body.sm { --fs:17px; --fsq:19px; --fsb:17px; }
+* { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+body { font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic','맑은 고딕',sans-serif; background:#f0faf4; min-height:100vh; color:var(--gy9); font-size:var(--fs); }
+
+/* 헤더 */
+.hd { background:var(--gd); color:#fff; padding:14px 18px 12px; display:flex; align-items:center; position:sticky; top:0; z-index:100; box-shadow:0 2px 12px rgba(26,74,46,.35); }
+.logo { font-size:20px; font-weight:900; }
+.logo span { color:var(--gl); }
+.hsub { font-size:11px; color:rgba(255,255,255,.5); margin-top:1px; }
+.hright { margin-left:auto; display:flex; align-items:center; gap:8px; }
+.sbadge-hd { display:none; background:var(--gl); color:var(--gd); font-size:10px; font-weight:800; padding:2px 8px; border-radius:99px; }
+body.sm .sbadge-hd { display:inline-block; }
+.steptxt { font-size:12px; color:rgba(255,255,255,.6); }
+.btn-back { background:none; border:none; color:rgba(255,255,255,.85); font-size:26px; cursor:pointer; padding:0 10px 0 0; display:none; line-height:1; }
+.btn-back.show { display:block; }
+.pw { background:rgba(255,255,255,.18); height:4px; }
+.pb { height:4px; background:var(--gl); transition:width .4s ease; }
+
+/* 레이아웃 */
+.wrap { max-width:480px; margin:0 auto; padding:20px 14px 70px; }
+.scr { display:none; }
+.scr.on { display:block; animation:fu .28s ease; }
+@keyframes fu { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+/* 섹션 타이틀 */
+.sec-title { font-size:19px; font-weight:900; color:var(--gd); margin-bottom:4px; }
+.sec-sub { font-size:13px; color:var(--gy6); line-height:1.6; margin-bottom:20px; }
+.badge { display:inline-block; background:var(--gp); color:var(--gm); font-size:11px; font-weight:700; padding:3px 10px; border-radius:99px; margin-bottom:10px; }
+.badge.warn { background:#fef2f2; color:#dc2626; }
+.badge.senior { background:#fef3c7; color:#92400e; }
+.badge.family { background:#eff6ff; color:#1d4ed8; }
+
+/* ── 안전 필터 추가 스타일 ── */
+/* 0단계: 전면 중단 화면 */
+.stop-screen { background:#fff5f5; border:2px solid #fca5a5; border-radius:var(--r); padding:28px 20px; text-align:center; margin:20px 0; }
+.stop-icon { font-size:48px; margin-bottom:12px; }
+.stop-title { font-size:20px; font-weight:900; color:#dc2626; margin-bottom:10px; }
+.stop-desc { font-size:14px; color:#7f1d1d; line-height:1.7; margin-bottom:20px; }
+.stop-list { text-align:left; background:#fff; border-radius:10px; padding:14px 16px; margin-bottom:20px; }
+.stop-list li { font-size:13px; color:#374151; padding:4px 0; list-style:none; }
+.stop-list li::before { content:'⚠️ '; }
+.stop-btn-hospital { width:100%; background:#dc2626; color:#fff; border:none; border-radius:10px; padding:14px; font-size:15px; font-weight:700; cursor:pointer; margin-bottom:10px; }
+.stop-btn-back { width:100%; background:#f3f4f6; color:#374151; border:none; border-radius:10px; padding:12px; font-size:14px; font-weight:600; cursor:pointer; }
+
+/* 약물 계열 선택 (조건부 노출) */
+.drug-select-box { display:none; background:#fef3c7; border:1.5px solid #f59e0b; border-radius:12px; padding:14px 16px; margin-top:12px; }
+.drug-select-box.show { display:block; animation:fu .25s ease; }
+.drug-select-title { font-size:13px; font-weight:700; color:#92400e; margin-bottom:10px; }
+
+/* 1단계 하드블록 배지 */
+.badge-blocked { display:inline-block; background:#fee2e2; color:#dc2626; font-size:10px; font-weight:800; padding:2px 8px; border-radius:99px; margin-left:6px; vertical-align:middle; }
+
+/* 2단계 소프트 경고 배지 */
+.badge-caution { display:inline-block; background:#fef3c7; color:#92400e; font-size:10px; font-weight:800; padding:2px 8px; border-radius:99px; margin-bottom:6px; }
+
+/* 안전 단계 표시줄 */
+.safety-level-bar { display:flex; align-items:center; gap:6px; margin-bottom:8px; font-size:11px; }
+.sl-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.sl-dot.pass { background:#22c55e; }
+.sl-dot.caution { background:#f59e0b; }
+.sl-dot.blocked { background:#ef4444; }
+
+/* 약사상담 버튼 */
+.btn-consult { background:#f59e0b; color:#fff; border:none; border-radius:10px; padding:11px 0; width:100%; font-size:14px; font-weight:700; cursor:pointer; margin-top:10px; }
+.btn-consult:active { opacity:.85; }
+
+/* 카드 */
+.card { background:var(--wh); border-radius:var(--r); padding:20px 18px; margin-bottom:14px; box-shadow:var(--sh); }
+
+/* 질문 */
+.qb { margin-bottom:22px; }
+.qb:last-child { margin-bottom:0; }
+.ql { font-size:var(--fsq); font-weight:700; color:var(--gy9); margin-bottom:10px; line-height:1.5; }
+.ql small { font-size:12px; color:var(--gy4); font-weight:400; display:block; margin-top:3px; }
+.req { color:var(--rd); font-size:12px; }
+.hint { font-size:12px; color:var(--gy6); margin-top:6px; padding:8px 12px; background:var(--gy1); border-radius:8px; line-height:1.6; }
+.hint.warn { background:#fef3c7; color:#92400e; }
+
+/* 옵션 버튼 */
+.opts { display:flex; flex-wrap:wrap; gap:8px; }
+.opt { padding:9px 16px; border:1.5px solid var(--gy3); border-radius:99px; background:var(--wh); color:var(--gy7); font-size:var(--fsb); font-weight:500; cursor:pointer; transition:all .18s; }
+.opt:hover { border-color:var(--gl); color:var(--gm); }
+.opt.on { background:var(--gm); border-color:var(--gm); color:#fff; font-weight:700; }
+body.sm .opt { padding:12px 20px; }
+
+/* 나이·수치 입력 */
+.num-row { display:flex; align-items:center; gap:8px; }
+.num-in { width:100px; padding:10px 14px; border:1.5px solid var(--gy3); border-radius:10px; font-size:var(--fsq); font-weight:700; text-align:center; color:var(--gy9); outline:none; transition:border-color .2s; }
+.num-in:focus { border-color:var(--gl); }
+.num-unit { font-size:14px; color:var(--gy6); }
+.bmi-box { margin-top:10px; padding:10px 14px; background:var(--gp); border-radius:10px; font-size:13px; color:var(--gm); font-weight:700; display:none; }
+.bmi-box.show { display:block; }
+
+/* 시니어 안내 */
+.snotice { display:none; background:var(--gp); border:1px solid var(--gp2); border-radius:10px; padding:10px 14px; margin-top:10px; font-size:var(--fs); color:var(--gm); font-weight:600; }
+.snotice.show { display:block; }
+
+/* 체크리스트 */
+.clist { display:flex; flex-direction:column; gap:8px; }
+.ci { display:flex; align-items:flex-start; gap:10px; padding:12px 14px; border:1.5px solid var(--gy3); border-radius:12px; cursor:pointer; transition:all .18s; background:var(--wh); }
+.ci:hover { border-color:var(--gl); }
+.ci.ck { border-color:var(--gm); background:var(--gp); }
+.ci.disabled { opacity:.4; pointer-events:none; }
+.cb { width:22px; height:22px; border:2px solid var(--gy3); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; transition:all .18s; margin-top:1px; }
+.ci.ck .cb { background:var(--gm); border-color:var(--gm); color:#fff; }
+.cl { font-size:var(--fs); color:var(--gy7); font-weight:500; line-height:1.4; }
+.ci.ck .cl { color:var(--gd); font-weight:700; }
+.cl-sub { font-size:12px; color:var(--gy4); display:block; margin-top:2px; font-weight:400; }
+body.sm .ci { padding:14px 16px; }
+
+/* 선택 제한 안내 */
+.limit-badge { font-size:11px; color:var(--gy4); margin-bottom:8px; }
+.limit-badge span { color:var(--gm); font-weight:700; }
+
+/* 갱년기 체크 */
+.menopause-box { display:none; background:#fdf2f8; border:1px solid #f3c6e3; border-radius:12px; padding:14px; margin-top:12px; }
+.menopause-box.show { display:block; animation:fu .25s ease; }
+.menopause-title { font-size:13px; font-weight:700; color:#880e4f; margin-bottom:10px; }
+
+/* 슬라이더 */
+.slider-wrap { margin-top:6px; }
+.slider-row { display:flex; align-items:center; gap:12px; }
+.slider-val { font-size:20px; font-weight:900; color:var(--gm); min-width:80px; }
+input[type=range] { flex:1; accent-color:var(--gm); cursor:pointer; }
+.slider-ticks { display:flex; justify-content:space-between; font-size:11px; color:var(--gy4); margin-top:4px; }
+
+/* 가족 구성원 선택 카드 */
+.member-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.member-card { border:2px solid var(--gy3); border-radius:14px; padding:14px 10px; text-align:center; cursor:pointer; transition:all .2s; background:var(--wh); }
+.member-card:hover { border-color:var(--gl); }
+.member-card.on { border-color:var(--gm); background:var(--gp); }
+.member-card.on .mc-name { color:var(--gd); }
+.mc-icon { font-size:26px; margin-bottom:4px; }
+.mc-name { font-size:var(--fsb); font-weight:700; color:var(--gy9); }
+.mc-sub { font-size:11px; color:var(--gy4); margin-top:2px; }
+
+/* 시니어 카테고리 카드 */
+.cat-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.cat-card { border:2px solid var(--gy3); border-radius:14px; padding:14px 10px; text-align:center; cursor:pointer; transition:all .2s; background:var(--wh); }
+.cat-card:hover { border-color:var(--gl); transform:translateY(-2px); }
+.cat-card.on { border-color:var(--gm); background:var(--gp); }
+.cat-icon { font-size:28px; margin-bottom:5px; }
+.cat-name { font-size:var(--fsb); font-weight:700; color:var(--gy9); }
+.cat-desc { font-size:11px; color:var(--gy4); margin-top:3px; }
+.cat-card.on .cat-name { color:var(--gd); }
+
+/* 심화 질문 */
+.deep-area { display:none; margin-top:18px; }
+.deep-area.show { display:block; animation:fu .25s ease; }
+.deep-section { background:var(--gy1); border-radius:12px; padding:14px; margin-bottom:12px; }
+.deep-title { font-size:13px; font-weight:700; color:var(--gm); margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--gy3); }
+.daily-check { background:#fff7ed; border:1px solid #fed7aa; border-radius:12px; padding:14px; margin-top:12px; }
+.danger-notice { display:none; background:#fef2f2; border:1px solid #fca5a5; border-radius:10px; padding:12px 14px; margin-top:10px; font-size:13px; color:#dc2626; font-weight:600; line-height:1.6; }
+.danger-notice.show { display:block; }
+
+/* 안전 경고 */
+.safe-warn { background:#fff7ed; border:1px solid #fed7aa; border-radius:10px; padding:10px 12px; font-size:12px; color:#92400e; margin-top:8px; display:flex; align-items:flex-start; gap:6px; line-height:1.5; }
+
+/* 버튼 */
+.btn-next { width:100%; padding:16px; background:var(--gm); color:#fff; border:none; border-radius:14px; font-size:var(--fsb); font-weight:800; cursor:pointer; margin-top:6px; transition:background .2s,transform .1s; box-shadow:var(--sh2); }
+.btn-next:hover { background:var(--gd); }
+.btn-next:active { transform:scale(.98); }
+.btn-next:disabled { background:var(--gy3); box-shadow:none; cursor:not-allowed; }
+.btn-skip { width:100%; padding:12px; background:transparent; color:var(--gy4); border:1.5px solid var(--gy3); border-radius:14px; font-size:13px; font-weight:600; cursor:pointer; margin-top:8px; transition:all .18s; }
+.btn-skip:hover { border-color:var(--gy4); color:var(--gy7); }
+.btn-restart { width:100%; padding:14px; background:var(--wh); color:var(--gm); border:2px solid var(--gm); border-radius:14px; font-size:14px; font-weight:700; cursor:pointer; margin-top:12px; transition:all .18s; }
+.btn-restart:hover { background:var(--gp); }
+
+/* 결과 */
+.result-hd { background:var(--gd); color:#fff; border-radius:var(--r); padding:20px 18px; margin-bottom:16px; }
+.result-hd h2 { font-size:18px; font-weight:800; margin-bottom:6px; }
+.result-hd p { font-size:13px; color:rgba(255,255,255,.7); line-height:1.6; }
+.rtags { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+.rtag { background:rgba(255,255,255,.15); padding:4px 10px; border-radius:99px; font-size:11px; font-weight:600; color:#fff; }
+.rtag.sym { background:rgba(245,158,11,.35); }
+.tab-scroll { overflow-x:auto; white-space:nowrap; margin-bottom:14px; padding-bottom:4px; }
+.tab-scroll::-webkit-scrollbar { height:3px; }
+.tab-scroll::-webkit-scrollbar-thumb { background:var(--gy3); border-radius:3px; }
+.tabs { display:inline-flex; gap:8px; }
+.tab { display:inline-block; padding:8px 16px; border-radius:99px; font-size:13px; font-weight:600; cursor:pointer; border:1.5px solid var(--gy3); color:var(--gy6); background:var(--wh); transition:all .18s; white-space:nowrap; }
+.tab.on { background:var(--gm); border-color:var(--gm); color:#fff; }
+.mkt-card { background:var(--wh); border-radius:var(--r); padding:16px; margin-bottom:10px; box-shadow:var(--sh); border-left:4px solid var(--gy3); }
+.mkt-card.top { border-left-color:var(--gl); }
+.rank-row { display:flex; align-items:center; gap:6px; margin-bottom:8px; }
+.rank-num { font-size:18px; font-weight:900; color:var(--gy9); }
+.rank-lbl { font-size:11px; color:var(--gy4); font-weight:600; background:var(--gy1); padding:2px 8px; border-radius:99px; }
+.mkt-name { font-size:14px; font-weight:700; color:var(--gy9); margin-bottom:8px; line-height:1.4; }
+.mkt-meta { display:flex; align-items:center; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
+.mkt-price { font-size:16px; font-weight:800; color:var(--gd); }
+.mkt-mall { font-size:11px; color:var(--gy4); background:var(--gy1); padding:2px 8px; border-radius:99px; }
+.mkt-btn { width:100%; padding:11px; border:1.5px solid var(--gy3); border-radius:10px; background:var(--wh); color:var(--gy7); font-size:13px; font-weight:600; cursor:pointer; transition:all .18s; }
+.mkt-btn:hover { border-color:var(--gl); color:var(--gm); }
+.ad-slot { background:linear-gradient(135deg,var(--gd) 0%,#2d6a45 100%); border-radius:var(--r); padding:18px 16px; margin-bottom:10px; color:#fff; position:relative; overflow:hidden; box-shadow:var(--sh2); }
+.ad-slot::before { content:''; position:absolute; top:-20px; right:-20px; width:100px; height:100px; background:rgba(255,255,255,.06); border-radius:50%; }
+.ad-badge { display:inline-block; background:var(--gl); color:var(--gd); font-size:10px; font-weight:800; padding:2px 8px; border-radius:99px; margin-bottom:8px; }
+.ad-name { font-size:15px; font-weight:800; margin-bottom:6px; line-height:1.4; }
+.ad-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:12px; }
+.ad-tag { background:rgba(255,255,255,.15); padding:3px 8px; border-radius:99px; font-size:11px; font-weight:600; }
+.ad-meta { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+.ad-price { font-size:18px; font-weight:900; }
+.ad-monthly { font-size:12px; color:rgba(255,255,255,.65); }
+.ad-btn { width:100%; padding:12px; background:#fff; color:var(--gd); border:none; border-radius:10px; font-size:14px; font-weight:800; cursor:pointer; }
+.ad-btn:hover { opacity:.9; }
+.divider { display:flex; align-items:center; gap:10px; margin:14px 0; font-size:11px; color:var(--gy4); font-weight:600; }
+.divider::before,.divider::after { content:''; flex:1; height:1px; background:var(--gy3); }
+.disclaimer { background:var(--gy1); border-radius:10px; padding:12px 14px; font-size:11px; color:var(--gy4); line-height:1.7; margin-top:14px; }
+
+/* 영상 섹션 */
+.video-section { margin-bottom:10px; }
+.video-header { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+.video-icon { font-size:18px; }
+.video-title { font-size:13px; font-weight:800; color:var(--gd); }
+.video-sub { font-size:11px; color:var(--gy4); margin-left:auto; }
+.video-card { background:var(--wh); border-radius:var(--r); overflow:hidden; box-shadow:var(--sh); margin-bottom:8px; }
+.video-embed { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; }
+.video-embed iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:none; }
+.video-info { padding:12px 14px; }
+.video-name { font-size:13px; font-weight:700; color:var(--gy9); margin-bottom:4px; line-height:1.4; }
+.video-channel { font-size:11px; color:var(--gy4); font-weight:600; }
+.video-channel span { background:var(--gp); color:var(--gm); padding:2px 7px; border-radius:99px; font-size:10px; font-weight:700; margin-left:5px; }
+</style>
+</head>
+<body>
+
+<div class="hd">
+  <button class="btn-back" id="btnBack" onclick="goBack()">‹</button>
+  <div>
+    <div class="logo">건강<span>창고</span></div>
+    <div class="hsub">맞춤형 건강기능식품 추천</div>
+  </div>
+  <div class="hright">
+    <span class="sbadge-hd">👴 시니어 모드</span>
+    <span class="steptxt" id="steptxt"></span>
+  </div>
+</div>
+<div class="pw"><div class="pb" id="pb" style="width:0%"></div></div>
+
+<div class="wrap">
+
+<!-- ══ S1: 기본 체측 ══ -->
+<div class="scr on" id="s1">
+  <div class="badge">STEP 1 · 기본 정보</div>
+  <div class="sec-title">기본 체측 정보</div>
+  <div class="sec-sub">신체 기본 정보를 입력해주세요. BMI가 자동 계산됩니다.</div>
+
+  <div class="card">
+    <!-- 나이 -->
+    <div class="qb">
+      <div class="ql">나이 <span class="req">*</span></div>
+      <div class="num-row">
+        <input type="number" class="num-in" id="ageIn" placeholder="00" min="10" max="99" oninput="onAge(this.value)">
+        <span class="num-unit">세</span>
+      </div>
+      <div class="snotice" id="snotice">👴 65세 이상이시군요! 시니어 맞춤 모드로 안내해드려요.</div>
+    </div>
+    <!-- 성별 -->
+    <div class="qb">
+      <div class="ql">성별 <span class="req">*</span></div>
+      <div class="opts">
+        <button class="opt" onclick="sel(this,'gender','남성')">남성</button>
+        <button class="opt" onclick="sel(this,'gender','여성')">여성</button>
+      </div>
+    </div>
+    <!-- 키·체중 -->
+    <div class="qb">
+      <div class="ql">키 / 체중</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <div class="num-row">
+          <input type="number" class="num-in" id="heightIn" placeholder="000" min="100" max="220" oninput="calcBmi()">
+          <span class="num-unit">cm</span>
+        </div>
+        <div class="num-row">
+          <input type="number" class="num-in" id="weightIn" placeholder="00" min="20" max="200" oninput="calcBmi()">
+          <span class="num-unit">kg</span>
+        </div>
+      </div>
+      <div class="bmi-box" id="bmiBox"></div>
+    </div>
+    <!-- 체온 경향 -->
+    <div class="qb">
+      <div class="ql">평소 체온 경향은?</div>
+      <div class="clist">
+        <div class="ci" onclick="radio(this,'bodyTemp','항상 손발이 차고 몸도 냉한 편')"><div class="cb"></div><div class="cl">항상 손발이 차고 몸도 냉한 편</div></div>
+        <div class="ci" onclick="radio(this,'bodyTemp','손발은 차지만 몸은 따뜻한 편')"><div class="cb"></div><div class="cl">손발은 차지만 몸은 따뜻한 편</div></div>
+        <div class="ci" onclick="radio(this,'bodyTemp','보통')"><div class="cb"></div><div class="cl">보통</div></div>
+        <div class="ci" onclick="radio(this,'bodyTemp','몸에 열이 많은 편')"><div class="cb"></div><div class="cl">몸에 열이 많은 편</div></div>
+        <div class="ci" onclick="radio(this,'bodyTemp','상열하한 (상체는 덥고 하체는 찬 편)')"><div class="cb"></div><div class="cl">상열하한 <span class="cl-sub">상체는 덥고 하체는 찬 편</span></div></div>
+      </div>
+    </div>
+    <!-- 현재 복용 중인 건기식 -->
+    <div class="qb" style="margin-bottom:0">
+      <div class="ql">현재 복용 중인 건강기능식품이 있나요?
+        <small>중복 섭취 성분 확인에 활용됩니다</small>
+      </div>
+      <div class="clist" id="curSupList">
+        <div class="ci" onclick="chk(this,'curSup','없음')"><div class="cb"></div><div class="cl">없음</div></div>
+        <div class="ci" onclick="chk(this,'curSup','비타민·미네랄')"><div class="cb"></div><div class="cl">비타민·미네랄</div></div>
+        <div class="ci" onclick="chk(this,'curSup','오메가3')"><div class="cb"></div><div class="cl">오메가3</div></div>
+        <div class="ci" onclick="chk(this,'curSup','유산균·프로바이오틱스')"><div class="cb"></div><div class="cl">유산균·프로바이오틱스</div></div>
+        <div class="ci" onclick="chk(this,'curSup','홍삼')"><div class="cb"></div><div class="cl">홍삼</div></div>
+        <div class="ci" onclick="chk(this,'curSup','기타')"><div class="cb"></div><div class="cl">기타</div></div>
+      </div>
+    </div>
+  </div>
+  <button class="btn-next" id="btn1" onclick="go('s2')" disabled>다음</button>
+</div>
+
+<!-- ══ S2: 안전 필터 ══ -->
+<div class="scr" id="s2">
+  <div class="badge warn">STEP 2 · 안전 확인</div>
+  <div class="sec-title">안전 필터</div>
+  <div class="sec-sub">안전한 추천을 위해 정확히 답해주세요.</div>
+
+  <div class="card">
+    <!-- 0단계 트리거: 고위험 상태 -->
+    <div class="qb">
+      <div class="ql">현재 아래 해당 사항이 있나요?
+        <small>해당 시 건강기능식품 추천이 제한될 수 있어요</small>
+      </div>
+      <div class="clist">
+        <div class="ci" onclick="chkStop(this,'stopCondition','없음')"><div class="cb"></div><div class="cl">해당 없음</div></div>
+        <div class="ci" onclick="chkStop(this,'stopCondition','항암치료')"><div class="cb"></div><div class="cl">항암 치료 중 <span class="cl-sub">항암제 복용 또는 주사 치료</span></div></div>
+        <div class="ci" onclick="chkStop(this,'stopCondition','투석')"><div class="cb"></div><div class="cl">신장 투석 중</div></div>
+        <div class="ci" onclick="chkStop(this,'stopCondition','간경화')"><div class="cb"></div><div class="cl">간경화 / 간부전 진단</div></div>
+        <div class="ci" onclick="chkStop(this,'stopCondition','면역억제제')"><div class="cb"></div><div class="cl">장기이식 후 면역억제제 복용</div></div>
+        <div class="ci" onclick="chkStop(this,'stopCondition','임신')"><div class="cb"></div><div class="cl">임신 중</div></div>
+      </div>
+    </div>
+    <!-- 전문의약품 -->
+    <div class="qb">
+      <div class="ql">현재 매일 복용 중인 전문의약품이 있나요? <span class="req">*</span>
+        <small>혈압약, 당뇨약, 혈전용해제, 갑상선약 등 의사 처방 약</small>
+      </div>
+      <div class="opts">
+        <button class="opt" onclick="sel(this,'rx','없음')">없음</button>
+        <button class="opt" onclick="sel(this,'rx','있음')">있음 (복용 중)</button>
+      </div>
+      <div class="safe-warn" id="rxWarn" style="display:none;">⚠️ 전문의약품 복용 중이시면 일부 성분이 제한되며 약사 상담을 권장해요.</div>
+      <!-- 1단계 약물 계열 선택 (조건부 노출) -->
+      <div class="drug-select-box" id="drugSelectBox">
+        <div class="drug-select-title">📋 어떤 계열의 약을 복용 중인가요? (복수 선택)</div>
+        <div class="clist">
+          <div class="ci" onclick="chk(this,'drugType','혈액희석제')"><div class="cb"></div><div class="cl">혈액희석제 <span class="cl-sub">와파린, 아스피린 등 항응고제</span></div></div>
+          <div class="ci" onclick="chk(this,'drugType','혈압약')"><div class="cb"></div><div class="cl">혈압약</div></div>
+          <div class="ci" onclick="chk(this,'drugType','당뇨약')"><div class="cb"></div><div class="cl">당뇨약</div></div>
+          <div class="ci" onclick="chk(this,'drugType','갑상선약')"><div class="cb"></div><div class="cl">갑상선약</div></div>
+          <div class="ci" onclick="chk(this,'drugType','스타틴')"><div class="cb"></div><div class="cl">고지혈증약 <span class="cl-sub">스타틴 계열</span></div></div>
+          <div class="ci" onclick="chk(this,'drugType','기타')"><div class="cb"></div><div class="cl">기타 전문의약품</div></div>
+        </div>
+      </div>
+    </div>
+    <!-- 가족력 -->
+    <div class="qb">
+      <div class="ql">가족력(직계가족 질환)이 있나요?
+        <small>위험인자 분석에 활용됩니다</small>
+      </div>
+      <div class="clist">
+        <div class="ci" onclick="chk(this,'familyHx','없음')"><div class="cb"></div><div class="cl">없음</div></div>
+        <div class="ci" onclick="chk(this,'familyHx','심혈관질환')"><div class="cb"></div><div class="cl">심혈관질환</div></div>
+        <div class="ci" onclick="chk(this,'familyHx','당뇨')"><div class="cb"></div><div class="cl">당뇨</div></div>
+        <div class="ci" onclick="chk(this,'familyHx','암')"><div class="cb"></div><div class="cl">암 (과거 이력)</div></div>
+        <div class="ci" onclick="chk(this,'familyHx','치매·인지저하')"><div class="cb"></div><div class="cl">치매·인지저하</div></div>
+        <div class="ci" onclick="chk(this,'familyHx','골다공증')"><div class="cb"></div><div class="cl">골다공증</div></div>
+      </div>
+    </div>
+    <!-- 알레르기 -->
+    <div class="qb" style="margin-bottom:0">
+      <div class="ql">식품 알레르기가 있나요?
+        <small>해당 성분 포함 제품은 추천에서 자동 제외됩니다</small>
+      </div>
+      <div class="clist">
+        <div class="ci" onclick="chk(this,'allergy','없음')"><div class="cb"></div><div class="cl">없음</div></div>
+        <div class="ci" onclick="chk(this,'allergy','갑각류')"><div class="cb"></div><div class="cl">갑각류 <span class="cl-sub">새우·게·오징어 등</span></div></div>
+        <div class="ci" onclick="chk(this,'allergy','견과류')"><div class="cb"></div><div class="cl">견과류</div></div>
+        <div class="ci" onclick="chk(this,'allergy','대두(콩)')"><div class="cb"></div><div class="cl">대두(콩)</div></div>
+        <div class="ci" onclick="chk(this,'allergy','유제품')"><div class="cb"></div><div class="cl">유제품</div></div>
+      </div>
+    </div>
+  </div>
+  <!-- 0단계: 추천 전면 중단 화면 -->
+  <div id="stopScreen" style="display:none;">
+    <div class="stop-screen">
+      <div class="stop-icon">🏥</div>
+      <div class="stop-title">전문가 상담이 먼저예요</div>
+      <div class="stop-desc">
+        선택하신 상태에서는 건강기능식품 추천보다<br>
+        <strong>의사 또는 약사와의 상담</strong>이 우선되어야 합니다.<br>
+        건강창고는 안전을 최우선으로 생각해요.
+      </div>
+      <ul class="stop-list">
+        <li id="stopReason1" style="display:none"></li>
+        <li id="stopReason2" style="display:none">일부 건강기능식품은 치료약과 심각한 상호작용이 있을 수 있어요</li>
+        <li id="stopReason3" style="display:none">담당 의사 또는 약사에게 복용 가능 여부를 먼저 확인해주세요</li>
+      </ul>
+      <button class="stop-btn-hospital" onclick="alert('가까운 병원 또는 약국에 문의해주세요.')">🏥 전문가 상담 안내 보기</button>
+      <button class="stop-btn-back" onclick="hideStopScreen()">← 이전으로 돌아가기</button>
+    </div>
+  </div>
+  <button class="btn-next" id="btn2" onclick="safetyGo()" disabled>다음</button>
+</div>
+
+<!-- ══ S3: 식습관 ══ -->
+<div class="scr" id="s3">
+  <div class="badge" style="background:#e8f5e9;color:#2e7d32;">STEP 3 · 식습관</div>
+  <div class="sec-title">식습관 분석</div>
+  <div class="sec-sub">평소 식사 패턴을 알려주세요. 결핍 성분 추정에 활용됩니다.</div>
+
+  <div class="card">
+    <div class="qb">
+      <div class="ql">하루 식사 패턴은?</div>
+      <div class="clist">
+        <div class="ci" onclick="radio(this,'mealPattern','매일 3끼 규칙적')"><div class="cb"></div><div class="cl">매일 3끼 규칙적</div></div>
+        <div class="ci" onclick="radio(this,'mealPattern','아침 자주 거름')"><div class="cb"></div><div class="cl">아침 자주 거름</div></div>
+        <div class="ci" onclick="radio(this,'mealPattern','저녁 자주 거름')"><div class="cb"></div><div class="cl">저녁 자주 거름</div></div>
+        <div class="ci" onclick="radio(this,'mealPattern','불규칙하게 먹음')"><div class="cb"></div><div class="cl">불규칙하게 먹음</div></div>
+      </div>
+    </div>
+    <div class="qb">
+      <div class="ql">채소·과일 섭취는?</div>
+      <div class="opts">
+        <button class="opt" onclick="sel(this,'vegeFruit','매끼 충분히')">매끼 충분히</button>
+        <button class="opt" onclick="sel(this,'vegeFruit','하루 1~2회')">하루 1~2회</button>
+        <button class="opt" onclick="sel(this,'vegeFruit','거의 안 먹음')">거의 안 먹음</button>
+      </div>
+    </div>
+    <div class="qb">
+      <div class="ql">육류 섭취 빈도는?</div>
+      <div class="opts">
+        <button class="opt" onclick="sel(this,'meat','하루 1회 이상')">하루 1회 이상</button>
+        <button class="opt" onclick="sel(this,'meat','주 3~4회')">주 3~4회</button>
+        <button class="opt" onclick="sel(this,'meat','주 1~2회')">주 1~2회</button>
+        <button class="opt" onclick="sel(this,'meat','거의 안 먹음')">거의 안 먹음</button>
+      </div>
+    </div>
+    <div class="qb">
+      <div class="ql">생선·해조류 섭취 빈도는?
+        <small>오메가3 분석에 활용됩니다</small>
+      </div>
+      <div class="opts">
+        <button class="opt" onclick="sel(this,'fish','주 3회 이상')">주 3회 이상</button>
+        <button class="opt" onclick="sel(this,'fish','주 1~2회')">주 1~2회</button>
+        <button class="opt" onclick="sel(this,'fish','거의 안 먹음')">거의 안 먹음</button>
+      </div>
+    </div>
+    <div class="qb">
+      <div class="ql">커피·에너지음료 하루 섭취량은?
+        <small>수면·철분 흡수 분석에 활용됩니다</small>
+      </div>
+      <div class="opts">
+        <button class="opt" onclick="sel(this,'caffeine','4잔 이상')">4잔 이상</button>
+        <button class="opt" onclick="sel(this,'caffeine','2~3잔')">2~3잔</button>
+        <button class="opt" onclick="sel(this,'caffeine','1잔')">1잔</button>
+        <button class="opt" onclick="sel(this,'caffeine','거의 안 마심')">거의 안 마심</button>
+      </div>
+    </div>
+    <div class="qb" style="margin-bottom:0">
+      <div class="ql">음주 빈도는?</div>
+      <div class="opts">
+        <button class="opt" onclick="sel(this,'alcohol','거의 매일')">거의 매일</button>
+        <button class="opt" onclick="sel(this,'alcohol','주 3~4회')">주 3~4회</button>
+        <button class="opt" onclick="sel(this,'alcohol','주 1~2회')">주 1~2회</button>
+        <button class="opt" onclick="sel(this,'alcohol','거의 안 함')">거의 안 함</button>
+      </div>
+    </div>
+  </div>
+  <button class="btn-next" onclick="go('s4')">다음</button>
+</div>
+
+<!-- ══ S4: 생활습관·체질 ══ -->
+<div class="scr" id="s4">
+  <div class="badge" style="background:#fffbeb;color:#92400e;">STEP 4 · 생활습관</div>
+  <div class="sec-title">생활습관 & 체질</div>
+  <div class="sec-sub">수면, 운동, 스트레스 패턴을 알려주세요.</div>
+
+  <div class="card">
+    <div class="qb">
+      <div class="ql">수면 패턴은?</div>
+      <div class="clist">
+        <div class="ci" onclick="radio(this,'sleep','7~8시간, 잘 잠')"><div class="cb"></div><div class="cl">7~8시간, 잘 잠</div></div>
+        <div class="ci" onclick="radio(this,'sleep','6시간 이하, 만성 수면 부족')"><div class="cb"></div><div class="cl">6시간 이하, 만성 수면 부족</div></div>
+        <div class="ci" onclick="radio(this,'sleep','잠들기 어려움 (불면 경향)')"><div class="cb"></div><div class="cl">잠들기 어려움 (불면 경향)</div></div>
+        <div class="ci" onclick="radio(this,'sleep','자다가 자주 깸')"><div class="cb"></div><div class="cl">자다가 자주 깸</div></div>
+        <div class="ci" onclick="radio(this,'sleep','충분히 자도 피곤함')"><div class="cb"></div><div class="cl">충분히 자도 피곤함</div></div>
+      </div>
+    </div>
+    <div class="qb">
+      <div class="ql">운동 빈도는?</div>
+      <div class="opts">
+        <button class="opt" onclick="sel(this,'exercise','거의 매일')">거의 매일</button>
+        <button class="opt" onclick="sel(this,'exercise','주 3~4회')">주 3~4회</button>
+        <button class="opt" onclick="sel(this,'exercise','주 1~2회')">주 1~2회</button>
+        <button class="opt" onclick="sel(this,'exercise','거의 안 함')">거의 안 함</button>
+      </div>
+    </div>
+    <div class="qb">
+      <div class="ql">스트레스 수준은?</div>
+      <div class="opts">
+        <button class="opt" onclick="sel(this,'stress','매우 높음')">매우 높음</button>
+        <button class="opt" onclick="sel(this,'stress','높은 편')">높은 편</button>
+        <button class="opt" onclick="sel(this,'stress','보통')">보통</button>
+        <button class="opt" onclick="sel(this,'stress','낮은 편')">낮은 편</button>
+      </div>
+    </div>
+    <div class="qb">
+      <div class="ql">직업·활동 환경은?</div>
+      <div class="clist">
+        <div class="ci" onclick="radio(this,'workEnv','주로 앉아서 일함 (사무직·재택)')"><div class="cb"></div><div class="cl">주로 앉아서 일함 <span class="cl-sub">사무직·재택</span></div></div>
+        <div class="ci" onclick="radio(this,'workEnv','서 있거나 걷는 시간이 많음')"><div class="cb"></div><div class="cl">서 있거나 걷는 시간이 많음</div></div>
+        <div class="ci" onclick="radio(this,'workEnv','육체적 노동이 많음')"><div class="cb"></div><div class="cl">육체적 노동이 많음</div></div>
+        <div class="ci" onclick="radio(this,'workEnv','주로 집에 있음')"><div class="cb"></div><div class="cl">주로 집에 있음</div></div>
+      </div>
+    </div>
+    <!-- 여성 전용: 갱년기 -->
+    <div id="menopauseSection" style="display:none;">
+      <div class="qb">
+        <div class="ql">현재 생리 상태는?</div>
+        <div class="clist">
+          <div class="ci" onclick="radio(this,'menstrual','규칙적 (28~35일 주기)')"><div class="cb"></div><div class="cl">규칙적 (28~35일 주기)</div></div>
+          <div class="ci" onclick="radio(this,'menstrual','불규칙 (주기 들쑥날쑥)')"><div class="cb"></div><div class="cl">불규칙 (주기 들쑥날쑥)</div></div>
+          <div class="ci" onclick="radio(this,'menstrual','갱년기 전환기 (생리 줄어듦)')"><div class="cb"></div><div class="cl">갱년기 전환기 <span class="cl-sub">생리양 감소·주기 길어짐</span></div></div>
+          <div class="ci" onclick="radio(this,'menstrual','완경(폐경) 후')"><div class="cb"></div><div class="cl">완경(폐경) 후</div></div>
+          <div class="ci" onclick="radio(this,'menstrual','해당 없음')"><div class="cb"></div><div class="cl">해당 없음</div></div>
+        </div>
+      </div>
+      <!-- 갱년기 증상 체크 -->
+      <div class="menopause-box" id="menopauseBox">
+        <div class="menopause-title">🌸 갱년기 증상 체크 (해당 모두 선택)</div>
+        <div class="clist">
+          <div class="ci" onclick="chk(this,'menopauseSym','안면홍조·발한')"><div class="cb"></div><div class="cl">안면홍조·발한</div></div>
+          <div class="ci" onclick="chk(this,'menopauseSym','수면 장애 심화')"><div class="cb"></div><div class="cl">수면 장애 심화</div></div>
+          <div class="ci" onclick="chk(this,'menopauseSym','감정 기복·우울감')"><div class="cb"></div><div class="cl">감정 기복·우울감</div></div>
+          <div class="ci" onclick="chk(this,'menopauseSym','집중력·기억력 저하')"><div class="cb"></div><div class="cl">집중력·기억력 저하</div></div>
+          <div class="ci" onclick="chk(this,'menopauseSym','관절통 심화')"><div class="cb"></div><div class="cl">관절통 심화</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="btn-next" onclick="go('s5')">다음</button>
+</div>
+
+<!-- ══ S5: 본인 건강 관심사 ══ -->
+<div class="scr" id="s5">
+  <div class="badge" style="background:#fef2f2;color:#dc2626;">STEP 5 · 건강 관심사</div>
+  <div class="sec-title">본인 건강 관심사</div>
+  <div class="sec-sub">최근 3개월 기준으로 답해주세요.</div>
+
+  <!-- 시니어 모드: 카테고리 선택 -->
+  <div id="seniorCatSection" style="display:none;">
+    <div class="card">
+      <div class="badge senior">👴 시니어 맞춤 — 1단계: 큰 분류 선택</div>
+      <div class="ql">몸 어디가 제일 신경 쓰이세요?
+        <small>1~2개만 고르세요 — 가장 불편한 것 위주로</small>
+      </div>
+      <div class="cat-grid" id="catGrid">
+        <div class="cat-card" onclick="selCat(this,'기력·체력')"><div class="cat-icon">⚡</div><div class="cat-name">기력·체력</div><div class="cat-desc">피로, 무기력, 활력</div></div>
+        <div class="cat-card" onclick="selCat(this,'뼈·관절·근육')"><div class="cat-icon">🦴</div><div class="cat-name">뼈·관절·근육</div><div class="cat-desc">무릎·허리·근력</div></div>
+        <div class="cat-card" onclick="selCat(this,'머리·기억력')"><div class="cat-icon">🧠</div><div class="cat-name">머리·기억력</div><div class="cat-desc">깜빡임, 집중력</div></div>
+        <div class="cat-card" onclick="selCat(this,'소화·배')"><div class="cat-icon">🌿</div><div class="cat-name">소화·배</div><div class="cat-desc">소화불량, 변비</div></div>
+        <div class="cat-card" onclick="selCat(this,'심장·혈관·혈압')"><div class="cat-icon">❤️</div><div class="cat-name">심장·혈관·혈압</div><div class="cat-desc">혈압, 혈중지질</div></div>
+        <div class="cat-card" onclick="selCat(this,'눈·귀')"><div class="cat-icon">👁️</div><div class="cat-name">눈·귀</div><div class="cat-desc">눈 침침함, 시력</div></div>
+        <div class="cat-card" onclick="selCat(this,'수면·스트레스')"><div class="cat-icon">😴</div><div class="cat-name">수면·스트레스</div><div class="cat-desc">불면, 불안</div></div>
+        <div class="cat-card" onclick="selCat(this,'피부·외모')"><div class="cat-icon">✨</div><div class="cat-name">피부·외모</div><div class="cat-desc">건조, 탄력, 노화</div></div>
+        <div class="cat-card" onclick="selCat(this,'모발·두피')"><div class="cat-icon">💆</div><div class="cat-name">모발·두피</div><div class="cat-desc">탈모, 두피 건강</div></div>
+      </div>
+      <!-- 시니어 심화 질문 -->
+      <div class="deep-area" id="seniorDeepArea">
+        <div id="seniorDeepQs"></div>
+        <div class="daily-check">
+          <div class="ql" style="font-size:14px;">일상생활에 지장이 있을 정도인가요? <span class="req">*</span></div>
+          <div class="opts">
+            <button class="opt" onclick="selDaily(this,'없음')">아니요, 괜찮아요</button>
+            <button class="opt" onclick="selDaily(this,'있음')">네, 좀 힘들어요</button>
+          </div>
+          <div class="danger-notice" id="dangerNotice">🏥 많이 힘드시군요. 건강기능식품과 함께 전문의 진료도 병행하시길 권장드려요.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 일반 모드: 상세 증상 선택 -->
+  <div id="normalSymSection">
+    <div class="card">
+      <div class="qb">
+        <div class="ql">에너지·순환 관련 불편 증상 (해당 모두)
+          <small>최근 3개월 기준</small>
+        </div>
+        <div class="clist">
+          <div class="ci" onclick="chk(this,'symEnergy','오후만 되면 극심한 피로')"><div class="cb"></div><div class="cl">오후만 되면 극심한 피로</div></div>
+          <div class="ci" onclick="chk(this,'symEnergy','머리가 자주 무겁거나 멍함')"><div class="cb"></div><div class="cl">머리가 자주 무겁거나 멍함</div></div>
+          <div class="ci" onclick="chk(this,'symEnergy','손발 저림·냉증')"><div class="cb"></div><div class="cl">손발 저림·냉증</div></div>
+          <div class="ci" onclick="chk(this,'symEnergy','얼굴 홍조·상열감')"><div class="cb"></div><div class="cl">얼굴 홍조·상열감</div></div>
+          <div class="ci" onclick="chk(this,'symEnergy','눈 충혈·건조·피로')"><div class="cb"></div><div class="cl">눈 충혈·건조·피로</div></div>
+        </div>
+      </div>
+      <div class="qb">
+        <div class="ql">소화·대사 관련 불편 증상 (해당 모두)</div>
+        <div class="clist">
+          <div class="ci" onclick="chk(this,'symDigest','식후 더부룩·팽만감')"><div class="cb"></div><div class="cl">식후 더부룩·팽만감</div></div>
+          <div class="ci" onclick="chk(this,'symDigest','변비 (주 3회 미만)')"><div class="cb"></div><div class="cl">변비 (주 3회 미만)</div></div>
+          <div class="ci" onclick="chk(this,'symDigest','잦은 설사·무른 변')"><div class="cb"></div><div class="cl">잦은 설사·무른 변</div></div>
+          <div class="ci" onclick="chk(this,'symDigest','체중이 계속 늘어남')"><div class="cb"></div><div class="cl">체중이 계속 늘어남</div></div>
+          <div class="ci" onclick="chk(this,'symDigest','혈당 기복 (식후 졸음·허기 심함)')"><div class="cb"></div><div class="cl">혈당 기복 (식후 졸음·허기 심함)</div></div>
+        </div>
+      </div>
+      <div class="qb" style="margin-bottom:0">
+        <div class="ql">근골격·피부 관련 불편 증상 (해당 모두)</div>
+        <div class="clist">
+          <div class="ci" onclick="chk(this,'symMuscle','무릎·관절 통증·뻣뻣함')"><div class="cb"></div><div class="cl">무릎·관절 통증·뻣뻣함</div></div>
+          <div class="ci" onclick="chk(this,'symMuscle','허리 통증')"><div class="cb"></div><div class="cl">허리 통증</div></div>
+          <div class="ci" onclick="chk(this,'symMuscle','근육 경련·쥐가 잘 남')"><div class="cb"></div><div class="cl">근육 경련·쥐가 잘 남</div></div>
+          <div class="ci" onclick="chk(this,'symMuscle','피부 건조·탄력 저하')"><div class="cb"></div><div class="cl">피부 건조·탄력 저하</div></div>
+          <div class="ci" onclick="chk(this,'symMuscle','모발 탈락 증가·두피 건조')"><div class="cb"></div><div class="cl">모발 탈락 증가·두피 건조</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 건강 관심사 태그 -->
+    <div class="card">
+      <div class="qb" style="margin-bottom:0">
+        <div class="ql">관심 있는 건강 분야 (최대 3개)</div>
+        <div class="limit-badge">최대 <span id="interestCount">3</span>개 선택 가능</div>
+        <div class="clist" id="interestList">
+          <div class="ci" onclick="chkMax(this,'interests','에너지·피로 회복',3,'interestList')"><div class="cb"></div><div class="cl">⚡ 에너지·피로 회복</div></div>
+          <div class="ci" onclick="chkMax(this,'interests','뼈·관절·근육',3,'interestList')"><div class="cb"></div><div class="cl">🦴 뼈·관절·근육</div></div>
+          <div class="ci" onclick="chkMax(this,'interests','두뇌·기억·인지',3,'interestList')"><div class="cb"></div><div class="cl">🧠 두뇌·기억·인지</div></div>
+          <div class="ci" onclick="chkMax(this,'interests','면역·항산화',3,'interestList')"><div class="cb"></div><div class="cl">🛡️ 면역·항산화</div></div>
+          <div class="ci" onclick="chkMax(this,'interests','소화·장 건강',3,'interestList')"><div class="cb"></div><div class="cl">🌿 소화·장 건강</div></div>
+          <div class="ci" onclick="chkMax(this,'interests','심혈관·혈액순환',3,'interestList')"><div class="cb"></div><div class="cl">❤️ 심혈관·혈액순환</div></div>
+          <div class="ci" onclick="chkMax(this,'interests','눈 건강',3,'interestList')"><div class="cb"></div><div class="cl">👁️ 눈 건강</div></div>
+          <div class="ci" onclick="chkMax(this,'interests','피부·미용',3,'interestList')"><div class="cb"></div><div class="cl">✨ 피부·미용</div></div>
+          <div class="ci" onclick="chkMax(this,'interests','체중·체형 관리',3,'interestList')"><div class="cb"></div><div class="cl">⚖️ 체중·체형 관리</div></div>
+          <div class="ci" onclick="chkMax(this,'interests','스트레스·수면',3,'interestList')"><div class="cb"></div><div class="cl">😴 스트레스·수면</div></div>
+          <div class="ci" onclick="chkMax(this,'interests','혈압·혈중지질',3,'interestList')"><div class="cb"></div><div class="cl">🩺 혈압·혈중지질</div></div>
+          <div class="ci" onclick="chkMax(this,'interests','근감소·단백질',3,'interestList')"><div class="cb"></div><div class="cl">💪 근감소·단백질</div></div>
+          <div class="ci" onclick="chkMax(this,'interests','모발·두피 건강',3,'interestList')"><div class="cb"></div><div class="cl">💆 모발·두피 건강</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-next" onclick="go('s6')">다음</button>
+</div>
+
+<!-- ══ S6: 가족 구성원 ══ -->
+<div class="scr" id="s6">
+  <div class="badge family">STEP 6 · 가족 건강</div>
+  <div class="sec-title">가족 건강 니즈</div>
+  <div class="sec-sub">챙겨주고 싶은 가족이 있나요? (복수 선택)</div>
+
+  <div class="card">
+    <div class="member-grid">
+      <div class="member-card" onclick="toggleMember(this,'spouse')">
+        <div class="mc-icon">💑</div>
+        <div class="mc-name">배우자</div>
+        <div class="mc-sub">남편·아내</div>
+      </div>
+      <div class="member-card" onclick="toggleMember(this,'child_young')">
+        <div class="mc-icon">🧒</div>
+        <div class="mc-name">어린 자녀</div>
+        <div class="mc-sub">미취학·초등</div>
+      </div>
+      <div class="member-card" onclick="toggleMember(this,'child_teen')">
+        <div class="mc-icon">🧑‍🎓</div>
+        <div class="mc-name">청소년 자녀</div>
+        <div class="mc-sub">중·고등학생</div>
+      </div>
+      <div class="member-card" onclick="toggleMember(this,'parent')">
+        <div class="mc-icon">👴👵</div>
+        <div class="mc-name">부모님</div>
+        <div class="mc-sub">어르신</div>
+      </div>
+    </div>
+
+    <!-- 가족별 관심사 -->
+    <div id="spouseSection" style="display:none;margin-top:18px;">
+      <div class="deep-title" style="margin-bottom:10px;">💑 배우자 주요 관심사 (최대 2개)</div>
+      <div class="clist" id="spouseList">
+        <div class="ci" onclick="chkMax(this,'spouseInterest','전립선 건강',2,'spouseList')"><div class="cb"></div><div class="cl">전립선 건강 <span class="cl-sub">남성 전용</span></div></div>
+        <div class="ci" onclick="chkMax(this,'spouseInterest','에너지·활력',2,'spouseList')"><div class="cb"></div><div class="cl">에너지·활력</div></div>
+        <div class="ci" onclick="chkMax(this,'spouseInterest','심혈관·혈압',2,'spouseList')"><div class="cb"></div><div class="cl">심혈관·혈압</div></div>
+        <div class="ci" onclick="chkMax(this,'spouseInterest','뼈·관절',2,'spouseList')"><div class="cb"></div><div class="cl">뼈·관절</div></div>
+        <div class="ci" onclick="chkMax(this,'spouseInterest','갱년기 관리',2,'spouseList')"><div class="cb"></div><div class="cl">갱년기 관리</div></div>
+        <div class="ci" onclick="chkMax(this,'spouseInterest','체중 관리',2,'spouseList')"><div class="cb"></div><div class="cl">체중 관리</div></div>
+      </div>
+    </div>
+
+    <div id="childYoungSection" style="display:none;margin-top:18px;">
+      <div class="deep-title" style="margin-bottom:10px;">🧒 어린 자녀 주요 관심사 (최대 2개)</div>
+      <div class="clist" id="childYoungList">
+        <div class="ci" onclick="chkMax(this,'childYoungInterest','성장 지원',2,'childYoungList')"><div class="cb"></div><div class="cl">성장 지원</div></div>
+        <div class="ci" onclick="chkMax(this,'childYoungInterest','면역력',2,'childYoungList')"><div class="cb"></div><div class="cl">면역력</div></div>
+        <div class="ci" onclick="chkMax(this,'childYoungInterest','두뇌·집중력',2,'childYoungList')"><div class="cb"></div><div class="cl">두뇌·집중력</div></div>
+        <div class="ci" onclick="chkMax(this,'childYoungInterest','피부·아토피',2,'childYoungList')"><div class="cb"></div><div class="cl">피부·아토피</div></div>
+      </div>
+    </div>
+
+    <div id="childTeenSection" style="display:none;margin-top:18px;">
+      <div class="deep-title" style="margin-bottom:10px;">🧑‍🎓 청소년 자녀 주요 관심사 (최대 2개)</div>
+      <div class="clist" id="childTeenList">
+        <div class="ci" onclick="chkMax(this,'childTeenInterest','집중력·학습',2,'childTeenList')"><div class="cb"></div><div class="cl">집중력·학습</div></div>
+        <div class="ci" onclick="chkMax(this,'childTeenInterest','성장 지원',2,'childTeenList')"><div class="cb"></div><div class="cl">성장 지원</div></div>
+        <div class="ci" onclick="chkMax(this,'childTeenInterest','면역력',2,'childTeenList')"><div class="cb"></div><div class="cl">면역력</div></div>
+        <div class="ci" onclick="chkMax(this,'childTeenInterest','눈 건강',2,'childTeenList')"><div class="cb"></div><div class="cl">눈 건강</div></div>
+        <div class="ci" onclick="chkMax(this,'childTeenInterest','수면 질',2,'childTeenList')"><div class="cb"></div><div class="cl">수면 질</div></div>
+      </div>
+    </div>
+
+    <div id="parentSection" style="display:none;margin-top:18px;">
+      <div class="deep-title" style="margin-bottom:10px;">👴👵 부모님 주요 관심사 (최대 2개)</div>
+      <div class="clist" id="parentList">
+        <div class="ci" onclick="chkMax(this,'parentInterest','뼈·골다공증',2,'parentList')"><div class="cb"></div><div class="cl">뼈·골다공증</div></div>
+        <div class="ci" onclick="chkMax(this,'parentInterest','관절 통증',2,'parentList')"><div class="cb"></div><div class="cl">관절 통증</div></div>
+        <div class="ci" onclick="chkMax(this,'parentInterest','인지 기능·기억력',2,'parentList')"><div class="cb"></div><div class="cl">인지 기능·기억력</div></div>
+        <div class="ci" onclick="chkMax(this,'parentInterest','혈압·혈당 관리',2,'parentList')"><div class="cb"></div><div class="cl">혈압·혈당 관리</div></div>
+        <div class="ci" onclick="chkMax(this,'parentInterest','심혈관 건강',2,'parentList')"><div class="cb"></div><div class="cl">심혈관 건강</div></div>
+        <div class="ci" onclick="chkMax(this,'parentInterest','소화·장 건강',2,'parentList')"><div class="cb"></div><div class="cl">소화·장 건강</div></div>
+        <div class="ci" onclick="chkMax(this,'parentInterest','근감소 예방',2,'parentList')"><div class="cb"></div><div class="cl">근감소 예방</div></div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-next" onclick="go('s7')">다음</button>
+  <button class="btn-skip" onclick="go('s7')">가족 건강은 건너뛰기</button>
+</div>
+
+<!-- ══ S7: 구매 선호도 ══ -->
+<div class="scr" id="s7">
+  <div class="badge" style="background:#f5f3ff;color:#6d28d9;">STEP 7 · 구매 선호도</div>
+  <div class="sec-title">구매 선호도</div>
+  <div class="sec-sub">예산과 선호 제형을 알려주세요.</div>
+
+  <div class="card">
+    <div class="qb">
+      <div class="ql">월 예산 (본인 기준)</div>
+      <div class="slider-row" style="margin-top:8px;">
+        <input type="range" min="1" max="6" value="2" id="budgetSlider" oninput="onBudget(this.value)">
+        <span class="slider-val" id="budgetVal">5만원대</span>
+      </div>
+      <div class="slider-ticks">
+        <span>3만원</span><span>5만원</span><span>10만원</span><span>15만원</span><span>20만원</span><span>제한없음</span>
+      </div>
+    </div>
+    <div class="qb">
+      <div class="ql">선호하는 제형은?</div>
+      <div class="clist">
+        <div class="ci" onclick="chk(this,'form','정제·캡슐 (간편함)')"><div class="cb"></div><div class="cl">정제·캡슐 <span class="cl-sub">간편하게 삼키는 형태</span></div></div>
+        <div class="ci" onclick="chk(this,'form','분말·가루 (물에 타먹음)')"><div class="cb"></div><div class="cl">분말·가루 <span class="cl-sub">물에 타먹는 형태</span></div></div>
+        <div class="ci" onclick="chk(this,'form','액상·앰플')"><div class="cb"></div><div class="cl">액상·앰플</div></div>
+        <div class="ci" onclick="chk(this,'form','젤리·구미')"><div class="cb"></div><div class="cl">젤리·구미 <span class="cl-sub">씹어 먹는 형태</span></div></div>
+        <div class="ci" onclick="chk(this,'form','상관없음')"><div class="cb"></div><div class="cl">상관없음</div></div>
+      </div>
+    </div>
+    <div class="qb" style="margin-bottom:0">
+      <div class="ql">섭취 시점 선호는?</div>
+      <div class="opts">
+        <button class="opt" onclick="sel(this,'timing','식전')">식전</button>
+        <button class="opt" onclick="sel(this,'timing','식후')">식후</button>
+        <button class="opt" onclick="sel(this,'timing','취침 전')">취침 전</button>
+        <button class="opt" onclick="sel(this,'timing','상관없음')">상관없음</button>
+      </div>
+    </div>
+  </div>
+  <button class="btn-next" onclick="showResult()">맞춤 추천 보기 →</button>
+</div>
+
+<!-- ══ 결과 화면 ══ -->
+<div class="scr" id="sResult">
+  <div class="result-hd">
+    <h2 id="resTitle"></h2>
+    <p id="resDesc"></p>
+    <div class="rtags" id="resTags"></div>
+  </div>
+  <div class="tab-scroll"><div class="tabs" id="tabArea"></div></div>
+  <div id="recArea"></div>
+  <div class="disclaimer">
+    ※ 본 추천은 건강기능식품 정보 제공 목적이며, 의료적 진단·처방이 아닙니다.<br>
+    질환이 있거나 의약품 복용 중이신 경우 전문가와 상담 후 섭취하세요.<br>
+    식약처 기능성 인정 범위 내 정보를 기준으로 제공됩니다.
+  </div>
+  <button class="btn-restart" onclick="restart()">↺ 처음부터 다시하기</button>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+// ── 상태 ──
+var S = {
+  budget:2, interests:[], symptoms:[], seniorCats:[], seniorDeep:{},
+  curSup:[], familyHx:[], allergy:[], form:[],
+  symEnergy:[], symDigest:[], symMuscle:[], menopauseSym:[],
+  members:[], spouseInterest:[], childYoungInterest:[], childTeenInterest:[], parentInterest:[]
+};
+var screenStack = [];
+
+var SHEET_ID = '1WqXXVS1elaUgi8nOGM306JK5JDBPtJzfYsrwKW9bGkQ';
+var SHEET_NAME = '전체';  // 누적DB의 "전체" 시트 사용
+var MARKET = {};  // 구글 시트에서 로딩됨
+var MARKET_LOADED = false;
+var MARKET_LOADING = false;
+
+// ── 건강창고 제품DB — 구글 시트에서 자동 로딩 ──
+var PRODUCTS = [];  // 구글 시트 제품DB 시트에서 로딩
+var PRODUCTS_LOADED = false;
+
+async function loadProductDB() {
+  if (PRODUCTS_LOADED) return;
+  try {
+    var url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID +
+              '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent('제품DB');
+    var res = await fetch(url);
+    var csv = await res.text();
+    var rows = csvParse(csv);
+    if (rows.length < 2) return;
+    // 헤더: 제품코드,제품명,카테고리1,카테고리2,카테고리3,주의태그,가격,구매링크,노출여부
+    PRODUCTS = [];
+    for (var i = 1; i < rows.length; i++) {
+      var r = rows[i];
+      if (!r[0] || r[8] === 'N') continue; // 노출여부 N이면 제외
+      var cats = [r[2], r[3], r[4]].filter(function(c){ return c && c.trim(); });
+      PRODUCTS.push({
+        id: r[0].trim(),
+        name: r[1].trim(),
+        cats: cats,
+        warningTag: r[5] ? r[5].trim() : '',
+        price: parseInt((r[6]||'0').replace(/[^0-9]/g,'')) || 0,
+        link: r[7] ? r[7].trim() : '',
+      });
+    }
+    PRODUCTS_LOADED = true;
+    console.log('제품DB 로드 완료:', PRODUCTS.length + '개');
+  } catch(e) {
+    console.warn('제품DB 로드 실패:', e);
+  }
+}
+
+function getBestProduct(cat) {
+  var matched = PRODUCTS.filter(function(p){ return p.cats.indexOf(cat) !== -1; });
+  if (!matched.length) return null;
+  var primary = matched.filter(function(p){ return p.cats[0] === cat; });
+  return primary.length ? primary[0] : matched[0];
+}
+
+// ── 구글 시트 연동 설정 ──
+
+// 구글 시트 CSV API로 데이터 로드
+async function loadMarketData() {
+  if (MARKET_LOADED || MARKET_LOADING) return;
+  MARKET_LOADING = true;
+  try {
+    var url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID +
+              '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent(SHEET_NAME);
+    var res = await fetch(url);
+    var csv = await res.text();
+    var rows = csvParse(csv);
+    if (rows.length < 2) throw new Error('데이터 없음');
+    // 헤더: 날짜,카테고리,순위,상품명,가격,쇼핑몰
+    // (best10.js 출력 컬럼 순서 기준)
+    var header = rows[0].map(function(h){ return h.trim(); });
+    var iCat   = header.indexOf('카테고리명');  // C열 (카테고리명)
+    var iCatCode = header.indexOf('카테고리코드'); // B열 (코드)
+    var iRank  = header.indexOf('순위');
+    var iName  = header.indexOf('제품명');
+    var iPrice = header.indexOf('최저가');
+    var iMall  = header.indexOf('쇼핑몰');
+    // fallback: 카테고리명 못 찾으면 카테고리코드 사용
+    if (iCat < 0) iCat = iCatCode;
+    // 위치 기반 fallback (수집일,카테고리코드,카테고리명,검색키워드,순위,제품명,최저가,쇼핑몰...)
+    if (iCat < 0)   { iCat=2; iRank=4; iName=5; iPrice=6; iMall=7; }
+    if (iRank < 0)  { iRank=4; }
+    if (iName < 0)  { iName=5; }
+    if (iPrice < 0) { iPrice=6; }
+    if (iMall < 0)  { iMall=7; }
+    console.log('컬럼 인덱스 - 카테고리명:', iCat, '순위:', iRank, '제품명:', iName, '최저가:', iPrice, '쇼핑몰:', iMall);
+    // 오늘 날짜 기준 최신 데이터만 추출 (날짜 내림차순 정렬 후 카테고리별 상위 4개)
+    // 구글 시트 카테고리명 → 앱 카테고리명 매핑
+    // 실제 구글 시트 C열(카테고리명) 기준
+    var CAT_MAPPING = {
+      // 구글 시트 실제 카테고리명 (C열)
+      '에너지·피로':        '에너지·피로 회복',
+      '에너지·피로 회복':   '에너지·피로 회복',
+      '뼈·관절·근육':       '뼈·관절·근육',
+      '뼈·관절':            '뼈·관절·근육',
+      '두뇌·기억·인지':     '두뇌·기억·인지',
+      '두뇌·기억':          '두뇌·기억·인지',
+      '두뇌·신경':          '두뇌·기억·인지',
+      '소화·장·대사':       '소화·장 건강',
+      '스트레스·부신':      '스트레스·수면',
+      '성별·연령 특화':     '면역·항산화',
+      '간·해독':            '면역·항산화',
+      '면역·항산화':        '면역·항산화',
+      '소화·장 건강':       '소화·장 건강',
+      '소화·장':            '소화·장 건강',
+      '심혈관·혈액순환':    '심혈관·혈액순환',
+      '심혈관':             '심혈관·혈액순환',
+      '눈 건강':            '눈 건강',
+      '눈':                 '눈 건강',
+      '피부·미용':          '피부·미용',
+      '피부':               '피부·미용',
+      '체중·체형 관리':     '체중·체형 관리',
+      '체중·체형':          '체중·체형 관리',
+      '근감소·단백질':      '근감소·단백질',
+      '근감소':             '근감소·단백질',
+      '스트레스·수면':      '스트레스·수면',
+      '스트레스':           '스트레스·수면',
+      '혈압·혈중지질':      '혈압·혈중지질',
+      '혈압':               '혈압·혈중지질',
+      // 영문 카테고리명 (혹시 있을 경우)
+      'Mental Care (멘탈케어)':       '스트레스·수면',
+      'Inner Beauty (이너뷰티)':      '피부·미용',
+      'Diet/Slimming (다이어트)':     '체중·체형 관리',
+      'Senior Care (시니어케어)':     '뼈·관절·근육',
+      'Athletic Nutrition (운동영양)': '에너지·피로 회복',
+      'Metabolic (대사증후군)':       '혈압·혈중지질',
+      'Immune (면역)':                '면역·항산화',
+      'GABA (가바)':                  '스트레스·수면',
+      'Enzyme (효소)':                '소화·장 건강',
+      'Amino Acid (아미노산)':        '에너지·피로 회복',
+      'MUST HAVE - 오메가3':          '심혈관·혈액순환',
+      'MUST HAVE - 프로바이오틱스':   '소화·장 건강',
+      'MUST HAVE - 비타민D':          '면역·항산화',
+      'MUST HAVE - 비타민C':          '면역·항산화',
+      'MUST HAVE - 비타민B복합체':    '에너지·피로 회복',
+      'MUST HAVE - 마그네슘':         '스트레스·수면',
+      'MUST HAVE - 아연':             '면역·항산화',
+      'MUST HAVE - 단백질':           '근감소·단백질',
+      'MUST HAVE - CoQ10':            '심혈관·혈액순환',
+      'MUST HAVE - 멀티비타민':       '에너지·피로 회복',
+      '모발·두피 건강':             '모발·두피 건강',
+      '탈모':                       '모발·두피 건강',
+      '모발':                       '모발·두피 건강',
+    };
+
+    // 가장 최근 날짜 찾기
+    var iDate = header.indexOf('수집일');
+    if (iDate < 0) iDate = 0;
+    var latestDate = '';
+    for (var i = 1; i < rows.length; i++) {
+      var d = rows[i][iDate] ? rows[i][iDate].trim() : '';
+      if (d && d > latestDate) latestDate = d;
+    }
+    console.log('최신 수집일:', latestDate);
+
+    var temp = {};
+    for (var i = 1; i < rows.length; i++) {
+      var r = rows[i];
+      if (!r[iName] || !r[iCat]) continue;
+      // 최신 날짜 데이터만 사용
+      var rowDate = r[iDate] ? r[iDate].trim() : '';
+      if (latestDate && rowDate !== latestDate) continue;
+      var rawCat = r[iCat].trim();
+      // 매핑 테이블로 앱 카테고리명으로 변환 (없으면 원본 사용)
+      var cat = CAT_MAPPING[rawCat] || rawCat;
+      var rank  = parseInt(r[iRank]) || 99;
+      var name  = r[iName].trim();
+      var price = parseInt((r[iPrice]||'0').replace(/[^0-9]/g,'')) || 0;
+      var mall  = (r[iMall]||'').trim();
+      if (!temp[cat]) temp[cat] = [];
+      // 같은 상품 중복 방지
+      var exists = temp[cat].some(function(x){ return x.name === name; });
+      if (!exists && temp[cat].length < 4) {
+        temp[cat].push({ rank: rank, name: name, price: price, mall: mall });
+      }
+    }
+    // 각 카테고리 내 rank 순 정렬
+    Object.keys(temp).forEach(function(cat){
+      temp[cat].sort(function(a,b){ return a.rank - b.rank; });
+      // rank 재부여 (1~4)
+      temp[cat].forEach(function(item, idx){ item.rank = idx + 1; });
+    });
+    MARKET = temp;
+    MARKET_LOADED = true;
+    console.log('구글 시트 데이터 로드 완료. 카테고리 수:', Object.keys(MARKET).length);
+  } catch(e) {
+    console.warn('구글 시트 로드 실패, 기본 데이터 사용:', e);
+    MARKET = MARKET_FALLBACK;
+    MARKET_LOADED = true;
+  }
+  MARKET_LOADING = false;
+}
+
+// CSV 파싱 함수 (따옴표 처리 포함)
+function csvParse(csv) {
+  var rows = []; var row = []; var cell = ''; var inQ = false;
+  for (var i = 0; i < csv.length; i++) {
+    var c = csv[i];
+    if (inQ) {
+      if (c === '"' && csv[i+1] === '"') { cell += '"'; i++; }
+      else if (c === '"') { inQ = false; }
+      else { cell += c; }
+    } else {
+      if (c === '"') { inQ = true; }
+      else if (c === ',') { row.push(cell); cell = ''; }
+      else if (c === '\n') { row.push(cell); rows.push(row); row = []; cell = ''; }
+      else if (c === '\r') {}
+      else { cell += c; }
+    }
+  }
+  if (cell || row.length) { row.push(cell); rows.push(row); }
+  return rows;
+}
+
+// 구글 시트 로드 실패 시 fallback 더미 데이터
+var MARKET_FALLBACK = {
+  '에너지·피로 회복':[{rank:1,name:'종근당건강 활력비타민B 컴플렉스',price:18900,mall:'종근당몰'},{rank:2,name:'일동제약 아로나민 골드플러스',price:22500,mall:'일동몰'},{rank:3,name:'GNM 비타민B12 고함량',price:14900,mall:'GNM자연의품격'},{rank:4,name:'나우푸드 B-50 컴플렉스',price:19800,mall:'아이허브코리아'}],
+  '뼈·관절·근육':[{rank:1,name:'유한양행 뼈대있는 칼슘 마그네슘D',price:16900,mall:'유한몰'},{rank:2,name:'GC녹십자 본케어 칼슘아연D',price:21000,mall:'녹십자몰'},{rank:3,name:'한미약품 칼슘D3 플러스',price:18500,mall:'한미몰'},{rank:4,name:'솔가 칼슘 마그네슘 아연',price:32000,mall:'솔가코리아'}],
+  '두뇌·기억·인지':[{rank:1,name:'종근당건강 오메가3 브레인',price:24900,mall:'종근당몰'},{rank:2,name:'동아제약 뇌건강 포스파티딜세린',price:29800,mall:'동아몰'},{rank:3,name:'GNM 은행잎추출물 PS',price:19900,mall:'GNM자연의품격'},{rank:4,name:'나우푸드 포스파티딜세린 100mg',price:28000,mall:'아이허브코리아'}],
+  '면역·항산화':[{rank:1,name:'한국인삼공사 정관장 홍삼정 에브리타임',price:42000,mall:'정관장몰'},{rank:2,name:'종근당 비타민C 1000mg',price:12900,mall:'종근당몰'},{rank:3,name:'고려은단 비타민C 올데이',price:15900,mall:'고려은단몰'},{rank:4,name:'솔가 에스터씨 플러스',price:38000,mall:'솔가코리아'}],
+  '소화·장 건강':[{rank:1,name:'일동제약 비오비타 프로바이오틱스',price:32000,mall:'일동몰'},{rank:2,name:'종근당건강 락토핏 골드',price:26900,mall:'종근당몰'},{rank:3,name:'CJ웰케어 헬시라이프 유산균',price:28000,mall:'CJ온마트'},{rank:4,name:'닥터유 프로바이오틱스 50억',price:22000,mall:'오리온몰'}],
+  '심혈관·혈액순환':[{rank:1,name:'유한양행 코큐텐 오리지날',price:25900,mall:'유한몰'},{rank:2,name:'종근당건강 오메가3 트리플',price:22900,mall:'종근당몰'},{rank:3,name:'동아제약 코엔자임Q10 플러스',price:28000,mall:'동아몰'},{rank:4,name:'솔가 CoQ10 200mg',price:45000,mall:'솔가코리아'}],
+  '눈 건강':[{rank:1,name:'한미약품 루테인 지아잔틴',price:15900,mall:'한미몰'},{rank:2,name:'종근당건강 아이시안 루테인',price:18900,mall:'종근당몰'},{rank:3,name:'GNM 루테인 아스타잔틴',price:16900,mall:'GNM자연의품격'},{rank:4,name:'나우푸드 루테인 20mg',price:22000,mall:'아이허브코리아'}],
+  '피부·미용':[{rank:1,name:'종근당건강 이너콜라겐 플러스',price:28900,mall:'종근당몰'},{rank:2,name:'CJ웰케어 콜라겐 비타민C',price:24000,mall:'CJ온마트'},{rank:3,name:'아모레퍼시픽 바이탈뷰티 메타그린',price:32000,mall:'아모레몰'},{rank:4,name:'솔가 히알루론산 콜라겐C',price:41000,mall:'솔가코리아'}],
+  '체중·체형 관리':[{rank:1,name:'GNM 가르시니아 HCA 60%',price:18900,mall:'GNM자연의품격'},{rank:2,name:'종근당건강 슬리밍핏 L-카르니틴',price:22900,mall:'종근당몰'},{rank:3,name:'한국야쿠르트 스타터 다이어트',price:24000,mall:'야쿠르트몰'},{rank:4,name:'유한양행 CLA 1000',price:19500,mall:'유한몰'}],
+  '근감소·단백질':[{rank:1,name:'일동후디스 하이뮨 프로틴 밸런스',price:48000,mall:'일동후디스'},{rank:2,name:'매일유업 셀렉스 코어프로틴',price:42000,mall:'셀렉스몰'},{rank:3,name:'남양유업 이너뉴트리션 단백질',price:38000,mall:'남양몰'},{rank:4,name:'동원F&B 덴마크 WPI 프로틴',price:45000,mall:'동원몰'}],
+  '스트레스·수면':[{rank:1,name:'종근당건강 테아닌 수면케어',price:19900,mall:'종근당몰'},{rank:2,name:'GNM 마그네슘 글리시네이트',price:22900,mall:'GNM자연의품격'},{rank:3,name:'한미약품 마그네슘 비타민B',price:16900,mall:'한미몰'},{rank:4,name:'나우푸드 테아닌 200mg',price:21000,mall:'아이허브코리아'}],
+  '혈압·혈중지질':[{rank:1,name:'종근당건강 나토키나제 오메가3',price:28900,mall:'종근당몰'},{rank:2,name:'유한양행 홍국 코엔자임Q10',price:32000,mall:'유한몰'},{rank:3,name:'동아제약 혈관엔 나토킹',price:26900,mall:'동아몰'},{rank:4,name:'GNM 나토키나제 2000FU',price:24900,mall:'GNM자연의품격'}],
+  '모발·두피 건강':[{rank:1,name:'판시딜 모발영양제 비오틴 아연',price:22900,mall:'판시딜몰'},{rank:2,name:'종근당건강 비오틴 5000mcg',price:18900,mall:'종근당몰'},{rank:3,name:'GNM 모발케어 비오틴 셀레늄',price:16900,mall:'GNM자연의품격'},{rank:4,name:'닥터린 탈모케어 멀티비타민',price:24900,mall:'닥터린몰'}],
+};
+
+var CAT_MAP = {
+  '기력·체력':['에너지·피로 회복','근감소·단백질'],
+  '뼈·관절·근육':['뼈·관절·근육','근감소·단백질'],
+  '머리·기억력':['두뇌·기억·인지','에너지·피로 회복'],
+  '소화·배':['소화·장 건강','면역·항산화'],
+  '심장·혈관·혈압':['심혈관·혈액순환','혈압·혈중지질'],
+  '눈·귀':['눈 건강'],
+  '수면·스트레스':['스트레스·수면'],
+  '피부·외모':['피부·미용'],
+  '모발·두피':['모발·두피 건강','피부·미용'],
+};
+
+var DEEP = {
+  '기력·체력':{qs:[{q:'주로 어떤 상황이 제일 힘드세요?',key:'energy_type',opts:['아침에 일어나기 힘들어요','오후만 되면 축 처져요','조금만 움직여도 지쳐요','전반적으로 기운이 없어요']}]},
+  '뼈·관절·근육':{qs:[{q:'주로 어디가 불편하세요?',key:'bone_area',opts:['무릎이 아파요','허리가 아파요','손·손목이 아파요','여기저기 다 아파요']},{q:'근력이 예전보다 떨어진 것 같으세요?',key:'muscle',opts:['많이 떨어진 것 같아요','조금 떨어진 것 같아요','잘 모르겠어요']}]},
+  '머리·기억력':{qs:[{q:'주로 어떤 증상이 있으세요?',key:'brain_type',opts:['깜빡깜빡해요 (건망증)','집중이 잘 안 돼요','머리가 멍해요','말이 잘 안 나와요']}]},
+  '소화·배':{qs:[{q:'주로 어떤 증상이 있으세요?',key:'digest_type',opts:['밥 먹으면 더부룩해요','변비가 있어요','설사가 잦아요','배에 가스가 차요']},{q:'식욕은 어떠세요?',key:'appetite',opts:['입맛이 없어요','밥 먹기 귀찮아요','잘 먹어요']}]},
+  '심장·혈관·혈압':{qs:[{q:'어떤 부분이 걱정되세요?',key:'cardio_type',opts:['혈압이 높아요','콜레스테롤이 걱정돼요','손발이 자주 저려요','혈액순환이 안 좋아요']}]},
+  '눈·귀':{qs:[{q:'주로 어떤 증상이 있으세요?',key:'eye_type',opts:['눈이 침침해요','눈이 건조하고 피로해요','밝은 빛이 눈부셔요','잘 안 보여요']}]},
+  '수면·스트레스':{qs:[{q:'수면은 어떠세요?',key:'sleep_type',opts:['잠들기가 어려워요','자다가 자꾸 깨요','일찍 깨요','자도 피곤해요']},{q:'스트레스·불안은?',key:'stress_lv',opts:['별로 없어요','가끔 있어요','꽤 있어요','많이 심해요']}]},
+  '피부·외모':{qs:[{q:'주로 어떤 부분이 신경 쓰이세요?',key:'skin_type',opts:['피부가 많이 건조해요','탄력이 떨어진 것 같아요','주름이 많아졌어요','피부색이 칙칙해요']}]},
+  '모발·두피':{qs:[{q:'주로 어떤 증상이 있으세요?',key:'hair_type',opts:['머리카락이 많이 빠져요','두피가 건조하고 가려워요','모발이 가늘어지고 있어요','전체적으로 숱이 줄었어요']}]},
+};
+
+// ── 나이 입력 ──
+function onAge(v) {
+  var age = parseInt(v);
+  S.age = age;
+  var n = document.getElementById('snotice');
+  if(age >= 65) {
+    n.classList.add('show');
+    document.body.classList.add('sm');
+  } else {
+    n.classList.remove('show');
+    document.body.classList.remove('sm');
+  }
+  checkBtn('btn1');
+}
+
+// ── BMI 계산 ──
+function calcBmi() {
+  var h = parseFloat(document.getElementById('heightIn').value);
+  var w = parseFloat(document.getElementById('weightIn').value);
+  if(!h || !w) return;
+  var bmi = w / ((h/100)*(h/100));
+  var bmiRound = Math.round(bmi*10)/10;
+  var status = bmi < 18.5 ? '저체중' : bmi < 23 ? '정상' : bmi < 25 ? '과체중' : '비만';
+  var box = document.getElementById('bmiBox');
+  box.textContent = 'BMI ' + bmiRound + ' — ' + status;
+  box.classList.add('show');
+  S.bmi = bmiRound; S.bmiStatus = status;
+}
+
+// ── 선택 함수들 ──
+function sel(el, key, val) {
+  var p = el.closest('.opts');
+  if(p) p.querySelectorAll('.opt').forEach(function(b){b.classList.remove('on');});
+  el.classList.add('on');
+  S[key] = val;
+  if(key==='rx') {
+    document.getElementById('rxWarn').style.display = val==='있음'?'flex':'none';
+    document.getElementById('drugSelectBox').classList.toggle('show', val==='있음');
+    if(val==='없음') S.drugType = [];
+  }
+  if(key==='gender') {
+    document.getElementById('menopauseSection').style.display = val==='여성'?'block':'none';
+  }
+  checkBtn('btn1');
+  checkBtn('btn2');
+}
+
+function radio(el, key, val) {
+  var list = el.closest('.clist');
+  list.querySelectorAll('.ci').forEach(function(c){c.classList.remove('ck');c.querySelector('.cb').textContent='';});
+  el.classList.add('ck');
+  el.querySelector('.cb').textContent='✓';
+  S[key] = val;
+  // 갱년기 체크박스 표시
+  if(key==='menstrual') {
+    var showMeno = val==='갱년기 전환기 (생리 줄어듦)' || val==='완경(폐경) 후';
+    document.getElementById('menopauseBox').style.display = showMeno?'block':'none';
+  }
+}
+
+function chk(el, key, val) {
+  el.classList.toggle('ck');
+  el.querySelector('.cb').textContent = el.classList.contains('ck')? '✓':'';
+  if(!Array.isArray(S[key])) S[key]=[];
+  if(el.classList.contains('ck')) { S[key].push(val); }
+  else { S[key]=S[key].filter(function(v){return v!==val;}); }
+}
+
+function chkMax(el, key, val, max, listId) {
+  var list = document.getElementById(listId);
+  var curCount = list.querySelectorAll('.ci.ck').length;
+  if(!el.classList.contains('ck') && curCount >= max) return;
+  el.classList.toggle('ck');
+  el.querySelector('.cb').textContent = el.classList.contains('ck')? '✓':'';
+  if(!Array.isArray(S[key])) S[key]=[];
+  if(el.classList.contains('ck')) { S[key].push(val); }
+  else { S[key]=S[key].filter(function(v){return v!==val;}); }
+}
+
+function checkBtn(id) {
+  var btn = document.getElementById(id);
+  if(!btn) return;
+  var ok = false;
+  if(id==='btn1') ok = !!(S.age && S.gender);
+  if(id==='btn2') ok = !!(S.rx) && !!(S.stopCondition && S.stopCondition.length > 0);
+  btn.disabled = !ok;
+}
+
+// ── 가족 구성원 ──
+function toggleMember(el, key) {
+  el.classList.toggle('on');
+  var sections = {spouse:'spouseSection', child_young:'childYoungSection', child_teen:'childTeenSection', parent:'parentSection'};
+  document.getElementById(sections[key]).style.display = el.classList.contains('on')?'block':'none';
+  if(el.classList.contains('on')) { if(S.members.indexOf(key)===-1) S.members.push(key); }
+  else { S.members=S.members.filter(function(m){return m!==key;}); }
+}
+
+// ── 예산 ──
+function onBudget(v) {
+  var labels = ['','3만원대','5만원대','10만원대','15만원대','20만원대','제한없음'];
+  var maxMap  = [0,30000,50000,100000,150000,200000,9999999];
+  S.budget = parseInt(v);
+  S.budgetMax = maxMap[v];
+  document.getElementById('budgetVal').textContent = labels[v];
+}
+
+// ── 시니어 카테고리 ──
+function selCat(el, cat) {
+  if(!el.classList.contains('on') && S.seniorCats.length >= 2) return;
+  el.classList.toggle('on');
+  if(el.classList.contains('on')) { S.seniorCats.push(cat); }
+  else { S.seniorCats=S.seniorCats.filter(function(c){return c!==cat;}); }
+  if(S.seniorCats.length > 0) renderSeniorDeep();
+  else { document.getElementById('seniorDeepArea').classList.remove('show'); }
+}
+
+function renderSeniorDeep() {
+  var html = '';
+  S.seniorCats.forEach(function(cat) {
+    var d = DEEP[cat]; if(!d) return;
+    d.qs.forEach(function(q) {
+      html += '<div class="deep-section"><div class="deep-title">'+q.q+'</div><div class="opts">';
+      q.opts.forEach(function(opt) {
+        html += '<button class="opt" style="font-size:13px;padding:8px 12px;" onclick="selDeep(this,\''+q.key+'\',\''+opt+'\')">'+opt+'</button>';
+      });
+      html += '</div></div>';
+    });
+  });
+  document.getElementById('seniorDeepQs').innerHTML = html;
+  document.getElementById('seniorDeepArea').classList.add('show');
+}
+
+function selDeep(el, key, val) {
+  var p = el.closest('.opts');
+  if(p) p.querySelectorAll('.opt').forEach(function(b){b.classList.remove('on');});
+  el.classList.add('on');
+  S.seniorDeep[key] = val;
+}
+
+function selDaily(el, val) {
+  var p = el.closest('.opts');
+  if(p) p.querySelectorAll('.opt').forEach(function(b){b.classList.remove('on');});
+  el.classList.add('on');
+  S.dailyImpact = val;
+  document.getElementById('dangerNotice').className = 'danger-notice'+(val==='있음'?' show':'');
+}
+
+// ── S5 시니어/일반 분기 ──
+function initS5() {
+  var isSr = S.age >= 65;
+  document.getElementById('seniorCatSection').style.display = isSr?'block':'none';
+  document.getElementById('normalSymSection').style.display = isSr?'none':'block';
+}
+
+// ── 화면 이동 ──
+function go(id) {
+  var cur = document.querySelector('.scr.on');
+  if(cur) screenStack.push(cur.id);
+  document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
+  document.getElementById(id).classList.add('on');
+  window.scrollTo(0,0);
+  updateProgress(id);
+  if(id==='s5') initS5();
+}
+
+function goBack() {
+  if(!screenStack.length) return;
+  var prev = screenStack.pop();
+  document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
+  document.getElementById(prev).classList.add('on');
+  window.scrollTo(0,0);
+  updateProgress(prev);
+}
+
+function updateProgress(id) {
+  var steps = {s1:1,s2:2,s3:3,s4:4,s5:5,s6:6,s7:7,sResult:8};
+  var total = 7;
+  var step = steps[id]||1;
+  document.getElementById('pb').style.width = (Math.min(step,total)/total*100)+'%';
+  document.getElementById('steptxt').textContent = step<=total ? step+' / '+total : '완료';
+  var btnBack = document.getElementById('btnBack');
+  if(id==='s1'||id==='sResult') btnBack.classList.remove('show');
+  else btnBack.classList.add('show');
+}
+
+// ── 결과 ──
+function showResult() {
+  document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
+  document.getElementById('sResult').classList.add('on');
+  updateProgress('sResult');
+  window.scrollTo(0,0);
+
+  // 구글 시트 데이터 로딩 후 렌더링 (시장베스트 + 제품DB 동시 로딩)
+  if (!MARKET_LOADED || !PRODUCTS_LOADED) {
+    var resBody = document.getElementById('resBody');
+    if (resBody) resBody.innerHTML = '<div style="text-align:center;padding:40px 0;color:#4b5563;"><div style="font-size:32px;margin-bottom:12px;">⏳</div><div style="font-size:15px;font-weight:700;">맞춤 데이터 불러오는 중...</div></div>';
+    Promise.all([loadMarketData(), loadProductDB(), loadVideoMap()]).then(function(){ renderResult(); });
+    return;
+  }
+  renderResult();
+}
+
+// ══════════════════════════════════════════════
+// 안전 필터 4단계 엔진
+// ══════════════════════════════════════════════
+
+// 1단계 하드블록 테이블: 약물계열 → 차단 성분 키워드
+var HARD_BLOCK = {
+  '혈액희석제': ['오메가3','omega3','비타민E','vitamin e','은행잎','ginkgo','ginko'],
+  '혈압약':     ['코엔자임Q10','coq10','마그네슘','magnesium'],
+  '당뇨약':     ['크롬','chromium','알파리포산','alpha lipoic','ala'],
+  '갑상선약':   ['아이오딘','iodine','요오드','셀레늄','selenium'],
+  '스타틴':     ['레드이스트라이스','홍국','red yeast rice']
+};
+
+// 2단계 소프트 경고: 전문의약품 복용 + 블록 미해당 성분
+var SOFT_WARN_INGREDIENTS = ['비타민K','vitamin k','칼슘','calcium','철분','iron','아연','zinc'];
+
+// 0단계 트리거 조건 → 중단 이유 메시지
+var STOP_MESSAGES = {
+  '항암치료': '항암 치료 중에는 건강기능식품이 치료 효과에 영향을 줄 수 있어요',
+  '투석':     '신장 투석 중에는 영양소 대사가 다르며 전문의 처방이 필요해요',
+  '간경화':   '간경화·간부전 상태에서는 성분 대사 부담이 생길 수 있어요',
+  '면역억제제':'면역억제제와 일부 성분의 상호작용이 위험할 수 있어요',
+  '임신':     '임신 중에는 섭취 가능한 성분과 용량이 엄격히 제한돼요'
+};
+
+// 0단계 체크 (항암/투석 등) 선택 핸들러
+function chkStop(el, key, val) {
+  if (!S[key]) S[key] = [];
+  if (val === '없음') {
+    // 없음 선택 시 전체 해제
+    document.querySelectorAll('.ci[onclick*="chkStop"]').forEach(function(c){
+      c.classList.remove('ck');
+      c.querySelector('.cb').textContent = '';
+    });
+    S[key] = ['없음'];
+    el.classList.add('ck');
+    el.querySelector('.cb').textContent = '✓';
+    checkBtn('btn2');
+  } else {
+    // 특정 항목 선택 시 '없음' 해제
+    document.querySelectorAll('.ci[onclick*="chkStop"]').forEach(function(c){
+      if (c.querySelector('.cl').textContent.trim().startsWith('해당 없음')) {
+        c.classList.remove('ck');
+        c.querySelector('.cb').textContent = '';
+      }
+    });
+    S[key] = (S[key]||[]).filter(function(v){ return v !== '없음'; });
+    if (el.classList.contains('ck')) {
+      el.classList.remove('ck');
+      el.querySelector('.cb').textContent = '';
+      S[key] = S[key].filter(function(v){ return v !== val; });
+    } else {
+      el.classList.add('ck');
+      el.querySelector('.cb').textContent = '✓';
+      S[key].push(val);
+    }
+  }
+  checkBtn('btn2');
+}
+
+// 0단계: 추천 중단 여부 판단
+function isStage0() {
+  var stops = S.stopCondition || [];
+  // stopCondition이 비어있거나 '없음'만 있으면 0단계 아님
+  if (!stops.length) return false;
+  return stops.some(function(v){ return v !== '없음' && v !== ''; });
+}
+
+// 0단계 화면 표시
+function showStopScreen() {
+  document.getElementById('btn2').style.display = 'none';
+  document.getElementById('stopScreen').style.display = 'block';
+  var stops = (S.stopCondition||[]).filter(function(v){ return v !== '없음'; });
+  var r1 = document.getElementById('stopReason1');
+  var r2 = document.getElementById('stopReason2');
+  var r3 = document.getElementById('stopReason3');
+  if (stops.length > 0) {
+    r1.textContent = STOP_MESSAGES[stops[0]] || stops[0];
+    r1.style.display = 'list-item';
+  }
+  r2.style.display = 'list-item';
+  r3.style.display = 'list-item';
+}
+
+function hideStopScreen() {
+  document.getElementById('stopScreen').style.display = 'none';
+  document.getElementById('btn2').style.display = 'block';
+}
+
+// 1단계: 제품이 하드블록 대상인지 판단
+// product: { name, ingredients(선택) } or 제품명 문자열
+function isHardBlocked(productName, cat) {
+  var drugTypes = S.drugType || [];
+  if (!drugTypes.length) return false;
+  var name = (productName || '').toLowerCase();
+  return drugTypes.some(function(drug) {
+    var blocks = HARD_BLOCK[drug] || [];
+    return blocks.some(function(kw) {
+      return name.indexOf(kw.toLowerCase()) !== -1;
+    });
+  });
+}
+
+// 2단계: 소프트 경고 대상인지 판단
+function isSoftWarn(productName) {
+  if (S.rx !== '있음') return false;
+  var name = (productName || '').toLowerCase();
+  return SOFT_WARN_INGREDIENTS.some(function(kw){
+    return name.indexOf(kw.toLowerCase()) !== -1;
+  });
+}
+
+// 안전 단계 계산 (0~3)
+function getSafetyLevel(productName, cat) {
+  if (isStage0()) return 0;
+  if (isHardBlocked(productName, cat)) return 1;
+  if (isSoftWarn(productName)) return 2;
+  return 3;
+}
+
+// 0단계 체크 후 다음 화면 이동
+function safetyGo() {
+  if (isStage0()) {
+    showStopScreen();
+  } else {
+    go('s3');
+  }
+}
+
+// ══════════════════════════════════════════════
+
+function renderResult() {
+  var isSr = S.age >= 65;
+  var isRx = S.rx === '있음';
+  var budgetMax = S.budgetMax || 50000;
+
+  document.getElementById('resTitle').textContent = (S.age||'')+'세 '+(S.gender||'')+' 맞춤 추천';
+  var desc = '';
+  if(S.bmiStatus) desc += 'BMI '+S.bmi+' ('+S.bmiStatus+'). ';
+  if(isSr) desc += '시니어 맞춤 모드로 추천해드려요. ';
+  if(S.dailyImpact==='있음') desc += '많이 힘드시다고 하셨으니 전문의 진료도 병행 권장드려요. ';
+  if(isRx) desc += '⚠️ 전문의약품 복용 중 — 약사 상담 필수.';
+  if(!desc) desc = '입력하신 건강 정보를 바탕으로 맞춤 추천해드려요.';
+  document.getElementById('resDesc').textContent = desc;
+
+  // 태그
+  var tags = [];
+  if(isSr) tags.push({t:'👴 시니어 모드',s:false});
+  (S.seniorCats||[]).forEach(function(c){tags.push({t:c,s:true});});
+  (S.interests||[]).forEach(function(i){tags.push({t:i,s:false});});
+  var allSym = (S.symEnergy||[]).concat(S.symDigest||[]).concat(S.symMuscle||[]);
+  allSym.slice(0,3).forEach(function(s){tags.push({t:s,s:true});});
+  document.getElementById('resTags').innerHTML = tags.slice(0,6).map(function(t){
+    return '<span class="rtag'+(t.s?' sym':'')+'">'+t.t+'</span>';
+  }).join('');
+
+  // ── 점수화 알고리즘 (임상 근거 기반) ──
+  var score = {
+    '에너지·피로 회복': 0,
+    '뼈·관절·근육': 0,
+    '두뇌·기억·인지': 0,
+    '면역·항산화': 0,
+    '소화·장 건강': 0,
+    '심혈관·혈액순환': 0,
+    '눈 건강': 0,
+    '피부·미용': 0,
+    '체중·체형 관리': 0,
+    '근감소·단백질': 0,
+    '스트레스·수면': 0,
+    '혈압·혈중지질': 0,
+    '모발·두피 건강': 0,
+  };
+
+  function addScore(cat, pts) {
+    if (score[cat] !== undefined) score[cat] += pts;
+  }
+
+  // 1. 나이 기반 점수
+  var age = parseInt(S.age) || 0;
+  if (age >= 50 && age < 65) {
+    addScore('뼈·관절·근육', 15);
+    addScore('두뇌·기억·인지', 10);
+    addScore('면역·항산화', 10);
+  }
+  if (age >= 65) {
+    addScore('뼈·관절·근육', 25);
+    addScore('근감소·단백질', 25);
+    addScore('두뇌·기억·인지', 20);
+    addScore('면역·항산화', 15);
+  }
+
+  // 2. 성별 기반 점수
+  if (S.gender === '여성') {
+    addScore('피부·미용', 10);
+    addScore('면역·항산화', 5);
+  }
+  if (S.gender === '남성') {
+    addScore('심혈관·혈액순환', 10);
+    addScore('에너지·피로 회복', 5);
+  }
+
+  // 3. BMI 기반 점수
+  var bmi = parseFloat(S.bmi) || 0;
+  if (bmi > 0 && bmi < 18.5) {
+    addScore('근감소·단백질', 20);
+    addScore('면역·항산화', 15);
+  } else if (bmi >= 23 && bmi < 25) {
+    addScore('체중·체형 관리', 15);
+    addScore('심혈관·혈액순환', 10);
+  } else if (bmi >= 25) {
+    addScore('체중·체형 관리', 25);
+    addScore('혈압·혈중지질', 20);
+    addScore('심혈관·혈액순환', 15);
+    addScore('소화·장 건강', 10);
+  }
+
+  // 4. 갱년기 기반 점수
+  var menoSym = S.menopauseSym || [];
+  if (menoSym.length > 0 || S.menstrual === '갱년기 전환기 (생리 줄어듦)' || S.menstrual === '완경(폐경) 후') {
+    addScore('뼈·관절·근육', 30);
+    addScore('스트레스·수면', 25);
+    addScore('피부·미용', 20);
+    addScore('면역·항산화', 15);
+    addScore('에너지·피로 회복', 15);
+  }
+
+  // 5. 식습관 기반 점수
+  var diet = S.diet || '';
+  if (diet === '채소·과일을 거의 안 먹어요') {
+    addScore('면역·항산화', 15);
+    addScore('소화·장 건강', 10);
+  }
+  if (diet === '육류 위주 식사') {
+    addScore('심혈관·혈액순환', 15);
+    addScore('소화·장 건강', 10);
+  }
+  if (diet === '불규칙한 식사') {
+    addScore('에너지·피로 회복', 15);
+    addScore('소화·장 건강', 10);
+  }
+
+  // 6. 생활습관 기반 점수
+  var exercise = S.exercise || '';
+  if (exercise === '거의 안 해요') {
+    addScore('근감소·단백질', 15);
+    addScore('뼈·관절·근육', 10);
+    addScore('체중·체형 관리', 10);
+  }
+
+  var outdoor = S.outdoor || '';
+  if (outdoor === '실내 위주' || outdoor === '거의 외출 안 함') {
+    addScore('뼈·관절·근육', 20);
+    addScore('면역·항산화', 10);
+  }
+
+  var drink = S.drink || '';
+  if (drink === '자주 마셔요' || drink === '매일 마셔요') {
+    addScore('에너지·피로 회복', 15);
+    addScore('소화·장 건강', 15);
+  }
+
+  var smoke = S.smoke || '';
+  if (smoke === '흡연 중') {
+    addScore('면역·항산화', 20);
+    addScore('심혈관·혈액순환', 15);
+  }
+
+  var sleep = S.sleepQuality || '';
+  if (sleep === '나쁨' || sleep === '매우 나쁨') {
+    addScore('스트레스·수면', 25);
+    addScore('에너지·피로 회복', 15);
+    addScore('면역·항산화', 10);
+  }
+
+  var stress = S.stressLevel || '';
+  if (stress === '높음' || stress === '매우 높음') {
+    addScore('스트레스·수면', 20);
+    addScore('에너지·피로 회복', 15);
+    addScore('면역·항산화', 10);
+  }
+
+  // 7. 증상 기반 점수 (가장 높은 가중치)
+  var symScoreMap = {
+    '오후만 되면 극심한 피로':     [['에너지·피로 회복', 35], ['면역·항산화', 15]],
+    '머리가 자주 무겁거나 멍함':   [['두뇌·기억·인지', 35], ['에너지·피로 회복', 15]],
+    '손발 저림·냉증':              [['심혈관·혈액순환', 35], ['뼈·관절·근육', 15]],
+    '눈 충혈·건조·피로':          [['눈 건강', 35], ['두뇌·기억·인지', 10]],
+    '식후 더부룩·팽만감':         [['소화·장 건강', 35], ['에너지·피로 회복', 10]],
+    '변비 (주 3회 미만)':         [['소화·장 건강', 35]],
+    '잦은 설사·무른 변':          [['소화·장 건강', 35]],
+    '체중이 계속 늘어남':         [['체중·체형 관리', 35], ['혈압·혈중지질', 15]],
+    '무릎·관절 통증·뻣뻣함':     [['뼈·관절·근육', 35], ['근감소·단백질', 15]],
+    '허리 통증':                  [['뼈·관절·근육', 35], ['스트레스·수면', 15]],
+    '근육 경련·쥐가 잘 남':      [['뼈·관절·근육', 35], ['스트레스·수면', 10]],
+    '피부 건조·탄력 저하':        [['피부·미용', 35], ['면역·항산화', 15]],
+    '모발 탈락 증가·두피 건조':   [['모발·두피 건강', 50], ['피부·미용', 15], ['면역·항산화', 10]],
+    '자주 피곤하고 무기력함':     [['에너지·피로 회복', 35], ['면역·항산화', 15]],
+    '잦은 감기·면역 저하':        [['면역·항산화', 35], ['에너지·피로 회복', 10]],
+    '수면 장애':                  [['스트레스·수면', 35], ['에너지·피로 회복', 15]],
+    '혈압이 높음':                [['혈압·혈중지질', 35], ['심혈관·혈액순환', 20]],
+    '콜레스테롤 걱정':            [['혈압·혈중지질', 35], ['심혈관·혈액순환', 20]],
+    '근력 저하':                  [['근감소·단백질', 35], ['뼈·관절·근육', 15]],
+  };
+
+  var allSym = (S.symEnergy||[]).concat(S.symDigest||[]).concat(S.symMuscle||[]);
+  allSym.forEach(function(sym) {
+    var mapping = symScoreMap[sym];
+    if (mapping) {
+      mapping.forEach(function(m) { addScore(m[0], m[1]); });
+    }
+  });
+
+  // 8. 관심사 기반 점수
+  (S.interests||[]).forEach(function(interest) {
+    var interestMap = {
+      '뼈·관절 건강':   [['뼈·관절·근육', 20]],
+      '혈관·심장':      [['심혈관·혈액순환', 20], ['혈압·혈중지질', 15]],
+      '눈 건강':        [['눈 건강', 20]],
+      '피부·미용':      [['피부·미용', 20]],
+      '다이어트':       [['체중·체형 관리', 20]],
+      '장 건강':        [['소화·장 건강', 20]],
+      '면역력':         [['면역·항산화', 20]],
+      '기억력·집중력':  [['두뇌·기억·인지', 20]],
+      '수면·스트레스':  [['스트레스·수면', 20]],
+      '근육·단백질':    [['근감소·단백질', 20]],
+      '모발·두피 건강':  [['모발·두피 건강', 20]],
+    };
+    var mapping = interestMap[interest];
+    if (mapping) {
+      mapping.forEach(function(m) { addScore(m[0], m[1]); });
+    }
+  });
+
+  // 9. 시니어 카테고리 (65세 이상)
+  if (isSr) {
+    (S.seniorCats||[]).forEach(function(sc) {
+      (CAT_MAP[sc]||[]).forEach(function(c) { addScore(c, 40); });
+    });
+  }
+
+  // ── 고도화 ①: 가족력 반영 ──
+  // 직계가족 질환 → 예방 차원 점수 (가족력은 절반 가중치)
+  var famHx = S.familyHx || [];
+  var familyScoreMap = {
+    '심혈관질환': [['심혈관·혈액순환', 20], ['혈압·혈중지질', 15]],
+    '당뇨':       [['체중·체형 관리', 15], ['혈압·혈중지질', 15], ['소화·장 건강', 10]],
+    '암':         [['면역·항산화', 20], ['에너지·피로 회복', 10]],
+    '치매·인지저하': [['두뇌·기억·인지', 20], ['면역·항산화', 10]],
+    '골다공증':   [['뼈·관절·근육', 20], ['근감소·단백질', 10]],
+  };
+  famHx.forEach(function(fh) {
+    var mapping = familyScoreMap[fh];
+    if (mapping) mapping.forEach(function(m) { addScore(m[0], m[1]); });
+  });
+
+  // ── 고도화 ②: 복합 조건 시너지 보너스 ──
+  // 나이 + 증상 조합 가중치
+  if (age >= 65 && allSym.indexOf('근력 저하') !== -1) {
+    addScore('근감소·단백질', 20);  // 시니어 + 근력저하 = 강화
+  }
+  if (age >= 65 && allSym.indexOf('무릎·관절 통증·뻣뻣함') !== -1) {
+    addScore('뼈·관절·근육', 20);
+  }
+  if (age >= 50 && (allSym.indexOf('머리가 자주 무겁거나 멍함') !== -1)) {
+    addScore('두뇌·기억·인지', 15);
+  }
+  // 흡연 + 심혈관 가족력 시너지
+  if (smoke === '흡연 중' && famHx.indexOf('심혈관질환') !== -1) {
+    addScore('심혈관·혈액순환', 20);
+    addScore('혈압·혈중지질', 15);
+  }
+  // 비만 + 당뇨 가족력 시너지
+  if (bmi >= 25 && famHx.indexOf('당뇨') !== -1) {
+    addScore('혈압·혈중지질', 20);
+    addScore('체중·체형 관리', 15);
+  }
+  // 수면 나쁨 + 스트레스 높음 시너지
+  if ((sleep === '나쁨' || sleep === '매우 나쁨') &&
+      (stress === '높음' || stress === '매우 높음')) {
+    addScore('스트레스·수면', 20);
+    addScore('에너지·피로 회복', 10);
+  }
+  // 갱년기 + 골다공증 가족력 시너지
+  if (menoSym.length > 0 && famHx.indexOf('골다공증') !== -1) {
+    addScore('뼈·관절·근육', 20);
+  }
+  // 식습관 불규칙 + 음주 시너지
+  if (diet === '불규칙한 식사' && (drink === '자주 마셔요' || drink === '매일 마셔요')) {
+    addScore('에너지·피로 회복', 10);
+    addScore('소화·장 건강', 10);
+  }
+
+  // ── 고도화 ③: 카테고리 점수 상한선 100점 캡 ──
+  Object.keys(score).forEach(function(cat) {
+    if (score[cat] > 100) score[cat] = 100;
+  });
+
+  // 10. 점수 기준 상위 카테고리 정렬
+  var cats = Object.keys(score)
+    .filter(function(c) { return score[c] > 0; })
+    .sort(function(a, b) { return score[b] - score[a]; })
+    .slice(0, 4);
+
+  // 점수 없으면 기본값
+  if (!cats.length) cats = ['면역·항산화', '에너지·피로 회복'];
+
+  // 점수 로그 (상위 카테고리만 출력)
+  var scoreLog = Object.keys(score)
+    .filter(function(c){ return score[c] > 0; })
+    .sort(function(a,b){ return score[b]-score[a]; })
+    .map(function(c){ return c+':'+score[c]; })
+    .join(' | ');
+  console.log('📊 카테고리 점수:', scoreLog);
+  console.log('🏆 추천 순위:', cats);
+  console.log('👨‍👩‍👧 가족력 반영:', famHx.join(',') || '없음');
+  console.log('💊 약물계열:', (S.drugType||[]).join(',') || '없음');
+
+  document.getElementById('tabArea').innerHTML = cats.map(function(c,i){
+    return '<div class="tab'+(i===0?' on':'')+'" onclick="showCat(this,\''+c+'\')">'+c+'</div>';
+  }).join('');
+  renderCat(cats[0], isRx, budgetMax);
+}
+
+function showCat(el, cat) {
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+  el.classList.add('on');
+  renderCat(cat, S.rx==='있음', S.budgetMax||50000);
+}
+
+// ── 카테고리별 영상 매핑 ──
+var VIDEO_MAP = {};  // 구글 시트 콘텐츠매핑 시트에서 자동 로딩
+var VIDEOS_LOADED = false;
+
+async function loadVideoMap() {
+  if (VIDEOS_LOADED) return;
+  try {
+    var url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID +
+              '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent('콘텐츠매핑');
+    var res = await fetch(url);
+    var csv = await res.text();
+    var rows = csvParse(csv);
+    if (rows.length < 2) return;
+    // 헤더 자동 인식 (카테고리, 영상제목, URL, 노출여부)
+    var header = rows[0].map(function(h){ return h.trim(); });
+    var iCat    = header.indexOf('카테고리');
+    var iTitle  = header.indexOf('영상제목');
+    var iUrl    = header.indexOf('URL');
+    var iShow   = header.indexOf('노출여부');
+    if (iCat < 0)   iCat = 1;
+    if (iTitle < 0) iTitle = 2;
+    if (iUrl < 0)   iUrl = 5;
+
+    VIDEO_MAP = {};
+    for (var i = 1; i < rows.length; i++) {
+      var r = rows[i];
+      var cat = r[iCat] ? r[iCat].trim() : '';
+      var videoUrl = r[iUrl] ? r[iUrl].trim() : '';
+      if (!cat || !videoUrl) continue;
+
+      // 노출여부 N이면 제외
+      if (iShow >= 0 && r[iShow] && r[iShow].trim() === 'N') continue;
+
+      // URL에서 videoId 자동 추출
+      var videoId = '';
+      var match = videoUrl.match(/[?&]v=([^&]+)/);
+      if (match) videoId = match[1];
+      if (!videoId) continue;
+
+      var title = r[iTitle] ? r[iTitle].trim() : '';
+
+      if (!VIDEO_MAP[cat]) VIDEO_MAP[cat] = [];
+      // Y인 영상 중 랜덤 1개 선택을 위해 일단 전부 수집
+      VIDEO_MAP[cat].push({ title: title, channel: '', videoId: videoId });
+    }
+
+    // 카테고리별 랜덤 1개 선택
+    Object.keys(VIDEO_MAP).forEach(function(cat) {
+      var videos = VIDEO_MAP[cat];
+      if (videos.length > 1) {
+        var pick = Math.floor(Math.random() * videos.length);
+        VIDEO_MAP[cat] = [videos[pick]];
+      }
+    });
+    VIDEOS_LOADED = true;
+    console.log('콘텐츠매핑 로드 완료:', Object.keys(VIDEO_MAP).length + '개 카테고리');
+  } catch(e) {
+    console.warn('콘텐츠매핑 로드 실패:', e);
+  }
+}
+
+function videoSection(cat) {
+  var videos = VIDEO_MAP[cat];
+  if (!videos || !videos.length) return '';
+  var html = '<div class="video-section">';
+  html += '<div class="video-header"><span class="video-icon">📺</span><span class="video-title">관련 건강 영상</span><span class="video-sub">전문 기관 제공</span></div>';
+  videos.forEach(function(v) {
+    html += '<div class="video-card">';
+    html += '<div class="video-embed"><iframe src="https://www.youtube.com/embed/'+v.videoId+'?rel=0&modestbranding=1" allowfullscreen loading="lazy"></iframe></div>';
+    html += '<div class="video-info"><div class="video-name">'+v.title+'</div><div class="video-channel">'+v.channel+'<span>공식채널</span></div></div>';
+    html += '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function renderCat(cat, isRx, budgetMax) {
+  console.log('renderCat 호출:', cat);
+  console.log('MARKET 키 목록:', Object.keys(MARKET).join(' / '));
+  console.log('MARKET[cat]:', MARKET[cat]);
+  var mkt = (MARKET[cat]||MARKET_FALLBACK[cat]||MARKET['면역·항산화']||Object.values(MARKET)[0]||[]).slice();
+  if(mkt.length < 4) {
+    while(mkt.length < 4) mkt.push({rank:mkt.length+1, name:'준비 중', price:0, mall:'-'});
+  }
+  var adP = getBestProduct(cat);
+  var html = '';
+  html += mCard(mkt[0],true,isRx);
+  html += mCard(mkt[1],true,isRx);
+  html += '<div class="divider">건강창고 추천</div>';
+  if (adP) {
+    html += aCard(adP,isRx);
+  }
+  html += '<div class="divider">관련 영상</div>';
+  html += videoSection(cat);
+  html += '<div class="divider">시장 베스트 계속</div>';
+  html += mCard(mkt[2],false,isRx);
+  html += mCard(mkt[3],false,isRx);
+  document.getElementById('recArea').innerHTML = html;
+}
+
+function mCard(p,top,isRx) {
+  var level = getSafetyLevel(p.name, '');
+  // 1단계: 하드블록 - 카드 자체 숨김 (빈 문자열 반환)
+  if (level === 1) return '';
+  var warnHtml = '';
+  var btnText = '🔍 네이버에서 보기';
+  var btnClass = 'mkt-btn';
+  if (level === 2) {
+    warnHtml = '<div class="badge-caution">⚠️ 복용 약물과 성분 확인 필요</div><div class="safe-warn" style="margin-bottom:6px;">전문의약품 복용 중이시면 약사와 상담 후 구매를 권장해요.</div>';
+    btnText = '💬 약사 상담 후 구매';
+    btnClass = 'btn-consult';
+  } else if (isRx && level === 3) {
+    warnHtml = '<div class="safe-warn" style="margin-bottom:6px;">⚠️ 전문의약품 복용 중 — 약사 상담 권장</div>';
+    btnText = '💬 약사 상담 후 구매';
+  }
+  var safeBar = '';
+  if (level === 2) safeBar = '<div class="safety-level-bar"><div class="sl-dot caution"></div><span style="color:#92400e;font-weight:700;">주의 필요</span></div>';
+  else if (level === 3 && isRx) safeBar = '<div class="safety-level-bar"><div class="sl-dot pass"></div><span style="color:#16a34a;font-weight:700;">성분 충돌 없음</span></div>';
+  return '<div class="mkt-card"'+(top?' top':'')+'>'+
+    '<div class="rank-row"><div class="rank-num">'+p.rank+'위</div><div class="rank-lbl">시장 베스트</div></div>'+
+    safeBar+
+    '<div class="mkt-name">'+p.name+'</div>'+
+    '<div class="mkt-meta"><div class="mkt-price">'+p.price.toLocaleString()+'원</div><div class="mkt-mall">'+p.mall+'</div></div>'+
+    warnHtml+
+    '<button class="'+btnClass+'" onclick="goMarket(\'' + (p.link||'') + '\')">' +
+    btnText+'</button></div>';
+}
+function aCard(p,isRx) {
+  var level = getSafetyLevel(p.name, '');
+  // 1단계: 하드블록 - 건강창고 광고 슬롯도 숨김
+  if (level === 1) return '';
+  var tagsHtml = (p.cats||[]).map(function(t){return '<span class="ad-tag">'+t+'</span>';}).join('');
+  var priceHtml = p.price ? '<div class="ad-price">'+p.price.toLocaleString()+'원</div>' : '';
+  var warnHtml = '';
+  var btnText = '🛒 건강창고에서 구매하기';
+  var btnClass = 'ad-btn';
+  if (level === 2) {
+    warnHtml = '<div class="badge-caution" style="margin-bottom:8px;">⚠️ 복용 약물과 성분 확인 필요</div>';
+    btnText = '💬 약사 상담 후 구매';
+    btnClass = 'btn-consult';
+  } else if (isRx) {
+    btnText = '💬 약사 상담 후 구매';
+  }
+  var pid = p.id || '';
+  return '<div class="ad-slot">'+
+    '<div class="ad-badge">건강창고 추천</div>'+
+    warnHtml+
+    '<div class="ad-name">'+p.name+'</div>'+
+    '<div class="ad-tags">'+tagsHtml+'</div>'+
+    (priceHtml ? '<div class="ad-meta">'+priceHtml+'</div>' : '')+
+    '<button class="'+btnClass+'" onclick="buyProduct(\'' + pid + '\')">'+btnText+'</button></div>';
+}
+
+// ── 시장 베스트 네이버 링크 연결 ──
+function goMarket(link) {
+  if (link && link.length > 0) {
+    window.open(link, '_blank');
+  } else {
+    alert('준비 중입니다.');
+  }
+}
+
+// ── 건강창고 제품 구매 연결 ──
+function buyProduct(pid) {
+  var p = PRODUCTS.filter(function(x){ return x.id === pid; })[0];
+  if (!p) return;
+  if (p.link) {
+    window.open(p.link, '_blank');
+  } else {
+    alert('준비 중입니다. 곧 구매 페이지가 열립니다.');
+  }
+}
+
+// ── 리셋 ──
+function restart() {
+  S = {budget:2,interests:[],symptoms:[],seniorCats:[],seniorDeep:{},curSup:[],familyHx:[],allergy:[],form:[],symEnergy:[],symDigest:[],symMuscle:[],menopauseSym:[],members:[],spouseInterest:[],childYoungInterest:[],childTeenInterest:[],parentInterest:[],stopCondition:[],drugType:[]};
+  screenStack = [];
+  document.body.classList.remove('sm');
+  document.querySelectorAll('.opt').forEach(function(b){b.classList.remove('on');});
+  document.querySelectorAll('.ci').forEach(function(el){el.classList.remove('ck');el.querySelector('.cb').textContent='';});
+  document.querySelectorAll('.cat-card,.member-card').forEach(function(c){c.classList.remove('on');});
+  document.getElementById('ageIn').value='';
+  document.getElementById('heightIn').value='';
+  document.getElementById('weightIn').value='';
+  document.getElementById('snotice').classList.remove('show');
+  document.getElementById('bmiBox').classList.remove('show');
+  document.getElementById('rxWarn').style.display='none';
+  document.getElementById('drugSelectBox').classList.remove('show');
+  document.getElementById('stopScreen').style.display='none';
+  document.getElementById('btn2').style.display='block';
+  document.getElementById('menopauseSection').style.display='none';
+  document.getElementById('menopauseBox').style.display='none';
+  document.getElementById('dangerNotice').className='danger-notice';
+  document.getElementById('seniorDeepArea').classList.remove('show');
+  ['spouseSection','childYoungSection','childTeenSection','parentSection'].forEach(function(id){
+    document.getElementById(id).style.display='none';
+  });
+  document.getElementById('budgetVal').textContent='5만원대';
+  document.getElementById('budgetSlider').value=2;
+  go('s1');
+  checkBtn('btn1');
+  checkBtn('btn2');
+}
+</script>
+</body>
+</html>
