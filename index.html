@@ -237,6 +237,60 @@ input[type=range] { flex:1; accent-color:var(--gm); cursor:pointer; }
 .video-name { font-size:13px; font-weight:700; color:var(--gy9); margin-bottom:4px; line-height:1.4; }
 .video-channel { font-size:11px; color:var(--gy4); font-weight:600; }
 .video-channel span { background:var(--gp); color:var(--gm); padding:2px 7px; border-radius:99px; font-size:10px; font-weight:700; margin-left:5px; }
+
+/* ── 개인정보 동의 팝업 ── */
+.consent-overlay {
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6);
+  z-index:9999; align-items:flex-end; justify-content:center;
+}
+.consent-overlay.show { display:flex; }
+.consent-box {
+  background:#fff; border-radius:20px 20px 0 0; padding:28px 20px 36px;
+  width:100%; max-width:480px; max-height:90vh; overflow-y:auto;
+  animation:slideUp .3s ease;
+}
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+.consent-logo { text-align:center; margin-bottom:16px; }
+.consent-logo-txt { font-size:22px; font-weight:900; color:var(--gd); }
+.consent-logo-txt span { color:var(--gl); }
+.consent-title { font-size:17px; font-weight:800; color:var(--gy9); margin-bottom:6px; text-align:center; }
+.consent-desc { font-size:13px; color:var(--gy6); line-height:1.7; margin-bottom:20px; text-align:center; }
+.consent-all {
+  display:flex; align-items:center; gap:12px;
+  background:var(--gp); border-radius:12px; padding:14px 16px;
+  margin-bottom:12px; cursor:pointer; border:2px solid transparent;
+  transition:all .18s;
+}
+.consent-all.checked { border-color:var(--gm); background:var(--gp2); }
+.consent-all-txt { font-size:15px; font-weight:800; color:var(--gd); }
+.consent-all-sub { font-size:12px; color:var(--gy6); margin-top:2px; }
+.consent-divider { height:1px; background:var(--gy3); margin:12px 0; }
+.consent-item {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 4px; cursor:pointer; border-radius:10px;
+  transition:background .15s;
+}
+.consent-item:active { background:var(--gy1); }
+.consent-check {
+  width:22px; height:22px; border-radius:6px; border:2px solid var(--gy3);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; transition:all .18s; font-size:13px;
+}
+.consent-check.on { background:var(--gm); border-color:var(--gm); color:#fff; }
+.consent-item-txt { flex:1; }
+.consent-item-label { font-size:14px; font-weight:600; color:var(--gy9); }
+.consent-item-label .req-tag { color:var(--rd); font-size:11px; font-weight:700; margin-left:4px; }
+.consent-item-label .opt-tag { color:var(--gy4); font-size:11px; font-weight:700; margin-left:4px; }
+.consent-item-desc { font-size:12px; color:var(--gy4); margin-top:2px; }
+.consent-view { font-size:11px; color:var(--gm); text-decoration:underline; flex-shrink:0; }
+.consent-btn {
+  width:100%; background:var(--gm); color:#fff; border:none;
+  border-radius:12px; padding:16px; font-size:16px; font-weight:800;
+  cursor:pointer; margin-top:20px; transition:opacity .18s;
+}
+.consent-btn:disabled { background:var(--gy3); color:var(--gy4); cursor:not-allowed; }
+.consent-btn:not(:disabled):active { opacity:.85; }
+.consent-notice { font-size:11px; color:var(--gy4); text-align:center; margin-top:12px; line-height:1.6; }
 </style>
 </head>
 <body>
@@ -1893,6 +1947,174 @@ function restart() {
   checkBtn('btn1');
   checkBtn('btn2');
 }
+
+
+// ══════════════════════════════════════════════
+// 개인정보 동의 시스템
+// ══════════════════════════════════════════════
+var consentState = { c1: false, c2: false, c3: false };
+
+function initConsent() {
+  // 이미 동의했으면 팝업 안 띄움
+  try {
+    if (localStorage.getItem('hc_consent') === 'true') return;
+  } catch(e) {}
+  document.getElementById('consentOverlay').classList.add('show');
+  updateAllCheck();
+}
+
+function toggleConsent(key) {
+  consentState[key] = !consentState[key];
+  document.getElementById('check' + key.toUpperCase()).classList.toggle('on', consentState[key]);
+  updateAllCheck();
+  updateConsentBtn();
+}
+
+function toggleAll() {
+  var allChecked = consentState.c1 && consentState.c2 && consentState.c3;
+  var newVal = !allChecked;
+  ['c1','c2','c3'].forEach(function(k) {
+    consentState[k] = newVal;
+    document.getElementById('check' + k.toUpperCase()).classList.toggle('on', newVal);
+  });
+  updateAllCheck();
+  updateConsentBtn();
+}
+
+function updateAllCheck() {
+  var allChecked = consentState.c1 && consentState.c2 && consentState.c3;
+  var anyChecked = consentState.c1 || consentState.c2 || consentState.c3;
+  var el = document.getElementById('checkAll');
+  var box = document.getElementById('consentAll');
+  el.classList.toggle('on', allChecked);
+  box.classList.toggle('checked', allChecked);
+  el.textContent = anyChecked ? '✓' : '';
+}
+
+function updateConsentBtn() {
+  // 필수 2개(c1, c2) 모두 동의해야 버튼 활성화
+  var ok = consentState.c1 && consentState.c2;
+  document.getElementById('consentBtn').disabled = !ok;
+}
+
+function submitConsent() {
+  if (!consentState.c1 || !consentState.c2) return;
+  try {
+    localStorage.setItem('hc_consent', 'true');
+    localStorage.setItem('hc_consent_date', new Date().toISOString());
+    localStorage.setItem('hc_consent_marketing', consentState.c3 ? 'true' : 'false');
+  } catch(e) {}
+  document.getElementById('consentOverlay').classList.remove('show');
+}
+
+// 약관 내용
+var POLICY_CONTENT = {
+  privacy: {
+    title: '개인정보 처리방침',
+    content: '<b>수집 항목</b><br>나이, 성별, 키, 체중, 건강 관심사, 생활습관 정보<br><br>' +
+             '<b>수집 목적</b><br>맞춤형 건강기능식품 추천 서비스 제공<br><br>' +
+             '<b>보유 기간</b><br>서비스 이용 세션 종료 즉시 삭제 (서버 저장 없음)<br><br>' +
+             '<b>제3자 제공</b><br>개인정보를 제3자에게 제공하지 않습니다.<br><br>' +
+             '<b>처리 위탁</b><br>해당 없음<br><br>' +
+             '<b>정보주체 권리</b><br>언제든지 동의를 철회할 수 있습니다.'
+  },
+  health: {
+    title: '건강 민감정보 수집·이용 동의',
+    content: '<b>수집하는 민감정보</b><br>건강 상태, 복용 중인 전문의약품 계열, 가족력, 알레르기 정보<br><br>' +
+             '<b>수집 목적</b><br>안전한 건강기능식품 추천 (약물 충돌 필터링, 맞춤 추천)<br><br>' +
+             '<b>보유 기간</b><br>세션 내 일회성 사용 후 즉시 삭제<br><br>' +
+             '<b>거부 권리</b><br>동의를 거부할 권리가 있으나, 거부 시 서비스 이용이 제한됩니다.<br><br>' +
+             '<b>주의사항</b><br>본 서비스는 의료 행위가 아니며, 건강기능식품 추천만을 목적으로 합니다. ' +
+             '질병 진단·치료를 목적으로 사용할 수 없습니다.'
+  }
+};
+
+function showPolicy(type) {
+  var policy = POLICY_CONTENT[type];
+  document.getElementById('policyTitle').textContent = policy.title;
+  document.getElementById('policyContent').innerHTML = policy.content;
+  document.getElementById('policyOverlay').classList.add('show');
+}
+
+// 페이지 로드 시 동의 체크
+window.addEventListener('load', function() {
+  initConsent();
+});
+// ══════════════════════════════════════════════
 </script>
+
+<!-- ══ 개인정보 동의 팝업 ══ -->
+<div class="consent-overlay" id="consentOverlay">
+  <div class="consent-box">
+    <div class="consent-logo">
+      <div class="consent-logo-txt">건강<span>창고</span></div>
+    </div>
+    <div class="consent-title">서비스 이용을 위한 동의</div>
+    <div class="consent-desc">
+      맞춤 건강기능식품 추천을 위해<br>
+      아래 약관에 동의해주세요.
+    </div>
+
+    <!-- 전체 동의 -->
+    <div class="consent-all" id="consentAll" onclick="toggleAll()">
+      <div class="consent-check" id="checkAll">✓</div>
+      <div>
+        <div class="consent-all-txt">전체 동의</div>
+        <div class="consent-all-sub">필수 및 선택 항목 모두 동의</div>
+      </div>
+    </div>
+
+    <div class="consent-divider"></div>
+
+    <!-- 필수 1: 개인정보 처리방침 -->
+    <div class="consent-item" onclick="toggleConsent('c1')">
+      <div class="consent-check" id="checkC1"></div>
+      <div class="consent-item-txt">
+        <div class="consent-item-label">개인정보 처리방침 동의<span class="req-tag">필수</span></div>
+        <div class="consent-item-desc">수집항목: 나이, 성별, 건강 관심사 (서비스 종료 즉시 삭제)</div>
+      </div>
+      <span class="consent-view" onclick="event.stopPropagation();showPolicy('privacy')">보기</span>
+    </div>
+
+    <!-- 필수 2: 건강 민감정보 -->
+    <div class="consent-item" onclick="toggleConsent('c2')">
+      <div class="consent-check" id="checkC2"></div>
+      <div class="consent-item-txt">
+        <div class="consent-item-label">건강 민감정보 수집·이용 동의<span class="req-tag">필수</span></div>
+        <div class="consent-item-desc">건강 상태, 복용 약물 등 민감정보 — 추천 목적으로만 사용</div>
+      </div>
+      <span class="consent-view" onclick="event.stopPropagation();showPolicy('health')">보기</span>
+    </div>
+
+    <!-- 선택: 마케팅 -->
+    <div class="consent-item" onclick="toggleConsent('c3')">
+      <div class="consent-check" id="checkC3"></div>
+      <div class="consent-item-txt">
+        <div class="consent-item-label">마케팅 정보 수신 동의<span class="opt-tag">선택</span></div>
+        <div class="consent-item-desc">건강 정보, 신제품 소식 등 유용한 정보 수신</div>
+      </div>
+    </div>
+
+    <button class="consent-btn" id="consentBtn" onclick="submitConsent()" disabled>
+      동의하고 시작하기
+    </button>
+    <div class="consent-notice">
+      본 서비스는 의료 행위가 아니며, 건강기능식품 추천 서비스입니다.<br>
+      질병 진단·치료를 목적으로 사용할 수 없습니다.
+    </div>
+  </div>
+</div>
+
+<!-- 약관 상세 팝업 -->
+<div class="consent-overlay" id="policyOverlay" style="align-items:center;">
+  <div class="consent-box" style="border-radius:16px; margin:20px; max-height:80vh;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <div style="font-size:16px; font-weight:800;" id="policyTitle"></div>
+      <button onclick="document.getElementById('policyOverlay').classList.remove('show')"
+        style="background:none; border:none; font-size:24px; cursor:pointer; color:var(--gy6);">✕</button>
+    </div>
+    <div id="policyContent" style="font-size:13px; color:var(--gy6); line-height:1.8;"></div>
+  </div>
+</div>
 </body>
 </html>
