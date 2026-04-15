@@ -1688,7 +1688,7 @@ function renderFamilyTabs() {
     var div = document.createElement('div');
     div.className = 'family-tab' + (t.key === currentFamilyTab ? ' on' : '');
     div.setAttribute('data-key', t.key);
-    div.innerHTML = '<span class="family-tab-icon">' + t.icon + '</span><span class="family-tab-label">' + t.label + '</span>';
+    div.innerHTML = "<span class='family-tab-icon'>" + t.icon + "</span><span class='family-tab-label'>" + t.label + "</span>";
     (function(key, el){ el.onclick = function(){ switchFamilyTab(key, el); }; })(t.key, div);
     document.getElementById('familyTabs').appendChild(div);
   });
@@ -1705,20 +1705,16 @@ function getFamilyHint() {
 // 가족 탭 전환
 function switchFamilyTab(member, el) {
   currentFamilyTab = member;
-  // 탭 UI 업데이트
   document.querySelectorAll('.family-tab').forEach(function(t){ t.classList.remove('on'); });
   if(el) el.classList.add('on');
-  // 힌트 업데이트
   var hint = document.getElementById('familyHint');
   if(hint) hint.textContent = getFamilyHint();
 
   if(member==='self') {
-    // 본인 결과 다시 렌더
     renderResult();
     return;
   }
 
-  // 가족 구성원 결과 렌더
   var score = calcFamilyScore(member);
   var cats = Object.keys(score)
     .filter(function(c){ return score[c]>0; })
@@ -1731,13 +1727,13 @@ function switchFamilyTab(member, el) {
   document.getElementById('resDesc').textContent = memberInfo.label+'을(를) 위한 맞춤 건강기능식품 추천이에요.';
   document.getElementById('resTags').innerHTML = '';
 
-    var tabArea = document.getElementById('tabArea');
+  var tabArea = document.getElementById('tabArea');
   tabArea.innerHTML = '';
   cats.forEach(function(c, i) {
     var t = document.createElement('div');
     t.className = 'tab' + (i===0?' on':'');
     t.textContent = c;
-    t.onclick = function(){ showCat(this, c); };
+    (function(cat){ t.onclick = function(){ showCat(this, cat); }; })(c);
     tabArea.appendChild(t);
   });
   renderCat(cats[0], false, S.budgetMax||50000);
