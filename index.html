@@ -1683,15 +1683,15 @@ function renderFamilyTabs() {
     if(FAMILY_MEMBERS[m]) tabs.push({ key:m, label:FAMILY_MEMBERS[m].label, icon:FAMILY_MEMBERS[m].icon });
   });
 
-  var html = tabs.map(function(t) {
-    return '<div class="family-tab'+(t.key===currentFamilyTab?' on':'')+'" onclick="switchFamilyTab(''+t.key+'')">'
-      + '<span class="family-tab-icon">'+t.icon+'</span>'
-      + '<span class="family-tab-label">'+t.label+'</span>'
-      + '</div>';
-  }).join('');
-  html += '<div style="clear:both"></div>';
-
-  document.getElementById('familyTabs').innerHTML = html;
+  document.getElementById('familyTabs').innerHTML = '';
+  tabs.forEach(function(t) {
+    var div = document.createElement('div');
+    div.className = 'family-tab' + (t.key === currentFamilyTab ? ' on' : '');
+    div.setAttribute('data-key', t.key);
+    div.innerHTML = '<span class="family-tab-icon">' + t.icon + '</span><span class="family-tab-label">' + t.label + '</span>';
+    (function(key, el){ el.onclick = function(){ switchFamilyTab(key, el); }; })(t.key, div);
+    document.getElementById('familyTabs').appendChild(div);
+  });
   document.querySelector('.family-tab-area').insertAdjacentHTML('beforeend',
     '<div class="family-tab-hint" id="familyHint">'+getFamilyHint()+'</div>'
   );
@@ -1703,11 +1703,11 @@ function getFamilyHint() {
 }
 
 // 가족 탭 전환
-function switchFamilyTab(member) {
+function switchFamilyTab(member, el) {
   currentFamilyTab = member;
   // 탭 UI 업데이트
   document.querySelectorAll('.family-tab').forEach(function(t){ t.classList.remove('on'); });
-  event.currentTarget.classList.add('on');
+  if(el) el.classList.add('on');
   // 힌트 업데이트
   var hint = document.getElementById('familyHint');
   if(hint) hint.textContent = getFamilyHint();
@@ -1731,9 +1731,15 @@ function switchFamilyTab(member) {
   document.getElementById('resDesc').textContent = memberInfo.label+'을(를) 위한 맞춤 건강기능식품 추천이에요.';
   document.getElementById('resTags').innerHTML = '';
 
-  document.getElementById('tabArea').innerHTML = cats.map(function(c,i){
-    return '<div class="tab'+(i===0?' on':'')+'" onclick="showCat(this,''+c+'')">'+c+'</div>';
-  }).join('');
+    var tabArea = document.getElementById('tabArea');
+  tabArea.innerHTML = '';
+  cats.forEach(function(c, i) {
+    var t = document.createElement('div');
+    t.className = 'tab' + (i===0?' on':'');
+    t.textContent = c;
+    t.onclick = function(){ showCat(this, c); };
+    tabArea.appendChild(t);
+  });
   renderCat(cats[0], false, S.budgetMax||50000);
 }
 
