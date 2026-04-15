@@ -416,6 +416,32 @@ input[type=number] { -moz-appearance:textfield; }
 .no-result { text-align:center; padding:40px 20px; color:var(--gy4); }
 .no-result-icon { font-size:48px; margin-bottom:12px; }
 .no-result-txt { font-size:14px; font-weight:600; }
+
+/* ── 가족 구성원 탭 ── */
+.family-tab-area {
+  background: linear-gradient(135deg, #fff9f0, #fff5e6);
+  border-radius:16px; padding:14px 16px; margin-bottom:16px;
+  border:1px solid #fde68a; box-shadow:0 2px 12px rgba(217,119,6,0.08);
+}
+.family-tab-scroll { overflow-x:auto; white-space:nowrap; padding-bottom:2px; }
+.family-tab-scroll::-webkit-scrollbar { height:3px; }
+.family-tab-scroll::-webkit-scrollbar-thumb { background:#fde68a; border-radius:3px; }
+.family-tabs { display:inline-flex; gap:8px; }
+.family-tab {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:9px 18px; border-radius:99px; font-size:13px; font-weight:700;
+  cursor:pointer; border:2px solid #fde68a; color:#92400e;
+  background:#fff; transition:all .2s; white-space:nowrap;
+  box-shadow:0 1px 4px rgba(0,0,0,0.05);
+}
+.family-tab:hover { border-color:#d97706; background:#fffbeb; transform:translateY(-1px); }
+.family-tab.on {
+  background:linear-gradient(135deg,#d97706,#b45309); border-color:#d97706;
+  color:#fff; box-shadow:0 4px 16px rgba(217,119,6,0.35); transform:translateY(-1px);
+}
+.family-tab-icon { font-size:16px; }
+.family-tab-label { font-size:13px; }
+.family-tab-hint { font-size:11px; color:#92400e; text-align:center; margin-top:10px; font-weight:600; }
 </style>
 </head>
 <body>
@@ -963,6 +989,12 @@ input[type=number] { -moz-appearance:textfield; }
 
 <!-- ══ 결과 화면 ══ -->
 <div class="scr" id="sResult">
+  <!-- 가족 구성원 탭 (선택한 경우만 표시) -->
+  <div class="family-tab-area" id="familyTabArea" style="display:none;">
+    <div class="family-tab-scroll">
+      <div class="family-tabs" id="familyTabs"></div>
+    </div>
+  </div>
   <div class="result-hd">
     <h2 id="resTitle"></h2>
     <p id="resDesc"></p>
@@ -1570,6 +1602,142 @@ function safetyGo() {
 }
 
 // ══════════════════════════════════════════════
+// 가족 구성원별 점수화 엔진
+// ══════════════════════════════════════════════
+
+// 현재 보고 있는 가족 탭
+var currentFamilyTab = 'self';
+
+// 가족 구성원 정의
+var FAMILY_MEMBERS = {
+  self:       { label:'본인', icon:'👤' },
+  spouse:     { label:'배우자', icon:'💑' },
+  child_young:{ label:'어린 자녀', icon:'🧒' },
+  child_teen: { label:'청소년 자녀', icon:'🧑‍🎓' },
+  parent:     { label:'부모님', icon:'👴👵' },
+};
+
+// 가족별 카테고리 점수 계산
+function calcFamilyScore(member) {
+  var score = {
+    '에너지·피로 회복':0,'뼈·관절·근육':0,'두뇌·기억·인지':0,
+    '면역·항산화':0,'소화·장 건강':0,'심혈관·혈액순환':0,
+    '눈 건강':0,'피부·미용':0,'체중·체형 관리':0,
+    '근감소·단백질':0,'스트레스·수면':0,'혈압·혈중지질':0,'모발·두피 건강':0,
+  };
+  function add(cat, pts) { if(score[cat]!==undefined) score[cat]+=pts; }
+
+  var interestMap = {
+    // 배우자 관심사
+    '전립선 건강':    [['에너지·피로 회복',20],['면역·항산화',10]],
+    '에너지·활력':    [['에너지·피로 회복',25]],
+    '심혈관·혈압':    [['심혈관·혈액순환',25],['혈압·혈중지질',15]],
+    '뼈·관절':        [['뼈·관절·근육',25]],
+    '갱년기 관리':    [['뼈·관절·근육',25],['스트레스·수면',20],['피부·미용',15],['면역·항산화',10]],
+    '체중 관리':      [['체중·체형 관리',25]],
+    // 어린 자녀
+    '성장 지원':      [['뼈·관절·근육',30],['근감소·단백질',20]],
+    '면역력':         [['면역·항산화',30]],
+    '두뇌·집중력':    [['두뇌·기억·인지',30]],
+    '피부·아토피':    [['피부·미용',25],['면역·항산화',15]],
+    // 청소년 자녀
+    '집중력·학습':    [['두뇌·기억·인지',30]],
+    '눈 건강':        [['눈 건강',30]],
+    '수면 질':        [['스트레스·수면',25]],
+    // 부모님
+    '뼈·골다공증':    [['뼈·관절·근육',30]],
+    '관절 통증':      [['뼈·관절·근육',25]],
+    '인지 기능·기억력':[['두뇌·기억·인지',30]],
+    '혈압·혈당 관리': [['혈압·혈중지질',25],['심혈관·혈액순환',15]],
+    '심혈관 건강':    [['심혈관·혈액순환',30]],
+    '소화·장 건강':   [['소화·장 건강',25]],
+    '근감소 예방':    [['근감소·단백질',30],['뼈·관절·근육',15]],
+  };
+
+  var interests = [];
+  if(member==='spouse')      interests = S.spouseInterest||[];
+  if(member==='child_young') interests = S.childYoungInterest||[];
+  if(member==='child_teen')  interests = S.childTeenInterest||[];
+  if(member==='parent')      interests = S.parentInterest||[];
+
+  interests.forEach(function(i) {
+    var m = interestMap[i];
+    if(m) m.forEach(function(x){ add(x[0],x[1]); });
+  });
+
+  // 100점 캡
+  Object.keys(score).forEach(function(c){ if(score[c]>100) score[c]=100; });
+
+  return score;
+}
+
+// 가족 탭 렌더링
+function renderFamilyTabs() {
+  var hasFam = (S.members||[]).length > 0;
+  var area = document.getElementById('familyTabArea');
+  if(!hasFam) { area.style.display='none'; return; }
+
+  area.style.display='block';
+  var tabs = [{ key:'self', label:'본인', icon:'👤' }];
+  (S.members||[]).forEach(function(m) {
+    if(FAMILY_MEMBERS[m]) tabs.push({ key:m, label:FAMILY_MEMBERS[m].label, icon:FAMILY_MEMBERS[m].icon });
+  });
+
+  var html = tabs.map(function(t) {
+    return '<div class="family-tab'+(t.key===currentFamilyTab?' on':'')+'" onclick="switchFamilyTab(''+t.key+'')">'
+      + '<span class="family-tab-icon">'+t.icon+'</span>'
+      + '<span class="family-tab-label">'+t.label+'</span>'
+      + '</div>';
+  }).join('');
+  html += '<div style="clear:both"></div>';
+
+  document.getElementById('familyTabs').innerHTML = html;
+  document.querySelector('.family-tab-area').insertAdjacentHTML('beforeend',
+    '<div class="family-tab-hint" id="familyHint">'+getFamilyHint()+'</div>'
+  );
+}
+
+function getFamilyHint() {
+  if(currentFamilyTab==='self') return '👆 탭을 눌러 가족 맞춤 추천도 확인하세요';
+  return FAMILY_MEMBERS[currentFamilyTab].icon+' '+FAMILY_MEMBERS[currentFamilyTab].label+' 맞춤 추천 결과예요';
+}
+
+// 가족 탭 전환
+function switchFamilyTab(member) {
+  currentFamilyTab = member;
+  // 탭 UI 업데이트
+  document.querySelectorAll('.family-tab').forEach(function(t){ t.classList.remove('on'); });
+  event.currentTarget.classList.add('on');
+  // 힌트 업데이트
+  var hint = document.getElementById('familyHint');
+  if(hint) hint.textContent = getFamilyHint();
+
+  if(member==='self') {
+    // 본인 결과 다시 렌더
+    renderResult();
+    return;
+  }
+
+  // 가족 구성원 결과 렌더
+  var score = calcFamilyScore(member);
+  var cats = Object.keys(score)
+    .filter(function(c){ return score[c]>0; })
+    .sort(function(a,b){ return score[b]-score[a]; })
+    .slice(0,4);
+  if(!cats.length) cats = ['면역·항산화','에너지·피로 회복'];
+
+  var memberInfo = FAMILY_MEMBERS[member];
+  document.getElementById('resTitle').textContent = memberInfo.icon+' '+memberInfo.label+' 맞춤 추천';
+  document.getElementById('resDesc').textContent = memberInfo.label+'을(를) 위한 맞춤 건강기능식품 추천이에요.';
+  document.getElementById('resTags').innerHTML = '';
+
+  document.getElementById('tabArea').innerHTML = cats.map(function(c,i){
+    return '<div class="tab'+(i===0?' on':'')+'" onclick="showCat(this,''+c+'')">'+c+'</div>';
+  }).join('');
+  renderCat(cats[0], false, S.budgetMax||50000);
+}
+
+// ══════════════════════════════════════════════
 
 function renderResult() {
   var isSr = S.age >= 65;
@@ -1753,6 +1921,42 @@ function renderResult() {
   });
 
   // 8. 관심사 기반 점수
+  // 가족 관심사 → 점수 반영 (배우자/자녀/부모님)
+  var familyInterestMap = {
+    // 배우자
+    '전립선 건강':    [['에너지·피로 회복', 15]],
+    '에너지·활력':    [['에너지·피로 회복', 15]],
+    '심혈관·혈압':    [['심혈관·혈액순환', 15], ['혈압·혈중지질', 10]],
+    '뼈·관절':        [['뼈·관절·근육', 15]],
+    '갱년기 관리':    [['뼈·관절·근육', 20], ['스트레스·수면', 15], ['피부·미용', 10]],
+    '체중 관리':      [['체중·체형 관리', 15]],
+    // 어린 자녀
+    '성장 지원':      [['뼈·관절·근육', 15], ['근감소·단백질', 10]],
+    '면역력':         [['면역·항산화', 15]],
+    '두뇌·집중력':    [['두뇌·기억·인지', 15]],
+    '피부·아토피':    [['피부·미용', 15], ['면역·항산화', 10]],
+    // 청소년 자녀
+    '집중력·학습':    [['두뇌·기억·인지', 15]],
+    '눈 건강':        [['눈 건강', 15]],
+    '수면 질':        [['스트레스·수면', 15]],
+    // 부모님
+    '뼈·골다공증':    [['뼈·관절·근육', 20]],
+    '관절 통증':      [['뼈·관절·근육', 15]],
+    '인지 기능·기억력': [['두뇌·기억·인지', 20]],
+    '혈압·혈당 관리': [['혈압·혈중지질', 15], ['심혈관·혈액순환', 10]],
+    '심혈관 건강':    [['심혈관·혈액순환', 20]],
+    '소화·장 건강':   [['소화·장 건강', 15]],
+    '근감소 예방':    [['근감소·단백질', 20]],
+  };
+  var allFamilyInterests = (S.spouseInterest||[])
+    .concat(S.childYoungInterest||[])
+    .concat(S.childTeenInterest||[])
+    .concat(S.parentInterest||[]);
+  allFamilyInterests.forEach(function(interest) {
+    var mapping = familyInterestMap[interest];
+    if (mapping) mapping.forEach(function(m) { addScore(m[0], m[1]); });
+  });
+
   (S.interests||[]).forEach(function(interest) {
     var interestMap = {
       '뼈·관절 건강':   [['뼈·관절·근육', 20]],
@@ -1861,6 +2065,10 @@ function renderResult() {
     return '<div class="tab'+(i===0?' on':'')+'" onclick="showCat(this,\''+c+'\')">'+c+'</div>';
   }).join('');
   renderCat(cats[0], isRx, budgetMax);
+
+  // 가족 탭 렌더링
+  currentFamilyTab = 'self';
+  renderFamilyTabs();
 }
 
 function showCat(el, cat) {
