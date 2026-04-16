@@ -857,6 +857,7 @@ input[type=number] { -moz-appearance:textfield; }
           <div class="ci" onclick="chkMax(this,'interests','혈압·혈중지질',3,'interestList')"><div class="cb"></div><div class="cl">🩺 혈압·혈중지질</div></div>
           <div class="ci" onclick="chkMax(this,'interests','근감소·단백질',3,'interestList')"><div class="cb"></div><div class="cl">💪 근감소·단백질</div></div>
           <div class="ci" onclick="chkMax(this,'interests','모발·두피 건강',3,'interestList')"><div class="cb"></div><div class="cl">💆 모발·두피 건강</div></div>
+        <div class="ci" onclick="chkMax(this,'interests','여성 갱년기·호르몬',3,'interestList')"><div class="cb"></div><div class="cl">🌸 여성 갱년기·호르몬</div></div>
         </div>
       </div>
     </div>
@@ -879,12 +880,12 @@ input[type=number] { -moz-appearance:textfield; }
         <div class="mc-sub">남편·아내</div>
       </div>
       <div class="member-card" onclick="toggleMember(this,'child_young')">
-        <div class="mc-icon">🧒</div>
+        <div class="mc-icon">👦</div>
         <div class="mc-name">어린 자녀</div>
         <div class="mc-sub">미취학·초등</div>
       </div>
       <div class="member-card" onclick="toggleMember(this,'child_teen')">
-        <div class="mc-icon">🧑‍🎓</div>
+        <div class="mc-icon">📚</div>
         <div class="mc-name">청소년 자녀</div>
         <div class="mc-sub">중·고등학생</div>
       </div>
@@ -909,7 +910,7 @@ input[type=number] { -moz-appearance:textfield; }
     </div>
 
     <div id="childYoungSection" style="display:none;margin-top:18px;">
-      <div class="deep-title" style="margin-bottom:10px;">🧒 어린 자녀 주요 관심사 (최대 2개)</div>
+      <div class="deep-title" style="margin-bottom:10px;">👦 어린 자녀 주요 관심사 (최대 2개)</div>
       <div class="clist" id="childYoungList">
         <div class="ci" onclick="chkMax(this,'childYoungInterest','성장 지원',2,'childYoungList')"><div class="cb"></div><div class="cl">성장 지원</div></div>
         <div class="ci" onclick="chkMax(this,'childYoungInterest','면역력',2,'childYoungList')"><div class="cb"></div><div class="cl">면역력</div></div>
@@ -919,7 +920,7 @@ input[type=number] { -moz-appearance:textfield; }
     </div>
 
     <div id="childTeenSection" style="display:none;margin-top:18px;">
-      <div class="deep-title" style="margin-bottom:10px;">🧑‍🎓 청소년 자녀 주요 관심사 (최대 2개)</div>
+      <div class="deep-title" style="margin-bottom:10px;">📚 청소년 자녀 주요 관심사 (최대 2개)</div>
       <div class="clist" id="childTeenList">
         <div class="ci" onclick="chkMax(this,'childTeenInterest','집중력·학습',2,'childTeenList')"><div class="cb"></div><div class="cl">집중력·학습</div></div>
         <div class="ci" onclick="chkMax(this,'childTeenInterest','성장 지원',2,'childTeenList')"><div class="cb"></div><div class="cl">성장 지원</div></div>
@@ -1158,6 +1159,10 @@ async function loadMarketData() {
       '모발·두피 건강':             '모발·두피 건강',
       '탈모':                       '모발·두피 건강',
       '모발':                       '모발·두피 건강',
+      '여성 갱년기':                '여성 갱년기·호르몬',
+      '갱년기':                     '여성 갱년기·호르몬',
+      '이소플라본':                 '여성 갱년기·호르몬',
+      '석류':                       '여성 갱년기·호르몬',
     };
 
     // 가장 최근 날짜 찾기
@@ -1244,6 +1249,7 @@ var MARKET_FALLBACK = {
   '스트레스·수면':[{rank:1,name:'종근당건강 테아닌 수면케어',price:19900,mall:'종근당몰'},{rank:2,name:'GNM 마그네슘 글리시네이트',price:22900,mall:'GNM자연의품격'},{rank:3,name:'한미약품 마그네슘 비타민B',price:16900,mall:'한미몰'},{rank:4,name:'나우푸드 테아닌 200mg',price:21000,mall:'아이허브코리아'}],
   '혈압·혈중지질':[{rank:1,name:'종근당건강 나토키나제 오메가3',price:28900,mall:'종근당몰'},{rank:2,name:'유한양행 홍국 코엔자임Q10',price:32000,mall:'유한몰'},{rank:3,name:'동아제약 혈관엔 나토킹',price:26900,mall:'동아몰'},{rank:4,name:'GNM 나토키나제 2000FU',price:24900,mall:'GNM자연의품격'}],
   '모발·두피 건강':[{rank:1,name:'판시딜 모발영양제 비오틴 아연',price:22900,mall:'판시딜몰'},{rank:2,name:'종근당건강 비오틴 5000mcg',price:18900,mall:'종근당몰'},{rank:3,name:'GNM 모발케어 비오틴 셀레늄',price:16900,mall:'GNM자연의품격'},{rank:4,name:'닥터린 탈모케어 멀티비타민',price:24900,mall:'닥터린몰'}],
+  '여성 갱년기·호르몬':[{rank:1,name:'종근당건강 석류 이소플라본 갱년기 영양제',price:28900,mall:'종근당건강몰'},{rank:2,name:'GNM자연의품격 회화나무열매 이소플라본',price:19900,mall:'GNM자연의품격'},{rank:3,name:'뉴트리디데이 달맞이꽃 종자유 감마리놀렌산',price:23900,mall:'뉴트리디데이몰'},{rank:4,name:'에스더포뮬러 갱년기 석류 콜라겐',price:32900,mall:'에스더포뮬러몰'}],
 };
 
 var CAT_MAP = {
@@ -1612,8 +1618,8 @@ var currentFamilyTab = 'self';
 var FAMILY_MEMBERS = {
   self:       { label:'본인', icon:'👤' },
   spouse:     { label:'배우자', icon:'💑' },
-  child_young:{ label:'어린 자녀', icon:'🧒' },
-  child_teen: { label:'청소년 자녀', icon:'🧑‍🎓' },
+  child_young:{ label:'어린 자녀', icon:'👦' },
+  child_teen: { label:'청소년 자녀', icon:'📚' },
   parent:     { label:'부모님', icon:'👴👵' },
 };
 
@@ -1624,6 +1630,7 @@ function calcFamilyScore(member) {
     '면역·항산화':0,'소화·장 건강':0,'심혈관·혈액순환':0,
     '눈 건강':0,'피부·미용':0,'체중·체형 관리':0,
     '근감소·단백질':0,'스트레스·수면':0,'혈압·혈중지질':0,'모발·두피 건강':0,
+    '여성 갱년기·호르몬':0,
   };
   function add(cat, pts) { if(score[cat]!==undefined) score[cat]+=pts; }
 
@@ -1633,7 +1640,7 @@ function calcFamilyScore(member) {
     '에너지·활력':    [['에너지·피로 회복',25]],
     '심혈관·혈압':    [['심혈관·혈액순환',25],['혈압·혈중지질',15]],
     '뼈·관절':        [['뼈·관절·근육',25]],
-    '갱년기 관리':    [['뼈·관절·근육',25],['스트레스·수면',20],['피부·미용',15],['면역·항산화',10]],
+    '갱년기 관리':    [['여성 갱년기·호르몬',50],['스트레스·수면',25],['뼈·관절·근육',20],['피부·미용',15]],
     '체중 관리':      [['체중·체형 관리',25]],
     // 어린 자녀
     '성장 지원':      [['뼈·관절·근육',30],['근감소·단백질',20]],
@@ -1781,6 +1788,7 @@ function renderResult() {
     '스트레스·수면': 0,
     '혈압·혈중지질': 0,
     '모발·두피 건강': 0,
+    '여성 갱년기·호르몬': 0,
   };
 
   function addScore(cat, pts) {
@@ -1828,12 +1836,20 @@ function renderResult() {
 
   // 4. 갱년기 기반 점수
   var menoSym = S.menopauseSym || [];
-  if (menoSym.length > 0 || S.menstrual === '갱년기 전환기 (생리 줄어듦)' || S.menstrual === '완경(폐경) 후') {
-    addScore('뼈·관절·근육', 30);
-    addScore('스트레스·수면', 25);
+  var isMeno = menoSym.length > 0 || S.menstrual === '갱년기 전환기 (생리 줄어듦)' || S.menstrual === '완경(폐경) 후';
+  if (isMeno) {
+    // 갱년기 전용 카테고리 최우선
+    addScore('여성 갱년기·호르몬', 60);
+    addScore('스트레스·수면', 30);
+    addScore('뼈·관절·근육', 25);
     addScore('피부·미용', 20);
-    addScore('면역·항산화', 15);
     addScore('에너지·피로 회복', 15);
+    // 갱년기 증상별 추가 점수
+    if (menoSym.indexOf('안면홍조·발한') !== -1)    addScore('여성 갱년기·호르몬', 15);
+    if (menoSym.indexOf('수면 장애 심화') !== -1)   addScore('스트레스·수면', 20);
+    if (menoSym.indexOf('감정 기복·우울감') !== -1) addScore('스트레스·수면', 15);
+    if (menoSym.indexOf('집중력·기억력 저하') !== -1) addScore('두뇌·기억·인지', 15);
+    if (menoSym.indexOf('관절통 심화') !== -1)      addScore('뼈·관절·근육', 20);
   }
 
   // 5. 식습관 기반 점수
@@ -1930,7 +1946,7 @@ function renderResult() {
     '에너지·활력':    [['에너지·피로 회복', 15]],
     '심혈관·혈압':    [['심혈관·혈액순환', 15], ['혈압·혈중지질', 10]],
     '뼈·관절':        [['뼈·관절·근육', 15]],
-    '갱년기 관리':    [['뼈·관절·근육', 20], ['스트레스·수면', 15], ['피부·미용', 10]],
+    '갱년기 관리':    [['여성 갱년기·호르몬', 40], ['스트레스·수면', 20], ['뼈·관절·근육', 15]],
     '체중 관리':      [['체중·체형 관리', 15]],
     // 어린 자녀
     '성장 지원':      [['뼈·관절·근육', 15], ['근감소·단백질', 10]],
@@ -1972,6 +1988,7 @@ function renderResult() {
       '수면·스트레스':  [['스트레스·수면', 20]],
       '근육·단백질':    [['근감소·단백질', 20]],
       '모발·두피 건강':  [['모발·두피 건강', 20]],
+      '여성 갱년기·호르몬': [['여성 갱년기·호르몬', 30], ['스트레스·수면', 15]],
     };
     var mapping = interestMap[interest];
     if (mapping) {
