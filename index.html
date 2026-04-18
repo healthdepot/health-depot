@@ -4,55 +4,61 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="description" content="건강창고 AI 맞춤 건강기능식품 추천">
-<meta name="theme-color" content="#1a4a2e">
+<meta name="theme-color" content="#1558A8">
 <title>건강창고 | 맞춤 건강기능식품 추천</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Pretendard:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --gd:#0d3320; --gm:#1f6b40; --gl:#3cb371;
-  --gp:#edf7f1; --gp2:#c8ecd6;
-  --ga:#f0faf4;
-  --rd:#e53e3e; --yw:#d97706; --yw-p:#fffbeb;
+  /* ── 건강창고 로고 기반 컬러 팔레트 ── */
+  --blue-dark:#0C447C;  --blue-main:#1558A8;  --blue-mid:#378ADD;
+  --blue-light:#B5D4F4; --blue-pale:#E6F1FB;
+  --red-main:#C8232B;   --red-pale:#FCEBEB;   --red-dark:#791F1F;
+  --gold-main:#F5A800;  --gold-pale:#FFFBEF;  --gold-dark:#412402;
+  --green-main:#5E7C2F; --green-pale:#EAF3DE; --green-dark:#27500A;
   --gy9:#0f1923; --gy7:#2d3748; --gy6:#4a5568;
   --gy4:#a0aec0; --gy3:#e2e8f0; --gy1:#f7fafc;
   --wh:#ffffff;
   --sh:0 2px 20px rgba(0,0,0,0.07);
-  --sh2:0 8px 32px rgba(13,51,32,0.18);
+  --sh2:0 8px 32px rgba(21,88,168,0.18);
   --sh3:0 1px 4px rgba(0,0,0,0.06);
   --r:18px; --r2:12px;
   --fs:14px; --fsq:15px; --fsb:14px;
-  --font:'Noto Sans KR', 'Malgun Gothic', '맑은 고딕', sans-serif;
+  --font:'Noto Sans KR','Malgun Gothic','맑은 고딕',sans-serif;
+  /* 기존 변수 리매핑 (JS 하위호환) */
+  --gd:#0C447C; --gm:#1558A8; --gl:#378ADD;
+  --gp:#E6F1FB; --gp2:#B5D4F4; --ga:#E6F1FB;
+  --rd:#C8232B; --yw:#F5A800; --yw-p:#FFFBEF;
 }
 body.sm { --fs:17px; --fsq:19px; --fsb:17px; }
 * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
 body {
   font-family: var(--font);
-  background: linear-gradient(160deg, #edf7f1 0%, #f5fdf8 40%, #f0faf4 100%);
+  background: linear-gradient(160deg, #EBF2FC 0%, #f5f8fd 40%, #EBF2FC 100%);
   min-height:100vh; color:var(--gy9); font-size:var(--fs);
   -webkit-font-smoothing: antialiased;
 }
 
 /* 헤더 */
 .hd {
-  background: linear-gradient(135deg, var(--gd) 0%, #1a5c35 100%);
+  background: linear-gradient(135deg, #0C447C 0%, #1558A8 100%);
   color:#fff; padding:15px 18px 13px;
   display:flex; align-items:center; position:sticky; top:0; z-index:100;
-  box-shadow: 0 4px 20px rgba(13,51,32,.4);
+  box-shadow: 0 4px 20px rgba(12,68,124,.4);
 }
 .logo { font-size:21px; font-weight:900; letter-spacing:-0.5px; }
-.logo span { color:#5ddb8a; }
+.logo span { color:#90C4F8; }
 .hsub { font-size:11px; color:rgba(255,255,255,.45); margin-top:2px; letter-spacing:0.3px; }
 .hright { margin-left:auto; display:flex; align-items:center; gap:8px; }
-.sbadge-hd { display:none; background:rgba(93,219,138,.25); color:#5ddb8a; font-size:10px; font-weight:800; padding:3px 10px; border-radius:99px; border:1px solid rgba(93,219,138,.4); }
+.sbadge-hd { display:none; background:rgba(144,196,248,.25); color:#90C4F8; font-size:10px; font-weight:800; padding:3px 10px; border-radius:99px; border:1px solid rgba(144,196,248,.4); }
 body.sm .sbadge-hd { display:inline-block; }
 .steptxt { font-size:12px; color:rgba(255,255,255,.55); }
 .btn-back { background:none; border:none; color:rgba(255,255,255,.85); font-size:26px; cursor:pointer; padding:0 10px 0 0; display:none; line-height:1; transition:color .15s; }
 .btn-back:hover { color:#fff; }
 .btn-back.show { display:block; }
 .pw { background:rgba(255,255,255,.15); height:3px; }
-.pb { height:3px; background:linear-gradient(90deg,#5ddb8a,#3cb371); transition:width .5s cubic-bezier(.4,0,.2,1); border-radius:0 2px 2px 0; }
+.pb { height:3px; background:linear-gradient(90deg,#F5A800,#1558A8); transition:width .5s cubic-bezier(.4,0,.2,1); border-radius:0 2px 2px 0; }
 
 /* 레이아웃 */
 .wrap { max-width:480px; margin:0 auto; padding:24px 16px 80px; }
@@ -61,15 +67,14 @@ body.sm .sbadge-hd { display:inline-block; }
 @keyframes fu { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
 
 /* 섹션 타이틀 */
-.sec-title { font-size:22px; font-weight:900; color:var(--gd); margin-bottom:6px; letter-spacing:-0.5px; line-height:1.3; }
+.sec-title { font-size:22px; font-weight:900; color:#0C447C; margin-bottom:6px; letter-spacing:-0.5px; line-height:1.3; }
 .sec-sub { font-size:13.5px; color:var(--gy6); line-height:1.7; margin-bottom:22px; }
-.badge { display:inline-flex; align-items:center; gap:4px; background:var(--gp2); color:var(--gm); font-size:11px; font-weight:800; padding:4px 12px; border-radius:99px; margin-bottom:12px; letter-spacing:0.3px; }
+.badge { display:inline-flex; align-items:center; gap:4px; background:#B5D4F4; color:#0C447C; font-size:11px; font-weight:800; padding:4px 12px; border-radius:99px; margin-bottom:12px; letter-spacing:0.3px; }
 .badge.warn { background:#fee2e2; color:#dc2626; }
 .badge.senior { background:#fef3c7; color:#92400e; }
 .badge.family { background:#dbeafe; color:#1d4ed8; }
 
-/* ── 안전 필터 추가 스타일 ── */
-/* 0단계: 전면 중단 화면 */
+/* ── 안전 필터 스타일 ── */
 .stop-screen { background:#fff5f5; border:2px solid #fca5a5; border-radius:var(--r); padding:28px 20px; text-align:center; margin:20px 0; }
 .stop-icon { font-size:48px; margin-bottom:12px; }
 .stop-title { font-size:20px; font-weight:900; color:#dc2626; margin-bottom:10px; }
@@ -80,25 +85,19 @@ body.sm .sbadge-hd { display:inline-block; }
 .stop-btn-hospital { width:100%; background:#dc2626; color:#fff; border:none; border-radius:10px; padding:14px; font-size:15px; font-weight:700; cursor:pointer; margin-bottom:10px; }
 .stop-btn-back { width:100%; background:#f3f4f6; color:#374151; border:none; border-radius:10px; padding:12px; font-size:14px; font-weight:600; cursor:pointer; }
 
-/* 약물 계열 선택 (조건부 노출) */
 .drug-select-box { display:none; background:#fef3c7; border:1.5px solid #f59e0b; border-radius:12px; padding:14px 16px; margin-top:12px; }
 .drug-select-box.show { display:block; animation:fu .25s ease; }
 .drug-select-title { font-size:13px; font-weight:700; color:#92400e; margin-bottom:10px; }
 
-/* 1단계 하드블록 배지 */
 .badge-blocked { display:inline-block; background:#fee2e2; color:#dc2626; font-size:10px; font-weight:800; padding:2px 8px; border-radius:99px; margin-left:6px; vertical-align:middle; }
-
-/* 2단계 소프트 경고 배지 */
 .badge-caution { display:inline-block; background:#fef3c7; color:#92400e; font-size:10px; font-weight:800; padding:2px 8px; border-radius:99px; margin-bottom:6px; }
 
-/* 안전 단계 표시줄 */
 .safety-level-bar { display:flex; align-items:center; gap:6px; margin-bottom:8px; font-size:11px; }
 .sl-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
 .sl-dot.pass { background:#22c55e; }
 .sl-dot.caution { background:#f59e0b; }
 .sl-dot.blocked { background:#ef4444; }
 
-/* 약사상담 버튼 */
 .btn-consult { background:#f59e0b; color:#fff; border:none; border-radius:10px; padding:11px 0; width:100%; font-size:14px; font-weight:700; cursor:pointer; margin-top:10px; }
 .btn-consult:active { opacity:.85; }
 
@@ -109,7 +108,7 @@ body.sm .sbadge-hd { display:inline-block; }
   border:1px solid rgba(0,0,0,0.04);
   transition: box-shadow .2s;
 }
-.card:focus-within { box-shadow: 0 4px 24px rgba(31,107,64,0.1), 0 1px 3px rgba(0,0,0,0.04); }
+.card:focus-within { box-shadow: 0 4px 24px rgba(21,88,168,0.1), 0 1px 3px rgba(0,0,0,0.04); }
 
 /* 질문 */
 .qb { margin-bottom:24px; }
@@ -127,8 +126,8 @@ body.sm .sbadge-hd { display:inline-block; }
   background:var(--wh); color:var(--gy7); font-size:var(--fsb); font-weight:600;
   cursor:pointer; transition:all .2s; letter-spacing:-0.1px;
 }
-.opt:hover { border-color:var(--gl); color:var(--gm); background:var(--gp); transform:translateY(-1px); }
-.opt.on { background:var(--gm); border-color:var(--gm); color:#fff; font-weight:800; box-shadow:0 4px 12px rgba(31,107,64,0.3); transform:translateY(-1px); }
+.opt:hover { border-color:#378ADD; color:#1558A8; background:#E6F1FB; transform:translateY(-1px); }
+.opt.on { background:#1558A8; border-color:#1558A8; color:#fff; font-weight:800; box-shadow:0 4px 12px rgba(21,88,168,0.3); transform:translateY(-1px); }
 body.sm .opt { padding:13px 22px; }
 
 /* 나이·수치 입력 */
@@ -138,18 +137,18 @@ body.sm .opt { padding:13px 22px; }
   font-size:var(--fsq); font-weight:800; text-align:center; color:var(--gy9);
   outline:none; transition:all .2s; background:var(--wh); font-family:var(--font);
 }
-.num-in:focus { border-color:var(--gm); box-shadow:0 0 0 3px rgba(31,107,64,0.1); }
+.num-in:focus { border-color:#1558A8; box-shadow:0 0 0 3px rgba(21,88,168,0.1); }
 .num-unit { font-size:14px; color:var(--gy6); font-weight:600; }
 .bmi-box {
-  margin-top:12px; padding:12px 16px; background:linear-gradient(135deg,var(--gp),var(--gp2));
-  border-radius:12px; font-size:13px; color:var(--gm); font-weight:800; display:none;
-  border:1px solid var(--gp2);
+  margin-top:12px; padding:12px 16px; background:linear-gradient(135deg,#E6F1FB,#B5D4F4);
+  border-radius:12px; font-size:13px; color:#1558A8; font-weight:800; display:none;
+  border:1px solid #B5D4F4;
 }
 .bmi-box.show { display:block; animation:fu .25s ease; }
 
 /* 시니어 안내 */
-.snotice { display:none; background:var(--gp); border:1px solid var(--gp2); border-radius:10px; padding:10px 14px; margin-top:10px; font-size:var(--fs); color:var(--gm); font-weight:600; }
-.snotice.show { display:block; }
+.snotice { display:none; background:linear-gradient(135deg,#E6F1FB,#B5D4F4); border:1px solid #B5D4F4; border-radius:12px; padding:12px 16px; margin-top:12px; font-size:var(--fs); color:#0C447C; font-weight:700; box-shadow:0 2px 8px rgba(21,88,168,0.1); }
+.snotice.show { display:block; animation:fu .25s ease; }
 
 /* 체크리스트 */
 .clist { display:flex; flex-direction:column; gap:8px; }
@@ -158,23 +157,23 @@ body.sm .opt { padding:13px 22px; }
   border:1.5px solid var(--gy3); border-radius:14px; cursor:pointer;
   transition:all .2s; background:var(--wh);
 }
-.ci:hover { border-color:var(--gl); background:var(--gp); transform:translateX(2px); }
-.ci.ck { border-color:var(--gm); background:var(--gp); box-shadow:0 2px 12px rgba(31,107,64,0.12); }
+.ci:hover { border-color:#378ADD; background:#E6F1FB; transform:translateX(2px); }
+.ci.ck { border-color:#1558A8; background:#E6F1FB; box-shadow:0 2px 12px rgba(21,88,168,0.12); }
 .ci.disabled { opacity:.4; pointer-events:none; }
 .cb {
   width:22px; height:22px; border:2px solid var(--gy3); border-radius:6px;
   display:flex; align-items:center; justify-content:center; font-size:13px;
   flex-shrink:0; transition:all .2s; margin-top:1px;
 }
-.ci.ck .cb { background:var(--gm); border-color:var(--gm); color:#fff; box-shadow:0 2px 6px rgba(31,107,64,0.3); }
+.ci.ck .cb { background:#1558A8; border-color:#1558A8; color:#fff; box-shadow:0 2px 6px rgba(21,88,168,0.3); }
 .cl { font-size:var(--fs); color:var(--gy7); font-weight:500; line-height:1.45; }
-.ci.ck .cl { color:var(--gd); font-weight:700; }
+.ci.ck .cl { color:#0C447C; font-weight:700; }
 .cl-sub { font-size:12px; color:var(--gy4); display:block; margin-top:2px; font-weight:400; }
 body.sm .ci { padding:15px 18px; }
 
 /* 선택 제한 안내 */
 .limit-badge { font-size:11px; color:var(--gy4); margin-bottom:8px; }
-.limit-badge span { color:var(--gm); font-weight:700; }
+.limit-badge span { color:#1558A8; font-weight:700; }
 
 /* 갱년기 체크 */
 .menopause-box { display:none; background:#fdf2f8; border:1px solid #f3c6e3; border-radius:12px; padding:14px; margin-top:12px; }
@@ -184,8 +183,8 @@ body.sm .ci { padding:15px 18px; }
 /* 슬라이더 */
 .slider-wrap { margin-top:6px; }
 .slider-row { display:flex; align-items:center; gap:12px; }
-.slider-val { font-size:20px; font-weight:900; color:var(--gm); min-width:80px; }
-input[type=range] { flex:1; accent-color:var(--gm); cursor:pointer; }
+.slider-val { font-size:20px; font-weight:900; color:#1558A8; min-width:80px; }
+input[type=range] { flex:1; accent-color:#1558A8; cursor:pointer; }
 .slider-ticks { display:flex; justify-content:space-between; font-size:11px; color:var(--gy4); margin-top:4px; }
 
 /* 가족 구성원 선택 카드 */
@@ -195,9 +194,9 @@ input[type=range] { flex:1; accent-color:var(--gm); cursor:pointer; }
   text-align:center; cursor:pointer; transition:all .2s; background:var(--wh);
   box-shadow:0 1px 4px rgba(0,0,0,0.04);
 }
-.member-card:hover { border-color:var(--gl); transform:translateY(-3px); box-shadow:0 6px 20px rgba(31,107,64,0.12); }
-.member-card.on { border-color:var(--gm); background:var(--gp); box-shadow:0 4px 16px rgba(31,107,64,0.18); transform:translateY(-2px); }
-.member-card.on .mc-name { color:var(--gd); }
+.member-card:hover { border-color:#378ADD; transform:translateY(-3px); box-shadow:0 6px 20px rgba(21,88,168,0.12); }
+.member-card.on { border-color:#1558A8; background:#E6F1FB; box-shadow:0 4px 16px rgba(21,88,168,0.18); transform:translateY(-2px); }
+.member-card.on .mc-name { color:#0C447C; }
 .mc-icon { font-size:28px; margin-bottom:6px; }
 .mc-name { font-size:var(--fsb); font-weight:800; color:var(--gy9); }
 .mc-sub { font-size:11px; color:var(--gy4); margin-top:3px; }
@@ -209,18 +208,18 @@ input[type=range] { flex:1; accent-color:var(--gm); cursor:pointer; }
   text-align:center; cursor:pointer; transition:all .2s; background:var(--wh);
   box-shadow:0 1px 4px rgba(0,0,0,0.04);
 }
-.cat-card:hover { border-color:var(--gl); transform:translateY(-3px); box-shadow:0 6px 20px rgba(31,107,64,0.12); }
-.cat-card.on { border-color:var(--gm); background:var(--gp); box-shadow:0 4px 16px rgba(31,107,64,0.18); transform:translateY(-2px); }
+.cat-card:hover { border-color:#378ADD; transform:translateY(-3px); box-shadow:0 6px 20px rgba(21,88,168,0.12); }
+.cat-card.on { border-color:#1558A8; background:#E6F1FB; box-shadow:0 4px 16px rgba(21,88,168,0.18); transform:translateY(-2px); }
 .cat-icon { font-size:30px; margin-bottom:6px; }
 .cat-name { font-size:var(--fsb); font-weight:800; color:var(--gy9); }
 .cat-desc { font-size:11px; color:var(--gy4); margin-top:3px; line-height:1.4; }
-.cat-card.on .cat-name { color:var(--gd); }
+.cat-card.on .cat-name { color:#0C447C; }
 
 /* 심화 질문 */
 .deep-area { display:none; margin-top:18px; }
 .deep-area.show { display:block; animation:fu .25s ease; }
 .deep-section { background:var(--gy1); border-radius:12px; padding:14px; margin-bottom:12px; }
-.deep-title { font-size:13px; font-weight:700; color:var(--gm); margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--gy3); }
+.deep-title { font-size:13px; font-weight:700; color:#1558A8; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--gy3); }
 .daily-check { background:#fff7ed; border:1px solid #fed7aa; border-radius:12px; padding:14px; margin-top:12px; }
 .danger-notice { display:none; background:#fef2f2; border:1px solid #fca5a5; border-radius:10px; padding:12px 14px; margin-top:10px; font-size:13px; color:#dc2626; font-weight:600; line-height:1.6; }
 .danger-notice.show { display:block; }
@@ -230,87 +229,84 @@ input[type=range] { flex:1; accent-color:var(--gm); cursor:pointer; }
 
 /* 버튼 */
 .btn-next {
-  width:100%; padding:17px; background:linear-gradient(135deg, var(--gm) 0%, #1a5c35 100%);
+  width:100%; padding:17px;
+  background:linear-gradient(135deg, #1558A8 0%, #0C447C 100%);
   color:#fff; border:none; border-radius:16px; font-size:15px; font-weight:900;
   cursor:pointer; margin-top:8px; transition:all .2s;
-  box-shadow: 0 6px 24px rgba(31,107,64,0.35);
+  box-shadow: 0 6px 24px rgba(21,88,168,0.35);
   letter-spacing:-0.2px; position:relative; overflow:hidden;
 }
 .btn-next::after { content:''; position:absolute; inset:0; background:rgba(255,255,255,0); transition:background .2s; }
 .btn-next:hover::after { background:rgba(255,255,255,0.08); }
-.btn-next:hover { transform:translateY(-2px); box-shadow:0 10px 32px rgba(31,107,64,0.4); }
+.btn-next:hover { transform:translateY(-2px); box-shadow:0 10px 32px rgba(21,88,168,0.4); }
 .btn-next:active { transform:scale(.98) translateY(0); }
 .btn-next:disabled { background:var(--gy3); box-shadow:none; cursor:not-allowed; transform:none; }
 .btn-skip { width:100%; padding:13px; background:transparent; color:var(--gy4); border:1.5px solid var(--gy3); border-radius:14px; font-size:13px; font-weight:600; cursor:pointer; margin-top:8px; transition:all .2s; }
 .btn-skip:hover { border-color:var(--gy4); color:var(--gy7); background:var(--gy1); }
-.btn-restart { width:100%; padding:15px; background:var(--wh); color:var(--gm); border:2px solid var(--gm); border-radius:16px; font-size:14px; font-weight:800; cursor:pointer; margin-top:12px; transition:all .2s; }
-.btn-restart:hover { background:var(--gp); transform:translateY(-1px); }
+.btn-restart { width:100%; padding:15px; background:var(--wh); color:#1558A8; border:2px solid #1558A8; border-radius:16px; font-size:14px; font-weight:800; cursor:pointer; margin-top:12px; transition:all .2s; }
+.btn-restart:hover { background:#E6F1FB; transform:translateY(-1px); }
 
 /* 결과 */
 .result-hd {
-  background: linear-gradient(140deg, var(--gd) 0%, #1a5c35 60%, #0d3320 100%);
+  background: linear-gradient(140deg, #0C447C 0%, #1558A8 60%, #185FA5 100%);
   color:#fff; border-radius:20px; padding:22px 20px; margin-bottom:18px;
   position:relative; overflow:hidden;
-  box-shadow: 0 8px 32px rgba(13,51,32,0.3);
+  box-shadow: 0 8px 32px rgba(12,68,124,0.3);
 }
-.result-hd::before {
-  content:''; position:absolute; top:-30px; right:-30px;
-  width:140px; height:140px; background:rgba(255,255,255,0.06); border-radius:50%;
-}
-.result-hd::after {
-  content:''; position:absolute; bottom:-20px; left:20px;
-  width:80px; height:80px; background:rgba(93,219,138,0.08); border-radius:50%;
-}
+.result-hd::before { content:''; position:absolute; top:-30px; right:-30px; width:140px; height:140px; background:rgba(255,255,255,0.06); border-radius:50%; }
+.result-hd::after { content:''; position:absolute; bottom:-20px; left:20px; width:80px; height:80px; background:rgba(245,168,0,0.08); border-radius:50%; }
 .result-hd h2 { font-size:20px; font-weight:900; margin-bottom:6px; letter-spacing:-0.5px; position:relative; }
 .result-hd p { font-size:13px; color:rgba(255,255,255,.7); line-height:1.65; position:relative; }
 .rtags { display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; position:relative; }
-.rtag { background:rgba(255,255,255,.12); padding:5px 12px; border-radius:99px; font-size:11px; font-weight:700; color:#fff; border:1px solid rgba(255,255,255,.15); backdrop-filter:blur(4px); }
-.rtag.sym { background:rgba(217,119,6,.3); border-color:rgba(217,119,6,.4); }
+.rtag { background:rgba(255,255,255,.15); padding:5px 12px; border-radius:99px; font-size:11px; font-weight:700; color:#fff; border:1px solid rgba(255,255,255,.2); }
+.rtag.sym { background:rgba(245,168,0,.3); border-color:rgba(245,168,0,.4); }
 .tab-scroll { overflow-x:auto; white-space:nowrap; margin-bottom:16px; padding-bottom:4px; }
 .tab-scroll::-webkit-scrollbar { height:3px; }
 .tab-scroll::-webkit-scrollbar-thumb { background:var(--gy3); border-radius:3px; }
 .tabs { display:inline-flex; gap:8px; }
 .tab { display:inline-block; padding:9px 18px; border-radius:99px; font-size:13px; font-weight:700; cursor:pointer; border:1.5px solid var(--gy3); color:var(--gy6); background:var(--wh); transition:all .2s; white-space:nowrap; box-shadow:0 1px 4px rgba(0,0,0,0.05); }
-.tab:hover { border-color:var(--gl); color:var(--gm); transform:translateY(-1px); }
-.tab.on { background:var(--gm); border-color:var(--gm); color:#fff; box-shadow:0 4px 16px rgba(31,107,64,0.3); transform:translateY(-1px); }
+.tab:hover { border-color:#378ADD; color:#1558A8; transform:translateY(-1px); }
+.tab.on { background:#1558A8; border-color:#1558A8; color:#fff; box-shadow:0 4px 16px rgba(21,88,168,0.3); transform:translateY(-1px); }
 .mkt-card {
   background:var(--wh); border-radius:18px; padding:18px; margin-bottom:12px;
   box-shadow: 0 2px 16px rgba(0,0,0,0.06); border:1px solid rgba(0,0,0,0.04);
   border-left:4px solid var(--gy3); transition:all .2s;
 }
 .mkt-card:hover { transform:translateY(-2px); box-shadow:0 6px 24px rgba(0,0,0,0.1); }
-.mkt-card.top { border-left-color:var(--gl); }
+.mkt-card.top { border-left-color:#1558A8; }
 .rank-row { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
 .rank-num { font-size:20px; font-weight:900; color:var(--gy9); letter-spacing:-0.5px; }
 .rank-lbl { font-size:11px; color:var(--gy4); font-weight:700; background:var(--gy1); padding:3px 10px; border-radius:99px; border:1px solid var(--gy3); }
 .mkt-name { font-size:14px; font-weight:700; color:var(--gy9); margin-bottom:10px; line-height:1.5; letter-spacing:-0.2px; }
 .mkt-meta { display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
-.mkt-price { font-size:17px; font-weight:900; color:var(--gd); letter-spacing:-0.3px; }
+.mkt-price { font-size:17px; font-weight:900; color:#0C447C; letter-spacing:-0.3px; }
 .mkt-mall { font-size:11px; color:var(--gy4); background:var(--gy1); padding:3px 10px; border-radius:99px; font-weight:700; }
 .mkt-btn {
   width:100%; padding:12px; border:1.5px solid var(--gy3); border-radius:12px;
   background:var(--wh); color:var(--gy7); font-size:13px; font-weight:700;
   cursor:pointer; transition:all .2s;
 }
-.mkt-btn:hover { border-color:var(--gl); color:var(--gm); background:var(--gp); transform:translateY(-1px); }
+.mkt-btn:hover { border-color:#378ADD; color:#1558A8; background:#E6F1FB; transform:translateY(-1px); }
+
+/* 광고 슬롯 — 골드 테마 */
 .ad-slot {
-  background: linear-gradient(140deg, #0d3320 0%, #1f6b40 50%, #1a5c35 100%);
+  background: linear-gradient(140deg, #1A1200 0%, #412402 40%, #633806 100%);
   border-radius:20px; padding:20px 18px; margin-bottom:12px; color:#fff;
   position:relative; overflow:hidden;
-  box-shadow: 0 8px 32px rgba(13,51,32,0.35);
-  border:1px solid rgba(93,219,138,0.15);
+  box-shadow: 0 8px 32px rgba(65,36,2,0.35);
+  border:1px solid rgba(245,168,0,0.3);
 }
 .ad-slot::before { content:''; position:absolute; top:-30px; right:-20px; width:120px; height:120px; background:rgba(255,255,255,0.05); border-radius:50%; }
-.ad-slot::after { content:''; position:absolute; bottom:-20px; left:-10px; width:80px; height:80px; background:rgba(93,219,138,0.06); border-radius:50%; }
-.ad-badge { display:inline-flex; align-items:center; gap:4px; background:rgba(93,219,138,0.2); color:#5ddb8a; font-size:10px; font-weight:800; padding:3px 10px; border-radius:99px; margin-bottom:10px; border:1px solid rgba(93,219,138,0.3); position:relative; }
+.ad-slot::after { content:''; position:absolute; bottom:-20px; left:-10px; width:80px; height:80px; background:rgba(245,168,0,0.06); border-radius:50%; }
+.ad-badge { display:inline-flex; align-items:center; gap:4px; background:rgba(245,168,0,0.25); color:#F5A800; font-size:10px; font-weight:800; padding:3px 10px; border-radius:99px; margin-bottom:10px; border:1px solid rgba(245,168,0,0.4); position:relative; }
 .ad-name { font-size:16px; font-weight:900; margin-bottom:8px; line-height:1.4; position:relative; letter-spacing:-0.3px; }
 .ad-tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; position:relative; }
 .ad-tag { background:rgba(255,255,255,.12); padding:4px 10px; border-radius:99px; font-size:11px; font-weight:600; border:1px solid rgba(255,255,255,.15); }
 .ad-meta { display:flex; align-items:center; gap:10px; margin-bottom:14px; position:relative; }
 .ad-price { font-size:20px; font-weight:900; letter-spacing:-0.5px; }
 .ad-monthly { font-size:12px; color:rgba(255,255,255,.6); }
-.ad-btn { width:100%; padding:14px; background:#fff; color:var(--gd); border:none; border-radius:12px; font-size:14px; font-weight:900; cursor:pointer; transition:all .2s; position:relative; letter-spacing:-0.2px; }
-.ad-btn:hover { background:#f0fdf4; transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,0.1); }
+.ad-btn { width:100%; padding:14px; background:#F5A800; color:#1A1200; border:none; border-radius:12px; font-size:14px; font-weight:900; cursor:pointer; transition:all .2s; position:relative; letter-spacing:-0.2px; }
+.ad-btn:hover { background:#FFD044; transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,0.15); }
 .divider { display:flex; align-items:center; gap:10px; margin:16px 0; font-size:11px; color:var(--gy4); font-weight:700; letter-spacing:0.5px; text-transform:uppercase; }
 .divider::before,.divider::after { content:''; flex:1; height:1px; background:var(--gy3); }
 .disclaimer { background:var(--gy1); border-radius:12px; padding:14px 16px; font-size:11px; color:var(--gy4); line-height:1.8; margin-top:16px; border:1px solid var(--gy3); }
@@ -319,7 +315,7 @@ input[type=range] { flex:1; accent-color:var(--gm); cursor:pointer; }
 .video-section { margin-bottom:10px; }
 .video-header { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
 .video-icon { font-size:18px; }
-.video-title { font-size:13px; font-weight:800; color:var(--gd); }
+.video-title { font-size:13px; font-weight:800; color:#0C447C; }
 .video-sub { font-size:11px; color:var(--gy4); margin-left:auto; }
 .video-card { background:var(--wh); border-radius:var(--r); overflow:hidden; box-shadow:var(--sh); margin-bottom:8px; }
 .video-embed { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; }
@@ -327,9 +323,9 @@ input[type=range] { flex:1; accent-color:var(--gm); cursor:pointer; }
 .video-info { padding:12px 14px; }
 .video-name { font-size:13px; font-weight:700; color:var(--gy9); margin-bottom:4px; line-height:1.4; }
 .video-channel { font-size:11px; color:var(--gy4); font-weight:600; }
-.video-channel span { background:var(--gp); color:var(--gm); padding:2px 7px; border-radius:99px; font-size:10px; font-weight:700; margin-left:5px; }
+.video-channel span { background:#E6F1FB; color:#1558A8; padding:2px 7px; border-radius:99px; font-size:10px; font-weight:700; margin-left:5px; }
 
-/* ── 개인정보 동의 팝업 ── */
+/* 개인정보 동의 팝업 */
 .consent-overlay {
   display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65);
   z-index:9999; align-items:flex-end; justify-content:center;
@@ -343,20 +339,20 @@ input[type=range] { flex:1; accent-color:var(--gm); cursor:pointer; }
   box-shadow: 0 -8px 40px rgba(0,0,0,0.15);
 }
 @keyframes slideUp { from{transform:translateY(100%);opacity:0} to{transform:translateY(0);opacity:1} }
-.consent-logo { text-align:center; margin-bottom:18px; }
-.consent-logo-txt { font-size:24px; font-weight:900; color:var(--gd); letter-spacing:-0.5px; }
-.consent-logo-txt span { color:var(--gl); }
+.consent-logo { text-align:center; margin-bottom:18px; display:flex; align-items:center; justify-content:center; gap:10px; }
+.consent-logo-txt { font-size:24px; font-weight:900; color:#0C447C; letter-spacing:-0.5px; }
+.consent-logo-txt span { color:#378ADD; }
 .consent-title { font-size:18px; font-weight:900; color:var(--gy9); margin-bottom:8px; text-align:center; letter-spacing:-0.3px; }
 .consent-desc { font-size:13.5px; color:var(--gy6); line-height:1.7; margin-bottom:22px; text-align:center; }
 .consent-all {
   display:flex; align-items:center; gap:12px;
-  background:var(--gp); border-radius:14px; padding:16px 18px;
+  background:#E6F1FB; border-radius:14px; padding:16px 18px;
   margin-bottom:14px; cursor:pointer; border:2px solid transparent;
   transition:all .2s;
 }
-.consent-all:hover { background:var(--gp2); }
-.consent-all.checked { border-color:var(--gm); background:var(--gp2); box-shadow:0 2px 12px rgba(31,107,64,0.15); }
-.consent-all-txt { font-size:15px; font-weight:900; color:var(--gd); letter-spacing:-0.2px; }
+.consent-all:hover { background:#B5D4F4; }
+.consent-all.checked { border-color:#1558A8; background:#B5D4F4; box-shadow:0 2px 12px rgba(21,88,168,0.15); }
+.consent-all-txt { font-size:15px; font-weight:900; color:#0C447C; letter-spacing:-0.2px; }
 .consent-all-sub { font-size:12px; color:var(--gy6); margin-top:2px; }
 .consent-divider { height:1px; background:var(--gy3); margin:14px 0; }
 .consent-item {
@@ -365,92 +361,85 @@ input[type=range] { flex:1; accent-color:var(--gm); cursor:pointer; }
   transition:background .15s;
 }
 .consent-item:hover { background:var(--gy1); }
-.consent-item:active { background:var(--gp); }
+.consent-item:active { background:#E6F1FB; }
 .consent-check {
   width:22px; height:22px; border-radius:6px; border:2px solid var(--gy3);
   display:flex; align-items:center; justify-content:center;
   flex-shrink:0; transition:all .2s; font-size:13px;
 }
-.consent-check.on { background:var(--gm); border-color:var(--gm); color:#fff; box-shadow:0 2px 6px rgba(31,107,64,0.3); }
+.consent-check.on { background:#1558A8; border-color:#1558A8; color:#fff; box-shadow:0 2px 6px rgba(21,88,168,0.3); }
 .consent-item-txt { flex:1; }
 .consent-item-label { font-size:14px; font-weight:700; color:var(--gy9); }
 .consent-item-label .req-tag { color:var(--rd); font-size:11px; font-weight:800; margin-left:4px; }
 .consent-item-label .opt-tag { color:var(--gy4); font-size:11px; font-weight:700; margin-left:4px; }
 .consent-item-desc { font-size:12px; color:var(--gy4); margin-top:2px; line-height:1.5; }
-.consent-view { font-size:11px; color:var(--gm); text-decoration:underline; flex-shrink:0; font-weight:600; }
+.consent-view { font-size:11px; color:#1558A8; text-decoration:underline; flex-shrink:0; font-weight:600; }
 .consent-btn {
-  width:100%; background:linear-gradient(135deg,var(--gm),#1a5c35); color:#fff; border:none;
+  width:100%; background:linear-gradient(135deg,#1558A8,#0C447C); color:#fff; border:none;
   border-radius:16px; padding:17px; font-size:16px; font-weight:900;
   cursor:pointer; margin-top:22px; transition:all .2s;
-  box-shadow: 0 6px 24px rgba(31,107,64,0.35); letter-spacing:-0.2px;
+  box-shadow: 0 6px 24px rgba(21,88,168,0.35); letter-spacing:-0.2px;
 }
-.consent-btn:hover { transform:translateY(-2px); box-shadow:0 10px 32px rgba(31,107,64,0.4); }
+.consent-btn:hover { transform:translateY(-2px); box-shadow:0 10px 32px rgba(21,88,168,0.4); }
 .consent-btn:disabled { background:var(--gy3); color:var(--gy4); cursor:not-allowed; box-shadow:none; transform:none; }
 .consent-btn:not(:disabled):active { transform:scale(.98); }
 .consent-notice { font-size:11px; color:var(--gy4); text-align:center; margin-top:14px; line-height:1.7; }
 
-/* ── 전역 세부 스타일 ── */
-::selection { background:var(--gp2); color:var(--gd); }
+/* 전역 세부 */
+::selection { background:#B5D4F4; color:#0C447C; }
 ::-webkit-scrollbar { width:4px; }
 ::-webkit-scrollbar-thumb { background:var(--gy3); border-radius:4px; }
 ::-webkit-scrollbar-thumb:hover { background:var(--gy4); }
-
-/* 숫자 입력 화살표 제거 */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
 input[type=number] { -moz-appearance:textfield; }
-
-/* 시니어 안내 배너 */
-.snotice {
-  display:none; background:linear-gradient(135deg,#fffbeb,#fef3c7);
-  border:1px solid #fde68a; border-radius:12px; padding:12px 16px;
-  margin-top:12px; font-size:var(--fs); color:#92400e; font-weight:700;
-  box-shadow:0 2px 8px rgba(217,119,6,0.1);
-}
-.snotice.show { display:block; animation:fu .25s ease; }
-
-/* 진행 단계 텍스트 강화 */
 .steptxt { font-size:11.5px; font-weight:700; letter-spacing:0.3px; }
-
-/* 결과 없음 안내 */
 .no-result { text-align:center; padding:40px 20px; color:var(--gy4); }
 .no-result-icon { font-size:48px; margin-bottom:12px; }
 .no-result-txt { font-size:14px; font-weight:600; }
 
-/* ── 가족 구성원 탭 ── */
+/* 가족 구성원 탭 */
 .family-tab-area {
-  background: linear-gradient(135deg, #fff9f0, #fff5e6);
+  background: linear-gradient(135deg, #EBF2FC, #deeaf8);
   border-radius:16px; padding:14px 16px; margin-bottom:16px;
-  border:1px solid #fde68a; box-shadow:0 2px 12px rgba(217,119,6,0.08);
+  border:1px solid #B5D4F4; box-shadow:0 2px 12px rgba(21,88,168,0.08);
 }
 .family-tab-scroll { overflow-x:auto; white-space:nowrap; padding-bottom:2px; }
 .family-tab-scroll::-webkit-scrollbar { height:3px; }
-.family-tab-scroll::-webkit-scrollbar-thumb { background:#fde68a; border-radius:3px; }
+.family-tab-scroll::-webkit-scrollbar-thumb { background:#B5D4F4; border-radius:3px; }
 .family-tabs { display:inline-flex; gap:8px; }
 .family-tab {
   display:inline-flex; align-items:center; gap:6px;
   padding:9px 18px; border-radius:99px; font-size:13px; font-weight:700;
-  cursor:pointer; border:2px solid #fde68a; color:#92400e;
+  cursor:pointer; border:2px solid #B5D4F4; color:#0C447C;
   background:#fff; transition:all .2s; white-space:nowrap;
   box-shadow:0 1px 4px rgba(0,0,0,0.05);
 }
-.family-tab:hover { border-color:#d97706; background:#fffbeb; transform:translateY(-1px); }
+.family-tab:hover { border-color:#378ADD; background:#E6F1FB; transform:translateY(-1px); }
 .family-tab.on {
-  background:linear-gradient(135deg,#d97706,#b45309); border-color:#d97706;
-  color:#fff; box-shadow:0 4px 16px rgba(217,119,6,0.35); transform:translateY(-1px);
+  background:linear-gradient(135deg,#1558A8,#0C447C); border-color:#1558A8;
+  color:#fff; box-shadow:0 4px 16px rgba(21,88,168,0.35); transform:translateY(-1px);
 }
 .family-tab-icon { font-size:16px; }
 .family-tab-label { font-size:13px; }
-.family-tab-hint { font-size:11px; color:#92400e; text-align:center; margin-top:10px; font-weight:600; }
+.family-tab-hint { font-size:11px; color:#1558A8; text-align:center; margin-top:10px; font-weight:600; }
 </style>
 </head>
 <body>
 
 <div class="hd">
   <button class="btn-back" id="btnBack" onclick="goBack()">‹</button>
-  <div>
-    <div class="logo">건강<span>창고</span></div>
-    <div class="hsub">맞춤형 건강기능식품 추천</div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;width:28px;height:28px;flex-shrink:0;">
+      <div style="background:#C8232B;border-radius:3px;"></div>
+      <div style="background:#F5A800;border-radius:3px;"></div>
+      <div style="background:#5E7C2F;border-radius:3px;"></div>
+      <div style="background:rgba(255,255,255,0.25);border-radius:3px;border:1px solid rgba(255,255,255,0.35);"></div>
+    </div>
+    <div>
+      <div class="logo">건강<span>창고</span></div>
+      <div class="hsub">맞춤형 건강기능식품 추천</div>
+    </div>
   </div>
   <div class="hright">
     <span class="sbadge-hd">👴 시니어 모드</span>
@@ -466,9 +455,7 @@ input[type=number] { -moz-appearance:textfield; }
   <div class="badge">STEP 1 · 기본 정보</div>
   <div class="sec-title">기본 체측 정보</div>
   <div class="sec-sub">신체 기본 정보를 입력해주세요. BMI가 자동 계산됩니다.</div>
-
   <div class="card">
-    <!-- 나이 -->
     <div class="qb">
       <div class="ql">나이 <span class="req">*</span></div>
       <div class="num-row">
@@ -477,7 +464,6 @@ input[type=number] { -moz-appearance:textfield; }
       </div>
       <div class="snotice" id="snotice">👴 65세 이상이시군요! 시니어 맞춤 모드로 안내해드려요.</div>
     </div>
-    <!-- 성별 -->
     <div class="qb">
       <div class="ql">성별 <span class="req">*</span></div>
       <div class="opts">
@@ -485,7 +471,6 @@ input[type=number] { -moz-appearance:textfield; }
         <button class="opt" onclick="sel(this,'gender','여성')">여성</button>
       </div>
     </div>
-    <!-- 키·체중 -->
     <div class="qb">
       <div class="ql">키 / 체중</div>
       <div style="display:flex;gap:12px;flex-wrap:wrap;">
@@ -500,7 +485,6 @@ input[type=number] { -moz-appearance:textfield; }
       </div>
       <div class="bmi-box" id="bmiBox"></div>
     </div>
-    <!-- 체온 경향 -->
     <div class="qb">
       <div class="ql">평소 체온 경향은?</div>
       <div class="clist">
@@ -511,11 +495,8 @@ input[type=number] { -moz-appearance:textfield; }
         <div class="ci" onclick="radio(this,'bodyTemp','상열하한 (상체는 덥고 하체는 찬 편)')"><div class="cb"></div><div class="cl">상열하한 <span class="cl-sub">상체는 덥고 하체는 찬 편</span></div></div>
       </div>
     </div>
-    <!-- 현재 복용 중인 건기식 -->
     <div class="qb" style="margin-bottom:0">
-      <div class="ql">현재 복용 중인 건강기능식품이 있나요?
-        <small>중복 섭취 성분 확인에 활용됩니다</small>
-      </div>
+      <div class="ql">현재 복용 중인 건강기능식품이 있나요?<small>중복 섭취 성분 확인에 활용됩니다</small></div>
       <div class="clist" id="curSupList">
         <div class="ci" onclick="chk(this,'curSup','없음')"><div class="cb"></div><div class="cl">없음</div></div>
         <div class="ci" onclick="chk(this,'curSup','비타민·미네랄')"><div class="cb"></div><div class="cl">비타민·미네랄</div></div>
@@ -534,13 +515,9 @@ input[type=number] { -moz-appearance:textfield; }
   <div class="badge warn">STEP 2 · 안전 확인</div>
   <div class="sec-title">안전 필터</div>
   <div class="sec-sub">안전한 추천을 위해 정확히 답해주세요.</div>
-
   <div class="card">
-    <!-- 0단계 트리거: 고위험 상태 -->
     <div class="qb">
-      <div class="ql">현재 아래 해당 사항이 있나요?
-        <small>해당 시 건강기능식품 추천이 제한될 수 있어요</small>
-      </div>
+      <div class="ql">현재 아래 해당 사항이 있나요?<small>해당 시 건강기능식품 추천이 제한될 수 있어요</small></div>
       <div class="clist">
         <div class="ci" onclick="chkStop(this,'stopCondition','없음')"><div class="cb"></div><div class="cl">해당 없음</div></div>
         <div class="ci" onclick="chkStop(this,'stopCondition','항암치료')"><div class="cb"></div><div class="cl">항암 치료 중 <span class="cl-sub">항암제 복용 또는 주사 치료</span></div></div>
@@ -550,17 +527,13 @@ input[type=number] { -moz-appearance:textfield; }
         <div class="ci" onclick="chkStop(this,'stopCondition','임신')"><div class="cb"></div><div class="cl">임신 중</div></div>
       </div>
     </div>
-    <!-- 전문의약품 -->
     <div class="qb">
-      <div class="ql">현재 매일 복용 중인 전문의약품이 있나요? <span class="req">*</span>
-        <small>혈압약, 당뇨약, 혈전용해제, 갑상선약 등 의사 처방 약</small>
-      </div>
+      <div class="ql">현재 매일 복용 중인 전문의약품이 있나요? <span class="req">*</span><small>혈압약, 당뇨약, 혈전용해제, 갑상선약 등 의사 처방 약</small></div>
       <div class="opts">
         <button class="opt" onclick="sel(this,'rx','없음')">없음</button>
         <button class="opt" onclick="sel(this,'rx','있음')">있음 (복용 중)</button>
       </div>
       <div class="safe-warn" id="rxWarn" style="display:none;">⚠️ 전문의약품 복용 중이시면 일부 성분이 제한되며 약사 상담을 권장해요.</div>
-      <!-- 1단계 약물 계열 선택 (조건부 노출) -->
       <div class="drug-select-box" id="drugSelectBox">
         <div class="drug-select-title">📋 어떤 계열의 약을 복용 중인가요? (복수 선택)</div>
         <div class="clist">
@@ -573,11 +546,8 @@ input[type=number] { -moz-appearance:textfield; }
         </div>
       </div>
     </div>
-    <!-- 가족력 -->
     <div class="qb">
-      <div class="ql">가족력(직계가족 질환)이 있나요?
-        <small>위험인자 분석에 활용됩니다</small>
-      </div>
+      <div class="ql">가족력(직계가족 질환)이 있나요?<small>위험인자 분석에 활용됩니다</small></div>
       <div class="clist">
         <div class="ci" onclick="chk(this,'familyHx','없음')"><div class="cb"></div><div class="cl">없음</div></div>
         <div class="ci" onclick="chk(this,'familyHx','심혈관질환')"><div class="cb"></div><div class="cl">심혈관질환</div></div>
@@ -587,11 +557,8 @@ input[type=number] { -moz-appearance:textfield; }
         <div class="ci" onclick="chk(this,'familyHx','골다공증')"><div class="cb"></div><div class="cl">골다공증</div></div>
       </div>
     </div>
-    <!-- 알레르기 -->
     <div class="qb" style="margin-bottom:0">
-      <div class="ql">식품 알레르기가 있나요?
-        <small>해당 성분 포함 제품은 추천에서 자동 제외됩니다</small>
-      </div>
+      <div class="ql">식품 알레르기가 있나요?<small>해당 성분 포함 제품은 추천에서 자동 제외됩니다</small></div>
       <div class="clist">
         <div class="ci" onclick="chk(this,'allergy','없음')"><div class="cb"></div><div class="cl">없음</div></div>
         <div class="ci" onclick="chk(this,'allergy','갑각류')"><div class="cb"></div><div class="cl">갑각류 <span class="cl-sub">새우·게·오징어 등</span></div></div>
@@ -601,16 +568,11 @@ input[type=number] { -moz-appearance:textfield; }
       </div>
     </div>
   </div>
-  <!-- 0단계: 추천 전면 중단 화면 -->
   <div id="stopScreen" style="display:none;">
     <div class="stop-screen">
       <div class="stop-icon">🏥</div>
       <div class="stop-title">전문가 상담이 먼저예요</div>
-      <div class="stop-desc">
-        선택하신 상태에서는 건강기능식품 추천보다<br>
-        <strong>의사 또는 약사와의 상담</strong>이 우선되어야 합니다.<br>
-        건강창고는 안전을 최우선으로 생각해요.
-      </div>
+      <div class="stop-desc">선택하신 상태에서는 건강기능식품 추천보다<br><strong>의사 또는 약사와의 상담</strong>이 우선되어야 합니다.<br>건강창고는 안전을 최우선으로 생각해요.</div>
       <ul class="stop-list">
         <li id="stopReason1" style="display:none"></li>
         <li id="stopReason2" style="display:none">일부 건강기능식품은 치료약과 심각한 상호작용이 있을 수 있어요</li>
@@ -628,7 +590,6 @@ input[type=number] { -moz-appearance:textfield; }
   <div class="badge" style="background:#e8f5e9;color:#2e7d32;">STEP 3 · 식습관</div>
   <div class="sec-title">식습관 분석</div>
   <div class="sec-sub">평소 식사 패턴을 알려주세요. 결핍 성분 추정에 활용됩니다.</div>
-
   <div class="card">
     <div class="qb">
       <div class="ql">하루 식사 패턴은?</div>
@@ -657,9 +618,7 @@ input[type=number] { -moz-appearance:textfield; }
       </div>
     </div>
     <div class="qb">
-      <div class="ql">생선·해조류 섭취 빈도는?
-        <small>오메가3 분석에 활용됩니다</small>
-      </div>
+      <div class="ql">생선·해조류 섭취 빈도는?<small>오메가3 분석에 활용됩니다</small></div>
       <div class="opts">
         <button class="opt" onclick="sel(this,'fish','주 3회 이상')">주 3회 이상</button>
         <button class="opt" onclick="sel(this,'fish','주 1~2회')">주 1~2회</button>
@@ -667,9 +626,7 @@ input[type=number] { -moz-appearance:textfield; }
       </div>
     </div>
     <div class="qb">
-      <div class="ql">커피·에너지음료 하루 섭취량은?
-        <small>수면·철분 흡수 분석에 활용됩니다</small>
-      </div>
+      <div class="ql">커피·에너지음료 하루 섭취량은?<small>수면·철분 흡수 분석에 활용됩니다</small></div>
       <div class="opts">
         <button class="opt" onclick="sel(this,'caffeine','4잔 이상')">4잔 이상</button>
         <button class="opt" onclick="sel(this,'caffeine','2~3잔')">2~3잔</button>
@@ -695,7 +652,6 @@ input[type=number] { -moz-appearance:textfield; }
   <div class="badge" style="background:#fffbeb;color:#92400e;">STEP 4 · 생활습관</div>
   <div class="sec-title">생활습관 & 체질</div>
   <div class="sec-sub">수면, 운동, 스트레스 패턴을 알려주세요.</div>
-
   <div class="card">
     <div class="qb">
       <div class="ql">수면 패턴은?</div>
@@ -734,7 +690,6 @@ input[type=number] { -moz-appearance:textfield; }
         <div class="ci" onclick="radio(this,'workEnv','주로 집에 있음')"><div class="cb"></div><div class="cl">주로 집에 있음</div></div>
       </div>
     </div>
-    <!-- 여성 전용: 갱년기 -->
     <div id="menopauseSection" style="display:none;">
       <div class="qb">
         <div class="ql">현재 생리 상태는?</div>
@@ -746,7 +701,6 @@ input[type=number] { -moz-appearance:textfield; }
           <div class="ci" onclick="radio(this,'menstrual','해당 없음')"><div class="cb"></div><div class="cl">해당 없음</div></div>
         </div>
       </div>
-      <!-- 갱년기 증상 체크 -->
       <div class="menopause-box" id="menopauseBox">
         <div class="menopause-title">🌸 갱년기 증상 체크 (해당 모두 선택)</div>
         <div class="clist">
@@ -767,14 +721,10 @@ input[type=number] { -moz-appearance:textfield; }
   <div class="badge" style="background:#fef2f2;color:#dc2626;">STEP 5 · 건강 관심사</div>
   <div class="sec-title">본인 건강 관심사</div>
   <div class="sec-sub">최근 3개월 기준으로 답해주세요.</div>
-
-  <!-- 시니어 모드: 카테고리 선택 -->
   <div id="seniorCatSection" style="display:none;">
     <div class="card">
       <div class="badge senior">👴 시니어 맞춤 — 1단계: 큰 분류 선택</div>
-      <div class="ql">몸 어디가 제일 신경 쓰이세요?
-        <small>1~2개만 고르세요 — 가장 불편한 것 위주로</small>
-      </div>
+      <div class="ql">몸 어디가 제일 신경 쓰이세요?<small>1~2개만 고르세요 — 가장 불편한 것 위주로</small></div>
       <div class="cat-grid" id="catGrid">
         <div class="cat-card" onclick="selCat(this,'기력·체력')"><div class="cat-icon">⚡</div><div class="cat-name">기력·체력</div><div class="cat-desc">피로, 무기력, 활력</div></div>
         <div class="cat-card" onclick="selCat(this,'뼈·관절·근육')"><div class="cat-icon">🦴</div><div class="cat-name">뼈·관절·근육</div><div class="cat-desc">무릎·허리·근력</div></div>
@@ -786,7 +736,6 @@ input[type=number] { -moz-appearance:textfield; }
         <div class="cat-card" onclick="selCat(this,'피부·외모')"><div class="cat-icon">✨</div><div class="cat-name">피부·외모</div><div class="cat-desc">건조, 탄력, 노화</div></div>
         <div class="cat-card" onclick="selCat(this,'모발·두피')"><div class="cat-icon">💆</div><div class="cat-name">모발·두피</div><div class="cat-desc">탈모, 두피 건강</div></div>
       </div>
-      <!-- 시니어 심화 질문 -->
       <div class="deep-area" id="seniorDeepArea">
         <div id="seniorDeepQs"></div>
         <div class="daily-check">
@@ -800,14 +749,10 @@ input[type=number] { -moz-appearance:textfield; }
       </div>
     </div>
   </div>
-
-  <!-- 일반 모드: 상세 증상 선택 -->
   <div id="normalSymSection">
     <div class="card">
       <div class="qb">
-        <div class="ql">에너지·순환 관련 불편 증상 (해당 모두)
-          <small>최근 3개월 기준</small>
-        </div>
+        <div class="ql">에너지·순환 관련 불편 증상 (해당 모두)<small>최근 3개월 기준</small></div>
         <div class="clist">
           <div class="ci" onclick="chk(this,'symEnergy','오후만 되면 극심한 피로')"><div class="cb"></div><div class="cl">오후만 되면 극심한 피로</div></div>
           <div class="ci" onclick="chk(this,'symEnergy','머리가 자주 무겁거나 멍함')"><div class="cb"></div><div class="cl">머리가 자주 무겁거나 멍함</div></div>
@@ -837,8 +782,6 @@ input[type=number] { -moz-appearance:textfield; }
         </div>
       </div>
     </div>
-
-    <!-- 건강 관심사 태그 -->
     <div class="card">
       <div class="qb" style="margin-bottom:0">
         <div class="ql">관심 있는 건강 분야 (최대 3개)</div>
@@ -857,12 +800,11 @@ input[type=number] { -moz-appearance:textfield; }
           <div class="ci" onclick="chkMax(this,'interests','혈압·혈중지질',3,'interestList')"><div class="cb"></div><div class="cl">🩺 혈압·혈중지질</div></div>
           <div class="ci" onclick="chkMax(this,'interests','근감소·단백질',3,'interestList')"><div class="cb"></div><div class="cl">💪 근감소·단백질</div></div>
           <div class="ci" onclick="chkMax(this,'interests','모발·두피 건강',3,'interestList')"><div class="cb"></div><div class="cl">💆 모발·두피 건강</div></div>
-        <div class="ci" onclick="chkMax(this,'interests','여성 갱년기·호르몬',3,'interestList')"><div class="cb"></div><div class="cl">🌸 여성 갱년기·호르몬</div></div>
+          <div class="ci" onclick="chkMax(this,'interests','여성 갱년기·호르몬',3,'interestList')"><div class="cb"></div><div class="cl">🌸 여성 갱년기·호르몬</div></div>
         </div>
       </div>
     </div>
   </div>
-
   <button class="btn-next" onclick="go('s6')">다음</button>
 </div>
 
@@ -871,32 +813,13 @@ input[type=number] { -moz-appearance:textfield; }
   <div class="badge family">STEP 6 · 가족 건강</div>
   <div class="sec-title">가족 건강 니즈</div>
   <div class="sec-sub">챙겨주고 싶은 가족이 있나요? (복수 선택)</div>
-
   <div class="card">
     <div class="member-grid">
-      <div class="member-card" onclick="toggleMember(this,'spouse')">
-        <div class="mc-icon">💑</div>
-        <div class="mc-name">배우자</div>
-        <div class="mc-sub">남편·아내</div>
-      </div>
-      <div class="member-card" onclick="toggleMember(this,'child_young')">
-        <div class="mc-icon">👦</div>
-        <div class="mc-name">어린 자녀</div>
-        <div class="mc-sub">미취학·초등</div>
-      </div>
-      <div class="member-card" onclick="toggleMember(this,'child_teen')">
-        <div class="mc-icon">📚</div>
-        <div class="mc-name">청소년 자녀</div>
-        <div class="mc-sub">중·고등학생</div>
-      </div>
-      <div class="member-card" onclick="toggleMember(this,'parent')">
-        <div class="mc-icon">👴👵</div>
-        <div class="mc-name">부모님</div>
-        <div class="mc-sub">어르신</div>
-      </div>
+      <div class="member-card" onclick="toggleMember(this,'spouse')"><div class="mc-icon">💑</div><div class="mc-name">배우자</div><div class="mc-sub">남편·아내</div></div>
+      <div class="member-card" onclick="toggleMember(this,'child_young')"><div class="mc-icon">👦</div><div class="mc-name">어린 자녀</div><div class="mc-sub">미취학·초등</div></div>
+      <div class="member-card" onclick="toggleMember(this,'child_teen')"><div class="mc-icon">📚</div><div class="mc-name">청소년 자녀</div><div class="mc-sub">중·고등학생</div></div>
+      <div class="member-card" onclick="toggleMember(this,'parent')"><div class="mc-icon">👴👵</div><div class="mc-name">부모님</div><div class="mc-sub">어르신</div></div>
     </div>
-
-    <!-- 가족별 관심사 -->
     <div id="spouseSection" style="display:none;margin-top:18px;">
       <div class="deep-title" style="margin-bottom:10px;">💑 배우자 주요 관심사 (최대 2개)</div>
       <div class="clist" id="spouseList">
@@ -908,7 +831,6 @@ input[type=number] { -moz-appearance:textfield; }
         <div class="ci" onclick="chkMax(this,'spouseInterest','체중 관리',2,'spouseList')"><div class="cb"></div><div class="cl">체중 관리</div></div>
       </div>
     </div>
-
     <div id="childYoungSection" style="display:none;margin-top:18px;">
       <div class="deep-title" style="margin-bottom:10px;">👦 어린 자녀 주요 관심사 (최대 2개)</div>
       <div class="clist" id="childYoungList">
@@ -918,7 +840,6 @@ input[type=number] { -moz-appearance:textfield; }
         <div class="ci" onclick="chkMax(this,'childYoungInterest','피부·아토피',2,'childYoungList')"><div class="cb"></div><div class="cl">피부·아토피</div></div>
       </div>
     </div>
-
     <div id="childTeenSection" style="display:none;margin-top:18px;">
       <div class="deep-title" style="margin-bottom:10px;">📚 청소년 자녀 주요 관심사 (최대 2개)</div>
       <div class="clist" id="childTeenList">
@@ -929,7 +850,6 @@ input[type=number] { -moz-appearance:textfield; }
         <div class="ci" onclick="chkMax(this,'childTeenInterest','수면 질',2,'childTeenList')"><div class="cb"></div><div class="cl">수면 질</div></div>
       </div>
     </div>
-
     <div id="parentSection" style="display:none;margin-top:18px;">
       <div class="deep-title" style="margin-bottom:10px;">👴👵 부모님 주요 관심사 (최대 2개)</div>
       <div class="clist" id="parentList">
@@ -943,7 +863,6 @@ input[type=number] { -moz-appearance:textfield; }
       </div>
     </div>
   </div>
-
   <button class="btn-next" onclick="go('s7')">다음</button>
   <button class="btn-skip" onclick="go('s7')">가족 건강은 건너뛰기</button>
 </div>
@@ -953,7 +872,6 @@ input[type=number] { -moz-appearance:textfield; }
   <div class="badge" style="background:#f5f3ff;color:#6d28d9;">STEP 7 · 구매 선호도</div>
   <div class="sec-title">구매 선호도</div>
   <div class="sec-sub">예산과 선호 제형을 알려주세요.</div>
-
   <div class="card">
     <div class="qb">
       <div class="ql">월 예산 (본인 기준)</div>
@@ -990,7 +908,6 @@ input[type=number] { -moz-appearance:textfield; }
 
 <!-- ══ 결과 화면 ══ -->
 <div class="scr" id="sResult">
-  <!-- 가족 구성원 탭 (선택한 경우만 표시) -->
   <div class="family-tab-area" id="familyTabArea" style="display:none;">
     <div class="family-tab-scroll">
       <div class="family-tabs" id="familyTabs"></div>
@@ -1024,13 +941,11 @@ var S = {
 var screenStack = [];
 
 var SHEET_ID = '1WqXXVS1elaUgi8nOGM306JK5JDBPtJzfYsrwKW9bGkQ';
-var SHEET_NAME = '전체';  // 누적DB의 "전체" 시트 사용
-var MARKET = {};  // 구글 시트에서 로딩됨
+var SHEET_NAME = '전체';
+var MARKET = {};
 var MARKET_LOADED = false;
 var MARKET_LOADING = false;
-
-// ── 건강창고 제품DB — 구글 시트에서 자동 로딩 ──
-var PRODUCTS = [];  // 구글 시트 제품DB 시트에서 로딩
+var PRODUCTS = [];
 var PRODUCTS_LOADED = false;
 
 async function loadProductDB() {
@@ -1042,26 +957,20 @@ async function loadProductDB() {
     var csv = await res.text();
     var rows = csvParse(csv);
     if (rows.length < 2) return;
-    // 헤더: 제품코드,제품명,카테고리1,카테고리2,카테고리3,주의태그,가격,구매링크,노출여부
     PRODUCTS = [];
     for (var i = 1; i < rows.length; i++) {
       var r = rows[i];
-      if (!r[0] || r[8] === 'N') continue; // 노출여부 N이면 제외
+      if (!r[0] || r[8] === 'N') continue;
       var cats = [r[2], r[3], r[4]].filter(function(c){ return c && c.trim(); });
       PRODUCTS.push({
-        id: r[0].trim(),
-        name: r[1].trim(),
-        cats: cats,
+        id: r[0].trim(), name: r[1].trim(), cats: cats,
         warningTag: r[5] ? r[5].trim() : '',
         price: parseInt((r[6]||'0').replace(/[^0-9]/g,'')) || 0,
         link: r[7] ? r[7].trim() : '',
       });
     }
     PRODUCTS_LOADED = true;
-    console.log('제품DB 로드 완료:', PRODUCTS.length + '개');
-  } catch(e) {
-    console.warn('제품DB 로드 실패:', e);
-  }
+  } catch(e) { console.warn('제품DB 로드 실패:', e); }
 }
 
 function getBestProduct(cat) {
@@ -1071,9 +980,6 @@ function getBestProduct(cat) {
   return primary.length ? primary[0] : matched[0];
 }
 
-// ── 구글 시트 연동 설정 ──
-
-// 구글 시트 CSV API로 데이터 로드
 async function loadMarketData() {
   if (MARKET_LOADED || MARKET_LOADING) return;
   MARKET_LOADING = true;
@@ -1084,88 +990,46 @@ async function loadMarketData() {
     var csv = await res.text();
     var rows = csvParse(csv);
     if (rows.length < 2) throw new Error('데이터 없음');
-    // 헤더: 날짜,카테고리,순위,상품명,가격,쇼핑몰
-    // (best10.js 출력 컬럼 순서 기준)
     var header = rows[0].map(function(h){ return h.trim(); });
-    var iCat   = header.indexOf('카테고리명');  // C열 (카테고리명)
-    var iCatCode = header.indexOf('카테고리코드'); // B열 (코드)
-    var iRank  = header.indexOf('순위');
-    var iName  = header.indexOf('제품명');
+    var iCat = header.indexOf('카테고리명');
+    var iCatCode = header.indexOf('카테고리코드');
+    var iRank = header.indexOf('순위');
+    var iName = header.indexOf('제품명');
     var iPrice = header.indexOf('최저가');
-    var iMall  = header.indexOf('쇼핑몰');
-    // fallback: 카테고리명 못 찾으면 카테고리코드 사용
+    var iMall = header.indexOf('쇼핑몰');
     if (iCat < 0) iCat = iCatCode;
-    // 위치 기반 fallback (수집일,카테고리코드,카테고리명,검색키워드,순위,제품명,최저가,쇼핑몰...)
-    if (iCat < 0)   { iCat=2; iRank=4; iName=5; iPrice=6; iMall=7; }
-    if (iRank < 0)  { iRank=4; }
-    if (iName < 0)  { iName=5; }
-    if (iPrice < 0) { iPrice=6; }
-    if (iMall < 0)  { iMall=7; }
-    console.log('컬럼 인덱스 - 카테고리명:', iCat, '순위:', iRank, '제품명:', iName, '최저가:', iPrice, '쇼핑몰:', iMall);
-    // 오늘 날짜 기준 최신 데이터만 추출 (날짜 내림차순 정렬 후 카테고리별 상위 4개)
-    // 구글 시트 카테고리명 → 앱 카테고리명 매핑
-    // 실제 구글 시트 C열(카테고리명) 기준
+    if (iCat < 0) { iCat=2; iRank=4; iName=5; iPrice=6; iMall=7; }
+    if (iRank < 0) iRank=4;
+    if (iName < 0) iName=5;
+    if (iPrice < 0) iPrice=6;
+    if (iMall < 0) iMall=7;
     var CAT_MAPPING = {
-      // 구글 시트 실제 카테고리명 (C열)
-      '에너지·피로':        '에너지·피로 회복',
-      '에너지·피로 회복':   '에너지·피로 회복',
-      '뼈·관절·근육':       '뼈·관절·근육',
-      '뼈·관절':            '뼈·관절·근육',
-      '두뇌·기억·인지':     '두뇌·기억·인지',
-      '두뇌·기억':          '두뇌·기억·인지',
-      '두뇌·신경':          '두뇌·기억·인지',
-      '소화·장·대사':       '소화·장 건강',
-      '스트레스·부신':      '스트레스·수면',
-      '성별·연령 특화':     '면역·항산화',
-      '간·해독':            '면역·항산화',
-      '면역·항산화':        '면역·항산화',
-      '소화·장 건강':       '소화·장 건강',
-      '소화·장':            '소화·장 건강',
-      '심혈관·혈액순환':    '심혈관·혈액순환',
-      '심혈관':             '심혈관·혈액순환',
-      '눈 건강':            '눈 건강',
-      '눈':                 '눈 건강',
-      '피부·미용':          '피부·미용',
-      '피부':               '피부·미용',
-      '체중·체형 관리':     '체중·체형 관리',
-      '체중·체형':          '체중·체형 관리',
-      '근감소·단백질':      '근감소·단백질',
-      '근감소':             '근감소·단백질',
-      '스트레스·수면':      '스트레스·수면',
-      '스트레스':           '스트레스·수면',
-      '혈압·혈중지질':      '혈압·혈중지질',
-      '혈압':               '혈압·혈중지질',
-      // 영문 카테고리명 (혹시 있을 경우)
-      'Mental Care (멘탈케어)':       '스트레스·수면',
-      'Inner Beauty (이너뷰티)':      '피부·미용',
-      'Diet/Slimming (다이어트)':     '체중·체형 관리',
-      'Senior Care (시니어케어)':     '뼈·관절·근육',
-      'Athletic Nutrition (운동영양)': '에너지·피로 회복',
-      'Metabolic (대사증후군)':       '혈압·혈중지질',
-      'Immune (면역)':                '면역·항산화',
-      'GABA (가바)':                  '스트레스·수면',
-      'Enzyme (효소)':                '소화·장 건강',
-      'Amino Acid (아미노산)':        '에너지·피로 회복',
-      'MUST HAVE - 오메가3':          '심혈관·혈액순환',
-      'MUST HAVE - 프로바이오틱스':   '소화·장 건강',
-      'MUST HAVE - 비타민D':          '면역·항산화',
-      'MUST HAVE - 비타민C':          '면역·항산화',
-      'MUST HAVE - 비타민B복합체':    '에너지·피로 회복',
-      'MUST HAVE - 마그네슘':         '스트레스·수면',
-      'MUST HAVE - 아연':             '면역·항산화',
-      'MUST HAVE - 단백질':           '근감소·단백질',
-      'MUST HAVE - CoQ10':            '심혈관·혈액순환',
-      'MUST HAVE - 멀티비타민':       '에너지·피로 회복',
-      '모발·두피 건강':             '모발·두피 건강',
-      '탈모':                       '모발·두피 건강',
-      '모발':                       '모발·두피 건강',
-      '여성 갱년기':                '여성 갱년기·호르몬',
-      '갱년기':                     '여성 갱년기·호르몬',
-      '이소플라본':                 '여성 갱년기·호르몬',
-      '석류':                       '여성 갱년기·호르몬',
+      '에너지·피로':'에너지·피로 회복','에너지·피로 회복':'에너지·피로 회복',
+      '뼈·관절·근육':'뼈·관절·근육','뼈·관절':'뼈·관절·근육',
+      '두뇌·기억·인지':'두뇌·기억·인지','두뇌·기억':'두뇌·기억·인지','두뇌·신경':'두뇌·기억·인지',
+      '소화·장·대사':'소화·장 건강','스트레스·부신':'스트레스·수면',
+      '성별·연령 특화':'면역·항산화','간·해독':'면역·항산화','면역·항산화':'면역·항산화',
+      '소화·장 건강':'소화·장 건강','소화·장':'소화·장 건강',
+      '심혈관·혈액순환':'심혈관·혈액순환','심혈관':'심혈관·혈액순환',
+      '눈 건강':'눈 건강','눈':'눈 건강','피부·미용':'피부·미용','피부':'피부·미용',
+      '체중·체형 관리':'체중·체형 관리','체중·체형':'체중·체형 관리',
+      '근감소·단백질':'근감소·단백질','근감소':'근감소·단백질',
+      '스트레스·수면':'스트레스·수면','스트레스':'스트레스·수면',
+      '혈압·혈중지질':'혈압·혈중지질','혈압':'혈압·혈중지질',
+      'Mental Care (멘탈케어)':'스트레스·수면','Inner Beauty (이너뷰티)':'피부·미용',
+      'Diet/Slimming (다이어트)':'체중·체형 관리','Senior Care (시니어케어)':'뼈·관절·근육',
+      'Athletic Nutrition (운동영양)':'에너지·피로 회복','Metabolic (대사증후군)':'혈압·혈중지질',
+      'Immune (면역)':'면역·항산화','GABA (가바)':'스트레스·수면','Enzyme (효소)':'소화·장 건강',
+      'Amino Acid (아미노산)':'에너지·피로 회복',
+      'MUST HAVE - 오메가3':'심혈관·혈액순환','MUST HAVE - 프로바이오틱스':'소화·장 건강',
+      'MUST HAVE - 비타민D':'면역·항산화','MUST HAVE - 비타민C':'면역·항산화',
+      'MUST HAVE - 비타민B복합체':'에너지·피로 회복','MUST HAVE - 마그네슘':'스트레스·수면',
+      'MUST HAVE - 아연':'면역·항산화','MUST HAVE - 단백질':'근감소·단백질',
+      'MUST HAVE - CoQ10':'심혈관·혈액순환','MUST HAVE - 멀티비타민':'에너지·피로 회복',
+      '모발·두피 건강':'모발·두피 건강','탈모':'모발·두피 건강','모발':'모발·두피 건강',
+      '여성 갱년기':'여성 갱년기·호르몬','갱년기':'여성 갱년기·호르몬',
+      '이소플라본':'여성 갱년기·호르몬','석류':'여성 갱년기·호르몬',
     };
-
-    // 가장 최근 날짜 찾기
     var iDate = header.indexOf('수집일');
     if (iDate < 0) iDate = 0;
     var latestDate = '';
@@ -1173,47 +1037,36 @@ async function loadMarketData() {
       var d = rows[i][iDate] ? rows[i][iDate].trim() : '';
       if (d && d > latestDate) latestDate = d;
     }
-    console.log('최신 수집일:', latestDate);
-
     var temp = {};
     for (var i = 1; i < rows.length; i++) {
       var r = rows[i];
       if (!r[iName] || !r[iCat]) continue;
-      // 최신 날짜 데이터만 사용
       var rowDate = r[iDate] ? r[iDate].trim() : '';
       if (latestDate && rowDate !== latestDate) continue;
       var rawCat = r[iCat].trim();
-      // 매핑 테이블로 앱 카테고리명으로 변환 (없으면 원본 사용)
       var cat = CAT_MAPPING[rawCat] || rawCat;
-      var rank  = parseInt(r[iRank]) || 99;
-      var name  = r[iName].trim();
+      var rank = parseInt(r[iRank]) || 99;
+      var name = r[iName].trim();
       var price = parseInt((r[iPrice]||'0').replace(/[^0-9]/g,'')) || 0;
-      var mall  = (r[iMall]||'').trim();
+      var mall = (r[iMall]||'').trim();
       if (!temp[cat]) temp[cat] = [];
-      // 같은 상품 중복 방지
       var exists = temp[cat].some(function(x){ return x.name === name; });
-      if (!exists && temp[cat].length < 4) {
-        temp[cat].push({ rank: rank, name: name, price: price, mall: mall });
-      }
+      if (!exists && temp[cat].length < 4) temp[cat].push({ rank: rank, name: name, price: price, mall: mall });
     }
-    // 각 카테고리 내 rank 순 정렬
     Object.keys(temp).forEach(function(cat){
       temp[cat].sort(function(a,b){ return a.rank - b.rank; });
-      // rank 재부여 (1~4)
       temp[cat].forEach(function(item, idx){ item.rank = idx + 1; });
     });
     MARKET = temp;
     MARKET_LOADED = true;
-    console.log('구글 시트 데이터 로드 완료. 카테고리 수:', Object.keys(MARKET).length);
   } catch(e) {
-    console.warn('구글 시트 로드 실패, 기본 데이터 사용:', e);
+    console.warn('구글 시트 로드 실패:', e);
     MARKET = MARKET_FALLBACK;
     MARKET_LOADED = true;
   }
   MARKET_LOADING = false;
 }
 
-// CSV 파싱 함수 (따옴표 처리 포함)
 function csvParse(csv) {
   var rows = []; var row = []; var cell = ''; var inQ = false;
   for (var i = 0; i < csv.length; i++) {
@@ -1234,7 +1087,6 @@ function csvParse(csv) {
   return rows;
 }
 
-// 구글 시트 로드 실패 시 fallback 더미 데이터
 var MARKET_FALLBACK = {
   '에너지·피로 회복':[{rank:1,name:'종근당건강 활력비타민B 컴플렉스',price:18900,mall:'종근당몰'},{rank:2,name:'일동제약 아로나민 골드플러스',price:22500,mall:'일동몰'},{rank:3,name:'GNM 비타민B12 고함량',price:14900,mall:'GNM자연의품격'},{rank:4,name:'나우푸드 B-50 컴플렉스',price:19800,mall:'아이허브코리아'}],
   '뼈·관절·근육':[{rank:1,name:'유한양행 뼈대있는 칼슘 마그네슘D',price:16900,mall:'유한몰'},{rank:2,name:'GC녹십자 본케어 칼슘아연D',price:21000,mall:'녹십자몰'},{rank:3,name:'한미약품 칼슘D3 플러스',price:18500,mall:'한미몰'},{rank:4,name:'솔가 칼슘 마그네슘 아연',price:32000,mall:'솔가코리아'}],
@@ -1276,22 +1128,15 @@ var DEEP = {
   '모발·두피':{qs:[{q:'주로 어떤 증상이 있으세요?',key:'hair_type',opts:['머리카락이 많이 빠져요','두피가 건조하고 가려워요','모발이 가늘어지고 있어요','전체적으로 숱이 줄었어요']}]},
 };
 
-// ── 나이 입력 ──
 function onAge(v) {
   var age = parseInt(v);
   S.age = age;
   var n = document.getElementById('snotice');
-  if(age >= 65) {
-    n.classList.add('show');
-    document.body.classList.add('sm');
-  } else {
-    n.classList.remove('show');
-    document.body.classList.remove('sm');
-  }
+  if(age >= 65) { n.classList.add('show'); document.body.classList.add('sm'); }
+  else { n.classList.remove('show'); document.body.classList.remove('sm'); }
   checkBtn('btn1');
 }
 
-// ── BMI 계산 ──
 function calcBmi() {
   var h = parseFloat(document.getElementById('heightIn').value);
   var w = parseFloat(document.getElementById('weightIn').value);
@@ -1305,7 +1150,6 @@ function calcBmi() {
   S.bmi = bmiRound; S.bmiStatus = status;
 }
 
-// ── 선택 함수들 ──
 function sel(el, key, val) {
   var p = el.closest('.opts');
   if(p) p.querySelectorAll('.opt').forEach(function(b){b.classList.remove('on');});
@@ -1319,17 +1163,14 @@ function sel(el, key, val) {
   if(key==='gender') {
     document.getElementById('menopauseSection').style.display = val==='여성'?'block':'none';
   }
-  checkBtn('btn1');
-  checkBtn('btn2');
+  checkBtn('btn1'); checkBtn('btn2');
 }
 
 function radio(el, key, val) {
   var list = el.closest('.clist');
   list.querySelectorAll('.ci').forEach(function(c){c.classList.remove('ck');c.querySelector('.cb').textContent='';});
-  el.classList.add('ck');
-  el.querySelector('.cb').textContent='✓';
+  el.classList.add('ck'); el.querySelector('.cb').textContent='✓';
   S[key] = val;
-  // 갱년기 체크박스 표시
   if(key==='menstrual') {
     var showMeno = val==='갱년기 전환기 (생리 줄어듦)' || val==='완경(폐경) 후';
     document.getElementById('menopauseBox').style.display = showMeno?'block':'none';
@@ -1364,7 +1205,6 @@ function checkBtn(id) {
   btn.disabled = !ok;
 }
 
-// ── 가족 구성원 ──
 function toggleMember(el, key) {
   el.classList.toggle('on');
   var sections = {spouse:'spouseSection', child_young:'childYoungSection', child_teen:'childTeenSection', parent:'parentSection'};
@@ -1373,16 +1213,13 @@ function toggleMember(el, key) {
   else { S.members=S.members.filter(function(m){return m!==key;}); }
 }
 
-// ── 예산 ──
 function onBudget(v) {
   var labels = ['','3만원대','5만원대','10만원대','15만원대','20만원대','제한없음'];
-  var maxMap  = [0,30000,50000,100000,150000,200000,9999999];
-  S.budget = parseInt(v);
-  S.budgetMax = maxMap[v];
+  var maxMap = [0,30000,50000,100000,150000,200000,9999999];
+  S.budget = parseInt(v); S.budgetMax = maxMap[v];
   document.getElementById('budgetVal').textContent = labels[v];
 }
 
-// ── 시니어 카테고리 ──
 function selCat(el, cat) {
   if(!el.classList.contains('on') && S.seniorCats.length >= 2) return;
   el.classList.toggle('on');
@@ -1411,33 +1248,28 @@ function renderSeniorDeep() {
 function selDeep(el, key, val) {
   var p = el.closest('.opts');
   if(p) p.querySelectorAll('.opt').forEach(function(b){b.classList.remove('on');});
-  el.classList.add('on');
-  S.seniorDeep[key] = val;
+  el.classList.add('on'); S.seniorDeep[key] = val;
 }
 
 function selDaily(el, val) {
   var p = el.closest('.opts');
   if(p) p.querySelectorAll('.opt').forEach(function(b){b.classList.remove('on');});
-  el.classList.add('on');
-  S.dailyImpact = val;
+  el.classList.add('on'); S.dailyImpact = val;
   document.getElementById('dangerNotice').className = 'danger-notice'+(val==='있음'?' show':'');
 }
 
-// ── S5 시니어/일반 분기 ──
 function initS5() {
   var isSr = S.age >= 65;
   document.getElementById('seniorCatSection').style.display = isSr?'block':'none';
   document.getElementById('normalSymSection').style.display = isSr?'none':'block';
 }
 
-// ── 화면 이동 ──
 function go(id) {
   var cur = document.querySelector('.scr.on');
   if(cur) screenStack.push(cur.id);
   document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
   document.getElementById(id).classList.add('on');
-  window.scrollTo(0,0);
-  updateProgress(id);
+  window.scrollTo(0,0); updateProgress(id);
   if(id==='s5') initS5();
 }
 
@@ -1446,8 +1278,7 @@ function goBack() {
   var prev = screenStack.pop();
   document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
   document.getElementById(prev).classList.add('on');
-  window.scrollTo(0,0);
-  updateProgress(prev);
+  window.scrollTo(0,0); updateProgress(prev);
 }
 
 function updateProgress(id) {
@@ -1461,92 +1292,54 @@ function updateProgress(id) {
   else btnBack.classList.add('show');
 }
 
-// ── 결과 ──
-function showResult() {
-  document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
-  document.getElementById('sResult').classList.add('on');
-  updateProgress('sResult');
-  window.scrollTo(0,0);
-
-  // 구글 시트 데이터 로딩 후 렌더링 (시장베스트 + 제품DB 동시 로딩)
-  if (!MARKET_LOADED || !PRODUCTS_LOADED) {
-    var resBody = document.getElementById('resBody');
-    if (resBody) resBody.innerHTML = '<div style="text-align:center;padding:40px 0;color:#4b5563;"><div style="font-size:32px;margin-bottom:12px;">⏳</div><div style="font-size:15px;font-weight:700;">맞춤 데이터 불러오는 중...</div></div>';
-    Promise.all([loadMarketData(), loadProductDB(), loadVideoMap()]).then(function(){ renderResult(); });
-    return;
-  }
-  renderResult();
-}
-
-// ══════════════════════════════════════════════
-// 안전 필터 4단계 엔진
-// ══════════════════════════════════════════════
-
-// 1단계 하드블록 테이블: 약물계열 → 차단 성분 키워드
+// ══ 안전 필터 4단계 ══
 var HARD_BLOCK = {
-  '혈액희석제': ['오메가3','omega3','비타민E','vitamin e','은행잎','ginkgo','ginko'],
+  '혈액희석제': ['오메가3','omega3','비타민E','vitamin e','은행잎','ginkgo'],
   '혈압약':     ['코엔자임Q10','coq10','마그네슘','magnesium'],
   '당뇨약':     ['크롬','chromium','알파리포산','alpha lipoic','ala'],
   '갑상선약':   ['아이오딘','iodine','요오드','셀레늄','selenium'],
   '스타틴':     ['레드이스트라이스','홍국','red yeast rice']
 };
-
-// 2단계 소프트 경고: 전문의약품 복용 + 블록 미해당 성분
 var SOFT_WARN_INGREDIENTS = ['비타민K','vitamin k','칼슘','calcium','철분','iron','아연','zinc'];
-
-// 0단계 트리거 조건 → 중단 이유 메시지
 var STOP_MESSAGES = {
-  '항암치료': '항암 치료 중에는 건강기능식품이 치료 효과에 영향을 줄 수 있어요',
-  '투석':     '신장 투석 중에는 영양소 대사가 다르며 전문의 처방이 필요해요',
-  '간경화':   '간경화·간부전 상태에서는 성분 대사 부담이 생길 수 있어요',
+  '항암치료':'항암 치료 중에는 건강기능식품이 치료 효과에 영향을 줄 수 있어요',
+  '투석':'신장 투석 중에는 영양소 대사가 다르며 전문의 처방이 필요해요',
+  '간경화':'간경화·간부전 상태에서는 성분 대사 부담이 생길 수 있어요',
   '면역억제제':'면역억제제와 일부 성분의 상호작용이 위험할 수 있어요',
-  '임신':     '임신 중에는 섭취 가능한 성분과 용량이 엄격히 제한돼요'
+  '임신':'임신 중에는 섭취 가능한 성분과 용량이 엄격히 제한돼요'
 };
 
-// 0단계 체크 (항암/투석 등) 선택 핸들러
 function chkStop(el, key, val) {
   if (!S[key]) S[key] = [];
   if (val === '없음') {
-    // 없음 선택 시 전체 해제
     document.querySelectorAll('.ci[onclick*="chkStop"]').forEach(function(c){
-      c.classList.remove('ck');
-      c.querySelector('.cb').textContent = '';
+      c.classList.remove('ck'); c.querySelector('.cb').textContent = '';
     });
-    S[key] = ['없음'];
-    el.classList.add('ck');
-    el.querySelector('.cb').textContent = '✓';
+    S[key] = ['없음']; el.classList.add('ck'); el.querySelector('.cb').textContent = '✓';
     checkBtn('btn2');
   } else {
-    // 특정 항목 선택 시 '없음' 해제
     document.querySelectorAll('.ci[onclick*="chkStop"]').forEach(function(c){
       if (c.querySelector('.cl').textContent.trim().startsWith('해당 없음')) {
-        c.classList.remove('ck');
-        c.querySelector('.cb').textContent = '';
+        c.classList.remove('ck'); c.querySelector('.cb').textContent = '';
       }
     });
     S[key] = (S[key]||[]).filter(function(v){ return v !== '없음'; });
     if (el.classList.contains('ck')) {
-      el.classList.remove('ck');
-      el.querySelector('.cb').textContent = '';
+      el.classList.remove('ck'); el.querySelector('.cb').textContent = '';
       S[key] = S[key].filter(function(v){ return v !== val; });
     } else {
-      el.classList.add('ck');
-      el.querySelector('.cb').textContent = '✓';
-      S[key].push(val);
+      el.classList.add('ck'); el.querySelector('.cb').textContent = '✓'; S[key].push(val);
     }
   }
   checkBtn('btn2');
 }
 
-// 0단계: 추천 중단 여부 판단
 function isStage0() {
   var stops = S.stopCondition || [];
-  // stopCondition이 비어있거나 '없음'만 있으면 0단계 아님
   if (!stops.length) return false;
   return stops.some(function(v){ return v !== '없음' && v !== ''; });
 }
 
-// 0단계 화면 표시
 function showStopScreen() {
   document.getElementById('btn2').style.display = 'none';
   document.getElementById('stopScreen').style.display = 'block';
@@ -1554,12 +1347,8 @@ function showStopScreen() {
   var r1 = document.getElementById('stopReason1');
   var r2 = document.getElementById('stopReason2');
   var r3 = document.getElementById('stopReason3');
-  if (stops.length > 0) {
-    r1.textContent = STOP_MESSAGES[stops[0]] || stops[0];
-    r1.style.display = 'list-item';
-  }
-  r2.style.display = 'list-item';
-  r3.style.display = 'list-item';
+  if (stops.length > 0) { r1.textContent = STOP_MESSAGES[stops[0]] || stops[0]; r1.style.display = 'list-item'; }
+  r2.style.display = 'list-item'; r3.style.display = 'list-item';
 }
 
 function hideStopScreen() {
@@ -1567,192 +1356,133 @@ function hideStopScreen() {
   document.getElementById('btn2').style.display = 'block';
 }
 
-// 1단계: 제품이 하드블록 대상인지 판단
-// product: { name, ingredients(선택) } or 제품명 문자열
-function isHardBlocked(productName, cat) {
+function isHardBlocked(productName) {
   var drugTypes = S.drugType || [];
   if (!drugTypes.length) return false;
   var name = (productName || '').toLowerCase();
   return drugTypes.some(function(drug) {
     var blocks = HARD_BLOCK[drug] || [];
-    return blocks.some(function(kw) {
-      return name.indexOf(kw.toLowerCase()) !== -1;
-    });
+    return blocks.some(function(kw){ return name.indexOf(kw.toLowerCase()) !== -1; });
   });
 }
 
-// 2단계: 소프트 경고 대상인지 판단
 function isSoftWarn(productName) {
   if (S.rx !== '있음') return false;
   var name = (productName || '').toLowerCase();
-  return SOFT_WARN_INGREDIENTS.some(function(kw){
-    return name.indexOf(kw.toLowerCase()) !== -1;
-  });
+  return SOFT_WARN_INGREDIENTS.some(function(kw){ return name.indexOf(kw.toLowerCase()) !== -1; });
 }
 
-// 안전 단계 계산 (0~3)
-function getSafetyLevel(productName, cat) {
+function getSafetyLevel(productName) {
   if (isStage0()) return 0;
-  if (isHardBlocked(productName, cat)) return 1;
+  if (isHardBlocked(productName)) return 1;
   if (isSoftWarn(productName)) return 2;
   return 3;
 }
 
-// 0단계 체크 후 다음 화면 이동
 function safetyGo() {
-  if (isStage0()) {
-    showStopScreen();
-  } else {
-    go('s3');
-  }
+  if (isStage0()) showStopScreen();
+  else go('s3');
 }
 
-// ══════════════════════════════════════════════
-// 가족 구성원별 점수화 엔진
-// ══════════════════════════════════════════════
-
-// 현재 보고 있는 가족 탭
+// ══ 가족 탭 ══
 var currentFamilyTab = 'self';
-
-// 가족 구성원 정의
 var FAMILY_MEMBERS = {
-  self:       { label:'본인', icon:'👤' },
-  spouse:     { label:'배우자', icon:'💑' },
+  self:{ label:'본인', icon:'👤' },
+  spouse:{ label:'배우자', icon:'💑' },
   child_young:{ label:'어린 자녀', icon:'👦' },
-  child_teen: { label:'청소년 자녀', icon:'📚' },
-  parent:     { label:'부모님', icon:'👴👵' },
+  child_teen:{ label:'청소년 자녀', icon:'📚' },
+  parent:{ label:'부모님', icon:'👴👵' },
 };
 
-// 가족별 카테고리 점수 계산
 function calcFamilyScore(member) {
-  var score = {
-    '에너지·피로 회복':0,'뼈·관절·근육':0,'두뇌·기억·인지':0,
-    '면역·항산화':0,'소화·장 건강':0,'심혈관·혈액순환':0,
-    '눈 건강':0,'피부·미용':0,'체중·체형 관리':0,
-    '근감소·단백질':0,'스트레스·수면':0,'혈압·혈중지질':0,'모발·두피 건강':0,
-    '여성 갱년기·호르몬':0,
-  };
+  var score = {'에너지·피로 회복':0,'뼈·관절·근육':0,'두뇌·기억·인지':0,'면역·항산화':0,'소화·장 건강':0,'심혈관·혈액순환':0,'눈 건강':0,'피부·미용':0,'체중·체형 관리':0,'근감소·단백질':0,'스트레스·수면':0,'혈압·혈중지질':0,'모발·두피 건강':0,'여성 갱년기·호르몬':0};
   function add(cat, pts) { if(score[cat]!==undefined) score[cat]+=pts; }
-
   var interestMap = {
-    // 배우자 관심사
-    '전립선 건강':    [['에너지·피로 회복',20],['면역·항산화',10]],
-    '에너지·활력':    [['에너지·피로 회복',25]],
-    '심혈관·혈압':    [['심혈관·혈액순환',25],['혈압·혈중지질',15]],
-    '뼈·관절':        [['뼈·관절·근육',25]],
-    '갱년기 관리':    [['여성 갱년기·호르몬',50],['스트레스·수면',25],['뼈·관절·근육',20],['피부·미용',15]],
-    '체중 관리':      [['체중·체형 관리',25]],
-    // 어린 자녀
-    '성장 지원':      [['뼈·관절·근육',30],['근감소·단백질',20]],
-    '면역력':         [['면역·항산화',30]],
-    '두뇌·집중력':    [['두뇌·기억·인지',30]],
-    '피부·아토피':    [['피부·미용',25],['면역·항산화',15]],
-    // 청소년 자녀
-    '집중력·학습':    [['두뇌·기억·인지',30]],
-    '눈 건강':        [['눈 건강',30]],
-    '수면 질':        [['스트레스·수면',25]],
-    // 부모님
-    '뼈·골다공증':    [['뼈·관절·근육',30]],
-    '관절 통증':      [['뼈·관절·근육',25]],
-    '인지 기능·기억력':[['두뇌·기억·인지',30]],
-    '혈압·혈당 관리': [['혈압·혈중지질',25],['심혈관·혈액순환',15]],
-    '심혈관 건강':    [['심혈관·혈액순환',30]],
-    '소화·장 건강':   [['소화·장 건강',25]],
-    '근감소 예방':    [['근감소·단백질',30],['뼈·관절·근육',15]],
+    '전립선 건강':[['에너지·피로 회복',20],['면역·항산화',10]],'에너지·활력':[['에너지·피로 회복',25]],
+    '심혈관·혈압':[['심혈관·혈액순환',25],['혈압·혈중지질',15]],'뼈·관절':[['뼈·관절·근육',25]],
+    '갱년기 관리':[['여성 갱년기·호르몬',50],['스트레스·수면',25],['뼈·관절·근육',20],['피부·미용',15]],
+    '체중 관리':[['체중·체형 관리',25]],'성장 지원':[['뼈·관절·근육',30],['근감소·단백질',20]],
+    '면역력':[['면역·항산화',30]],'두뇌·집중력':[['두뇌·기억·인지',30]],'피부·아토피':[['피부·미용',25],['면역·항산화',15]],
+    '집중력·학습':[['두뇌·기억·인지',30]],'눈 건강':[['눈 건강',30]],'수면 질':[['스트레스·수면',25]],
+    '뼈·골다공증':[['뼈·관절·근육',30]],'관절 통증':[['뼈·관절·근육',25]],
+    '인지 기능·기억력':[['두뇌·기억·인지',30]],'혈압·혈당 관리':[['혈압·혈중지질',25],['심혈관·혈액순환',15]],
+    '심혈관 건강':[['심혈관·혈액순환',30]],'소화·장 건강':[['소화·장 건강',25]],'근감소 예방':[['근감소·단백질',30],['뼈·관절·근육',15]],
   };
-
   var interests = [];
-  if(member==='spouse')      interests = S.spouseInterest||[];
+  if(member==='spouse') interests = S.spouseInterest||[];
   if(member==='child_young') interests = S.childYoungInterest||[];
-  if(member==='child_teen')  interests = S.childTeenInterest||[];
-  if(member==='parent')      interests = S.parentInterest||[];
-
-  interests.forEach(function(i) {
-    var m = interestMap[i];
-    if(m) m.forEach(function(x){ add(x[0],x[1]); });
-  });
-
-  // 100점 캡
+  if(member==='child_teen') interests = S.childTeenInterest||[];
+  if(member==='parent') interests = S.parentInterest||[];
+  interests.forEach(function(i){ var m=interestMap[i]; if(m) m.forEach(function(x){ add(x[0],x[1]); }); });
   Object.keys(score).forEach(function(c){ if(score[c]>100) score[c]=100; });
-
   return score;
 }
 
-// 가족 탭 렌더링
 function renderFamilyTabs() {
   var hasFam = (S.members||[]).length > 0;
   var area = document.getElementById('familyTabArea');
   if(!hasFam) { area.style.display='none'; return; }
-
   area.style.display='block';
-  var tabs = [{ key:'self', label:'본인', icon:'👤' }];
-  (S.members||[]).forEach(function(m) {
-    if(FAMILY_MEMBERS[m]) tabs.push({ key:m, label:FAMILY_MEMBERS[m].label, icon:FAMILY_MEMBERS[m].icon });
-  });
-
+  var tabs = [{key:'self',label:'본인',icon:'👤'}];
+  (S.members||[]).forEach(function(m){ if(FAMILY_MEMBERS[m]) tabs.push({key:m,label:FAMILY_MEMBERS[m].label,icon:FAMILY_MEMBERS[m].icon}); });
   document.getElementById('familyTabs').innerHTML = '';
   tabs.forEach(function(t) {
     var div = document.createElement('div');
-    div.className = 'family-tab' + (t.key === currentFamilyTab ? ' on' : '');
-    div.setAttribute('data-key', t.key);
-    div.innerHTML = "<span class='family-tab-icon'>" + t.icon + "</span><span class='family-tab-label'>" + t.label + "</span>";
-    (function(key, el){ el.onclick = function(){ switchFamilyTab(key, el); }; })(t.key, div);
+    div.className = 'family-tab'+(t.key===currentFamilyTab?' on':'');
+    div.setAttribute('data-key',t.key);
+    div.innerHTML = "<span class='family-tab-icon'>"+t.icon+"</span><span class='family-tab-label'>"+t.label+"</span>";
+    (function(key,el){ el.onclick = function(){ switchFamilyTab(key,el); }; })(t.key,div);
     document.getElementById('familyTabs').appendChild(div);
   });
-  document.querySelector('.family-tab-area').insertAdjacentHTML('beforeend',
-    '<div class="family-tab-hint" id="familyHint">'+getFamilyHint()+'</div>'
-  );
+  var hintEl = document.getElementById('familyHint');
+  if(hintEl) hintEl.remove();
+  var hint = document.createElement('div');
+  hint.className='family-tab-hint'; hint.id='familyHint';
+  hint.textContent = currentFamilyTab==='self'?'👆 탭을 눌러 가족 맞춤 추천도 확인하세요':FAMILY_MEMBERS[currentFamilyTab].icon+' '+FAMILY_MEMBERS[currentFamilyTab].label+' 맞춤 추천 결과예요';
+  area.appendChild(hint);
 }
 
-function getFamilyHint() {
-  if(currentFamilyTab==='self') return '👆 탭을 눌러 가족 맞춤 추천도 확인하세요';
-  return FAMILY_MEMBERS[currentFamilyTab].icon+' '+FAMILY_MEMBERS[currentFamilyTab].label+' 맞춤 추천 결과예요';
-}
-
-// 가족 탭 전환
 function switchFamilyTab(member, el) {
   currentFamilyTab = member;
   document.querySelectorAll('.family-tab').forEach(function(t){ t.classList.remove('on'); });
   if(el) el.classList.add('on');
   var hint = document.getElementById('familyHint');
-  if(hint) hint.textContent = getFamilyHint();
-
-  if(member==='self') {
-    renderResult();
-    return;
-  }
-
+  if(hint) hint.textContent = member==='self'?'👆 탭을 눌러 가족 맞춤 추천도 확인하세요':FAMILY_MEMBERS[member].icon+' '+FAMILY_MEMBERS[member].label+' 맞춤 추천 결과예요';
+  if(member==='self') { renderResult(); return; }
   var score = calcFamilyScore(member);
-  var cats = Object.keys(score)
-    .filter(function(c){ return score[c]>0; })
-    .sort(function(a,b){ return score[b]-score[a]; })
-    .slice(0,4);
+  var cats = Object.keys(score).filter(function(c){ return score[c]>0; }).sort(function(a,b){ return score[b]-score[a]; }).slice(0,4);
   if(!cats.length) cats = ['면역·항산화','에너지·피로 회복'];
-
   var memberInfo = FAMILY_MEMBERS[member];
   document.getElementById('resTitle').textContent = memberInfo.icon+' '+memberInfo.label+' 맞춤 추천';
   document.getElementById('resDesc').textContent = memberInfo.label+'을(를) 위한 맞춤 건강기능식품 추천이에요.';
   document.getElementById('resTags').innerHTML = '';
-
   var tabArea = document.getElementById('tabArea');
   tabArea.innerHTML = '';
-  cats.forEach(function(c, i) {
+  cats.forEach(function(c,i) {
     var t = document.createElement('div');
-    t.className = 'tab' + (i===0?' on':'');
-    t.textContent = c;
-    (function(cat){ t.onclick = function(){ showCat(this, cat); }; })(c);
+    t.className='tab'+(i===0?' on':''); t.textContent=c;
+    (function(cat){ t.onclick=function(){ showCat(this,cat); }; })(c);
     tabArea.appendChild(t);
   });
   renderCat(cats[0], false, S.budgetMax||50000);
 }
 
-// ══════════════════════════════════════════════
+// ══ 결과 렌더링 ══
+function showResult() {
+  document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
+  document.getElementById('sResult').classList.add('on');
+  updateProgress('sResult'); window.scrollTo(0,0);
+  if (!MARKET_LOADED || !PRODUCTS_LOADED) {
+    Promise.all([loadMarketData(), loadProductDB(), loadVideoMap()]).then(function(){ renderResult(); });
+    return;
+  }
+  renderResult();
+}
 
 function renderResult() {
   var isSr = S.age >= 65;
   var isRx = S.rx === '있음';
   var budgetMax = S.budgetMax || 50000;
-
   document.getElementById('resTitle').textContent = (S.age||'')+'세 '+(S.gender||'')+' 맞춤 추천';
   var desc = '';
   if(S.bmiStatus) desc += 'BMI '+S.bmi+' ('+S.bmiStatus+'). ';
@@ -1761,8 +1491,6 @@ function renderResult() {
   if(isRx) desc += '⚠️ 전문의약품 복용 중 — 약사 상담 필수.';
   if(!desc) desc = '입력하신 건강 정보를 바탕으로 맞춤 추천해드려요.';
   document.getElementById('resDesc').textContent = desc;
-
-  // 태그
   var tags = [];
   if(isSr) tags.push({t:'👴 시니어 모드',s:false});
   (S.seniorCats||[]).forEach(function(c){tags.push({t:c,s:true});});
@@ -1773,320 +1501,75 @@ function renderResult() {
     return '<span class="rtag'+(t.s?' sym':'')+'">'+t.t+'</span>';
   }).join('');
 
-  // ── 점수화 알고리즘 (임상 근거 기반) ──
-  var score = {
-    '에너지·피로 회복': 0,
-    '뼈·관절·근육': 0,
-    '두뇌·기억·인지': 0,
-    '면역·항산화': 0,
-    '소화·장 건강': 0,
-    '심혈관·혈액순환': 0,
-    '눈 건강': 0,
-    '피부·미용': 0,
-    '체중·체형 관리': 0,
-    '근감소·단백질': 0,
-    '스트레스·수면': 0,
-    '혈압·혈중지질': 0,
-    '모발·두피 건강': 0,
-    '여성 갱년기·호르몬': 0,
-  };
+  var score = {'에너지·피로 회복':0,'뼈·관절·근육':0,'두뇌·기억·인지':0,'면역·항산화':0,'소화·장 건강':0,'심혈관·혈액순환':0,'눈 건강':0,'피부·미용':0,'체중·체형 관리':0,'근감소·단백질':0,'스트레스·수면':0,'혈압·혈중지질':0,'모발·두피 건강':0,'여성 갱년기·호르몬':0};
+  function addScore(cat, pts) { if(score[cat]!==undefined) score[cat]+=pts; }
 
-  function addScore(cat, pts) {
-    if (score[cat] !== undefined) score[cat] += pts;
+  var age = parseInt(S.age)||0;
+  if(age>=50&&age<65){addScore('뼈·관절·근육',15);addScore('두뇌·기억·인지',10);addScore('면역·항산화',10);}
+  if(age>=65){addScore('뼈·관절·근육',25);addScore('근감소·단백질',25);addScore('두뇌·기억·인지',20);addScore('면역·항산화',15);}
+  if(S.gender==='여성'){addScore('피부·미용',10);addScore('면역·항산화',5);}
+  if(S.gender==='남성'){addScore('심혈관·혈액순환',10);addScore('에너지·피로 회복',5);}
+  var bmi = parseFloat(S.bmi)||0;
+  if(bmi>0&&bmi<18.5){addScore('근감소·단백질',20);addScore('면역·항산화',15);}
+  else if(bmi>=23&&bmi<25){addScore('체중·체형 관리',15);addScore('심혈관·혈액순환',10);}
+  else if(bmi>=25){addScore('체중·체형 관리',25);addScore('혈압·혈중지질',20);addScore('심혈관·혈액순환',15);addScore('소화·장 건강',10);}
+  var menoSym = S.menopauseSym||[];
+  var isMeno = menoSym.length>0||S.menstrual==='갱년기 전환기 (생리 줄어듦)'||S.menstrual==='완경(폐경) 후';
+  if(isMeno){
+    addScore('여성 갱년기·호르몬',60);addScore('스트레스·수면',30);addScore('뼈·관절·근육',25);addScore('피부·미용',20);addScore('에너지·피로 회복',15);
+    if(menoSym.indexOf('안면홍조·발한')!==-1) addScore('여성 갱년기·호르몬',15);
+    if(menoSym.indexOf('수면 장애 심화')!==-1) addScore('스트레스·수면',20);
+    if(menoSym.indexOf('감정 기복·우울감')!==-1) addScore('스트레스·수면',15);
+    if(menoSym.indexOf('집중력·기억력 저하')!==-1) addScore('두뇌·기억·인지',15);
+    if(menoSym.indexOf('관절통 심화')!==-1) addScore('뼈·관절·근육',20);
   }
-
-  // 1. 나이 기반 점수
-  var age = parseInt(S.age) || 0;
-  if (age >= 50 && age < 65) {
-    addScore('뼈·관절·근육', 15);
-    addScore('두뇌·기억·인지', 10);
-    addScore('면역·항산화', 10);
-  }
-  if (age >= 65) {
-    addScore('뼈·관절·근육', 25);
-    addScore('근감소·단백질', 25);
-    addScore('두뇌·기억·인지', 20);
-    addScore('면역·항산화', 15);
-  }
-
-  // 2. 성별 기반 점수
-  if (S.gender === '여성') {
-    addScore('피부·미용', 10);
-    addScore('면역·항산화', 5);
-  }
-  if (S.gender === '남성') {
-    addScore('심혈관·혈액순환', 10);
-    addScore('에너지·피로 회복', 5);
-  }
-
-  // 3. BMI 기반 점수
-  var bmi = parseFloat(S.bmi) || 0;
-  if (bmi > 0 && bmi < 18.5) {
-    addScore('근감소·단백질', 20);
-    addScore('면역·항산화', 15);
-  } else if (bmi >= 23 && bmi < 25) {
-    addScore('체중·체형 관리', 15);
-    addScore('심혈관·혈액순환', 10);
-  } else if (bmi >= 25) {
-    addScore('체중·체형 관리', 25);
-    addScore('혈압·혈중지질', 20);
-    addScore('심혈관·혈액순환', 15);
-    addScore('소화·장 건강', 10);
-  }
-
-  // 4. 갱년기 기반 점수
-  var menoSym = S.menopauseSym || [];
-  var isMeno = menoSym.length > 0 || S.menstrual === '갱년기 전환기 (생리 줄어듦)' || S.menstrual === '완경(폐경) 후';
-  if (isMeno) {
-    // 갱년기 전용 카테고리 최우선
-    addScore('여성 갱년기·호르몬', 60);
-    addScore('스트레스·수면', 30);
-    addScore('뼈·관절·근육', 25);
-    addScore('피부·미용', 20);
-    addScore('에너지·피로 회복', 15);
-    // 갱년기 증상별 추가 점수
-    if (menoSym.indexOf('안면홍조·발한') !== -1)    addScore('여성 갱년기·호르몬', 15);
-    if (menoSym.indexOf('수면 장애 심화') !== -1)   addScore('스트레스·수면', 20);
-    if (menoSym.indexOf('감정 기복·우울감') !== -1) addScore('스트레스·수면', 15);
-    if (menoSym.indexOf('집중력·기억력 저하') !== -1) addScore('두뇌·기억·인지', 15);
-    if (menoSym.indexOf('관절통 심화') !== -1)      addScore('뼈·관절·근육', 20);
-  }
-
-  // 5. 식습관 기반 점수
-  var diet = S.diet || '';
-  if (diet === '채소·과일을 거의 안 먹어요') {
-    addScore('면역·항산화', 15);
-    addScore('소화·장 건강', 10);
-  }
-  if (diet === '육류 위주 식사') {
-    addScore('심혈관·혈액순환', 15);
-    addScore('소화·장 건강', 10);
-  }
-  if (diet === '불규칙한 식사') {
-    addScore('에너지·피로 회복', 15);
-    addScore('소화·장 건강', 10);
-  }
-
-  // 6. 생활습관 기반 점수
-  var exercise = S.exercise || '';
-  if (exercise === '거의 안 해요') {
-    addScore('근감소·단백질', 15);
-    addScore('뼈·관절·근육', 10);
-    addScore('체중·체형 관리', 10);
-  }
-
-  var outdoor = S.outdoor || '';
-  if (outdoor === '실내 위주' || outdoor === '거의 외출 안 함') {
-    addScore('뼈·관절·근육', 20);
-    addScore('면역·항산화', 10);
-  }
-
-  var drink = S.drink || '';
-  if (drink === '자주 마셔요' || drink === '매일 마셔요') {
-    addScore('에너지·피로 회복', 15);
-    addScore('소화·장 건강', 15);
-  }
-
-  var smoke = S.smoke || '';
-  if (smoke === '흡연 중') {
-    addScore('면역·항산화', 20);
-    addScore('심혈관·혈액순환', 15);
-  }
-
-  var sleep = S.sleepQuality || '';
-  if (sleep === '나쁨' || sleep === '매우 나쁨') {
-    addScore('스트레스·수면', 25);
-    addScore('에너지·피로 회복', 15);
-    addScore('면역·항산화', 10);
-  }
-
-  var stress = S.stressLevel || '';
-  if (stress === '높음' || stress === '매우 높음') {
-    addScore('스트레스·수면', 20);
-    addScore('에너지·피로 회복', 15);
-    addScore('면역·항산화', 10);
-  }
-
-  // 7. 증상 기반 점수 (가장 높은 가중치)
+  var exercise=S.exercise||'';
+  if(exercise==='거의 안 함'){addScore('근감소·단백질',15);addScore('뼈·관절·근육',10);addScore('체중·체형 관리',10);}
   var symScoreMap = {
-    '오후만 되면 극심한 피로':     [['에너지·피로 회복', 35], ['면역·항산화', 15]],
-    '머리가 자주 무겁거나 멍함':   [['두뇌·기억·인지', 35], ['에너지·피로 회복', 15]],
-    '손발 저림·냉증':              [['심혈관·혈액순환', 35], ['뼈·관절·근육', 15]],
-    '눈 충혈·건조·피로':          [['눈 건강', 35], ['두뇌·기억·인지', 10]],
-    '식후 더부룩·팽만감':         [['소화·장 건강', 35], ['에너지·피로 회복', 10]],
-    '변비 (주 3회 미만)':         [['소화·장 건강', 35]],
-    '잦은 설사·무른 변':          [['소화·장 건강', 35]],
-    '체중이 계속 늘어남':         [['체중·체형 관리', 35], ['혈압·혈중지질', 15]],
-    '무릎·관절 통증·뻣뻣함':     [['뼈·관절·근육', 35], ['근감소·단백질', 15]],
-    '허리 통증':                  [['뼈·관절·근육', 35], ['스트레스·수면', 15]],
-    '근육 경련·쥐가 잘 남':      [['뼈·관절·근육', 35], ['스트레스·수면', 10]],
-    '피부 건조·탄력 저하':        [['피부·미용', 35], ['면역·항산화', 15]],
-    '모발 탈락 증가·두피 건조':   [['모발·두피 건강', 50], ['피부·미용', 15], ['면역·항산화', 10]],
-    '자주 피곤하고 무기력함':     [['에너지·피로 회복', 35], ['면역·항산화', 15]],
-    '잦은 감기·면역 저하':        [['면역·항산화', 35], ['에너지·피로 회복', 10]],
-    '수면 장애':                  [['스트레스·수면', 35], ['에너지·피로 회복', 15]],
-    '혈압이 높음':                [['혈압·혈중지질', 35], ['심혈관·혈액순환', 20]],
-    '콜레스테롤 걱정':            [['혈압·혈중지질', 35], ['심혈관·혈액순환', 20]],
-    '근력 저하':                  [['근감소·단백질', 35], ['뼈·관절·근육', 15]],
+    '오후만 되면 극심한 피로':[['에너지·피로 회복',35],['면역·항산화',15]],
+    '머리가 자주 무겁거나 멍함':[['두뇌·기억·인지',35],['에너지·피로 회복',15]],
+    '손발 저림·냉증':[['심혈관·혈액순환',35],['뼈·관절·근육',15]],
+    '눈 충혈·건조·피로':[['눈 건강',35],['두뇌·기억·인지',10]],
+    '식후 더부룩·팽만감':[['소화·장 건강',35],['에너지·피로 회복',10]],
+    '변비 (주 3회 미만)':[['소화·장 건강',35]],
+    '잦은 설사·무른 변':[['소화·장 건강',35]],
+    '체중이 계속 늘어남':[['체중·체형 관리',35],['혈압·혈중지질',15]],
+    '무릎·관절 통증·뻣뻣함':[['뼈·관절·근육',35],['근감소·단백질',15]],
+    '허리 통증':[['뼈·관절·근육',35],['스트레스·수면',15]],
+    '근육 경련·쥐가 잘 남':[['뼈·관절·근육',35],['스트레스·수면',10]],
+    '피부 건조·탄력 저하':[['피부·미용',35],['면역·항산화',15]],
+    '모발 탈락 증가·두피 건조':[['모발·두피 건강',50],['피부·미용',15],['면역·항산화',10]],
   };
-
-  var allSym = (S.symEnergy||[]).concat(S.symDigest||[]).concat(S.symMuscle||[]);
-  allSym.forEach(function(sym) {
-    var mapping = symScoreMap[sym];
-    if (mapping) {
-      mapping.forEach(function(m) { addScore(m[0], m[1]); });
-    }
-  });
-
-  // 8. 관심사 기반 점수
-  // 가족 관심사 → 점수 반영 (배우자/자녀/부모님)
-  var familyInterestMap = {
-    // 배우자
-    '전립선 건강':    [['에너지·피로 회복', 15]],
-    '에너지·활력':    [['에너지·피로 회복', 15]],
-    '심혈관·혈압':    [['심혈관·혈액순환', 15], ['혈압·혈중지질', 10]],
-    '뼈·관절':        [['뼈·관절·근육', 15]],
-    '갱년기 관리':    [['여성 갱년기·호르몬', 40], ['스트레스·수면', 20], ['뼈·관절·근육', 15]],
-    '체중 관리':      [['체중·체형 관리', 15]],
-    // 어린 자녀
-    '성장 지원':      [['뼈·관절·근육', 15], ['근감소·단백질', 10]],
-    '면역력':         [['면역·항산화', 15]],
-    '두뇌·집중력':    [['두뇌·기억·인지', 15]],
-    '피부·아토피':    [['피부·미용', 15], ['면역·항산화', 10]],
-    // 청소년 자녀
-    '집중력·학습':    [['두뇌·기억·인지', 15]],
-    '눈 건강':        [['눈 건강', 15]],
-    '수면 질':        [['스트레스·수면', 15]],
-    // 부모님
-    '뼈·골다공증':    [['뼈·관절·근육', 20]],
-    '관절 통증':      [['뼈·관절·근육', 15]],
-    '인지 기능·기억력': [['두뇌·기억·인지', 20]],
-    '혈압·혈당 관리': [['혈압·혈중지질', 15], ['심혈관·혈액순환', 10]],
-    '심혈관 건강':    [['심혈관·혈액순환', 20]],
-    '소화·장 건강':   [['소화·장 건강', 15]],
-    '근감소 예방':    [['근감소·단백질', 20]],
-  };
-  var allFamilyInterests = (S.spouseInterest||[])
-    .concat(S.childYoungInterest||[])
-    .concat(S.childTeenInterest||[])
-    .concat(S.parentInterest||[]);
-  allFamilyInterests.forEach(function(interest) {
-    var mapping = familyInterestMap[interest];
-    if (mapping) mapping.forEach(function(m) { addScore(m[0], m[1]); });
-  });
-
+  allSym.forEach(function(sym){ var m=symScoreMap[sym]; if(m) m.forEach(function(x){ addScore(x[0],x[1]); }); });
   (S.interests||[]).forEach(function(interest) {
     var interestMap = {
-      '뼈·관절 건강':   [['뼈·관절·근육', 20]],
-      '혈관·심장':      [['심혈관·혈액순환', 20], ['혈압·혈중지질', 15]],
-      '눈 건강':        [['눈 건강', 20]],
-      '피부·미용':      [['피부·미용', 20]],
-      '다이어트':       [['체중·체형 관리', 20]],
-      '장 건강':        [['소화·장 건강', 20]],
-      '면역력':         [['면역·항산화', 20]],
-      '기억력·집중력':  [['두뇌·기억·인지', 20]],
-      '수면·스트레스':  [['스트레스·수면', 20]],
-      '근육·단백질':    [['근감소·단백질', 20]],
-      '모발·두피 건강':  [['모발·두피 건강', 20]],
-      '여성 갱년기·호르몬': [['여성 갱년기·호르몬', 30], ['스트레스·수면', 15]],
+      '뼈·관절·근육':[['뼈·관절·근육',20]],'심혈관·혈액순환':[['심혈관·혈액순환',20],['혈압·혈중지질',15]],
+      '눈 건강':[['눈 건강',20]],'피부·미용':[['피부·미용',20]],'체중·체형 관리':[['체중·체형 관리',20]],
+      '소화·장 건강':[['소화·장 건강',20]],'면역·항산화':[['면역·항산화',20]],'두뇌·기억·인지':[['두뇌·기억·인지',20]],
+      '스트레스·수면':[['스트레스·수면',20]],'근감소·단백질':[['근감소·단백질',20]],'모발·두피 건강':[['모발·두피 건강',20]],
+      '여성 갱년기·호르몬':[['여성 갱년기·호르몬',30],['스트레스·수면',15]],
+      '에너지·피로 회복':[['에너지·피로 회복',20]],'혈압·혈중지질':[['혈압·혈중지질',20]],
     };
-    var mapping = interestMap[interest];
-    if (mapping) {
-      mapping.forEach(function(m) { addScore(m[0], m[1]); });
-    }
+    var m=interestMap[interest]; if(m) m.forEach(function(x){ addScore(x[0],x[1]); });
   });
-
-  // 9. 시니어 카테고리 (65세 이상)
-  if (isSr) {
-    (S.seniorCats||[]).forEach(function(sc) {
-      (CAT_MAP[sc]||[]).forEach(function(c) { addScore(c, 40); });
-    });
-  }
-
-  // ── 고도화 ①: 가족력 반영 ──
-  // 직계가족 질환 → 예방 차원 점수 (가족력은 절반 가중치)
-  var famHx = S.familyHx || [];
+  if(isSr){ (S.seniorCats||[]).forEach(function(sc){ (CAT_MAP[sc]||[]).forEach(function(c){ addScore(c,40); }); }); }
+  var famHx = S.familyHx||[];
   var familyScoreMap = {
-    '심혈관질환': [['심혈관·혈액순환', 20], ['혈압·혈중지질', 15]],
-    '당뇨':       [['체중·체형 관리', 15], ['혈압·혈중지질', 15], ['소화·장 건강', 10]],
-    '암':         [['면역·항산화', 20], ['에너지·피로 회복', 10]],
-    '치매·인지저하': [['두뇌·기억·인지', 20], ['면역·항산화', 10]],
-    '골다공증':   [['뼈·관절·근육', 20], ['근감소·단백질', 10]],
+    '심혈관질환':[['심혈관·혈액순환',20],['혈압·혈중지질',15]],
+    '당뇨':[['체중·체형 관리',15],['혈압·혈중지질',15],['소화·장 건강',10]],
+    '암':[['면역·항산화',20],['에너지·피로 회복',10]],
+    '치매·인지저하':[['두뇌·기억·인지',20],['면역·항산화',10]],
+    '골다공증':[['뼈·관절·근육',20],['근감소·단백질',10]],
   };
-  famHx.forEach(function(fh) {
-    var mapping = familyScoreMap[fh];
-    if (mapping) mapping.forEach(function(m) { addScore(m[0], m[1]); });
-  });
-
-  // ── 고도화 ②: 복합 조건 시너지 보너스 ──
-  // 나이 + 증상 조합 가중치
-  if (age >= 65 && allSym.indexOf('근력 저하') !== -1) {
-    addScore('근감소·단백질', 20);  // 시니어 + 근력저하 = 강화
-  }
-  if (age >= 65 && allSym.indexOf('무릎·관절 통증·뻣뻣함') !== -1) {
-    addScore('뼈·관절·근육', 20);
-  }
-  if (age >= 50 && (allSym.indexOf('머리가 자주 무겁거나 멍함') !== -1)) {
-    addScore('두뇌·기억·인지', 15);
-  }
-  // 흡연 + 심혈관 가족력 시너지
-  if (smoke === '흡연 중' && famHx.indexOf('심혈관질환') !== -1) {
-    addScore('심혈관·혈액순환', 20);
-    addScore('혈압·혈중지질', 15);
-  }
-  // 비만 + 당뇨 가족력 시너지
-  if (bmi >= 25 && famHx.indexOf('당뇨') !== -1) {
-    addScore('혈압·혈중지질', 20);
-    addScore('체중·체형 관리', 15);
-  }
-  // 수면 나쁨 + 스트레스 높음 시너지
-  if ((sleep === '나쁨' || sleep === '매우 나쁨') &&
-      (stress === '높음' || stress === '매우 높음')) {
-    addScore('스트레스·수면', 20);
-    addScore('에너지·피로 회복', 10);
-  }
-  // 갱년기 + 골다공증 가족력 시너지
-  if (menoSym.length > 0 && famHx.indexOf('골다공증') !== -1) {
-    addScore('뼈·관절·근육', 20);
-  }
-  // 식습관 불규칙 + 음주 시너지
-  if (diet === '불규칙한 식사' && (drink === '자주 마셔요' || drink === '매일 마셔요')) {
-    addScore('에너지·피로 회복', 10);
-    addScore('소화·장 건강', 10);
-  }
-
-  // ── 고도화 ③: 카테고리 점수 상한선 100점 캡 ──
-  Object.keys(score).forEach(function(cat) {
-    if (score[cat] > 100) score[cat] = 100;
-  });
-
-  // 10. 점수 기준 상위 카테고리 정렬
-  var cats = Object.keys(score)
-    .filter(function(c) { return score[c] > 0; })
-    .sort(function(a, b) { return score[b] - score[a]; })
-    .slice(0, 4);
-
-  // 점수 없으면 기본값
-  if (!cats.length) cats = ['면역·항산화', '에너지·피로 회복'];
-
-  // 점수 로그 (상위 카테고리만 출력)
-  var scoreLog = Object.keys(score)
-    .filter(function(c){ return score[c] > 0; })
-    .sort(function(a,b){ return score[b]-score[a]; })
-    .map(function(c){ return c+':'+score[c]; })
-    .join(' | ');
-  console.log('📊 카테고리 점수:', scoreLog);
-  console.log('🏆 추천 순위:', cats);
-  console.log('👨‍👩‍👧 가족력 반영:', famHx.join(',') || '없음');
-  console.log('💊 약물계열:', (S.drugType||[]).join(',') || '없음');
-
+  famHx.forEach(function(fh){ var m=familyScoreMap[fh]; if(m) m.forEach(function(x){ addScore(x[0],x[1]); }); });
+  Object.keys(score).forEach(function(cat){ if(score[cat]>100) score[cat]=100; });
+  var cats = Object.keys(score).filter(function(c){ return score[c]>0; }).sort(function(a,b){ return score[b]-score[a]; }).slice(0,4);
+  if(!cats.length) cats=['면역·항산화','에너지·피로 회복'];
   document.getElementById('tabArea').innerHTML = cats.map(function(c,i){
     return '<div class="tab'+(i===0?' on':'')+'" onclick="showCat(this,\''+c+'\')">'+c+'</div>';
   }).join('');
   renderCat(cats[0], isRx, budgetMax);
-
-  // 가족 탭 렌더링
-  currentFamilyTab = 'self';
+  currentFamilyTab='self';
   renderFamilyTabs();
 }
 
@@ -2096,183 +1579,116 @@ function showCat(el, cat) {
   renderCat(cat, S.rx==='있음', S.budgetMax||50000);
 }
 
-// ── 카테고리별 영상 매핑 ──
-var VIDEO_MAP = {};  // 구글 시트 콘텐츠매핑 시트에서 자동 로딩
+// ══ 영상 매핑 ══
+var VIDEO_MAP = {};
 var VIDEOS_LOADED = false;
 
 async function loadVideoMap() {
-  if (VIDEOS_LOADED) return;
+  if(VIDEOS_LOADED) return;
   try {
-    var url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID +
-              '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent('콘텐츠매핑');
+    var url = 'https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv&sheet='+encodeURIComponent('콘텐츠매핑');
     var res = await fetch(url);
     var csv = await res.text();
     var rows = csvParse(csv);
-    if (rows.length < 2) return;
-    // 헤더 자동 인식 (카테고리, 영상제목, URL, 노출여부)
+    if(rows.length<2) return;
     var header = rows[0].map(function(h){ return h.trim(); });
-    var iCat    = header.indexOf('카테고리');
-    var iTitle  = header.indexOf('영상제목');
-    var iUrl    = header.indexOf('URL');
-    var iShow   = header.indexOf('노출여부');
-    if (iCat < 0)   iCat = 1;
-    if (iTitle < 0) iTitle = 2;
-    if (iUrl < 0)   iUrl = 5;
-
-    VIDEO_MAP = {};
-    for (var i = 1; i < rows.length; i++) {
-      var r = rows[i];
-      var cat = r[iCat] ? r[iCat].trim() : '';
-      var videoUrl = r[iUrl] ? r[iUrl].trim() : '';
-      if (!cat || !videoUrl) continue;
-
-      // 노출여부 N이면 제외
-      if (iShow >= 0 && r[iShow] && r[iShow].trim() === 'N') continue;
-
-      // URL에서 videoId 자동 추출
-      var videoId = '';
-      var match = videoUrl.match(/[?&]v=([^&]+)/);
-      if (match) videoId = match[1];
-      if (!videoId) continue;
-
-      var title = r[iTitle] ? r[iTitle].trim() : '';
-
-      if (!VIDEO_MAP[cat]) VIDEO_MAP[cat] = [];
-      // Y인 영상 중 랜덤 1개 선택을 위해 일단 전부 수집
-      VIDEO_MAP[cat].push({ title: title, channel: '', videoId: videoId });
+    var iCat=header.indexOf('카테고리'),iTitle=header.indexOf('영상제목'),iUrl=header.indexOf('URL'),iShow=header.indexOf('노출여부');
+    if(iCat<0) iCat=1; if(iTitle<0) iTitle=2; if(iUrl<0) iUrl=5;
+    VIDEO_MAP={};
+    for(var i=1;i<rows.length;i++){
+      var r=rows[i];
+      var cat=r[iCat]?r[iCat].trim():'';
+      var videoUrl=r[iUrl]?r[iUrl].trim():'';
+      if(!cat||!videoUrl) continue;
+      if(iShow>=0&&r[iShow]&&r[iShow].trim()==='N') continue;
+      var videoId='';
+      var match=videoUrl.match(/[?&]v=([^&]+)/);
+      if(match) videoId=match[1];
+      if(!videoId) continue;
+      var title=r[iTitle]?r[iTitle].trim():'';
+      if(!VIDEO_MAP[cat]) VIDEO_MAP[cat]=[];
+      VIDEO_MAP[cat].push({title:title,channel:'',videoId:videoId});
     }
-
-    // 카테고리별 랜덤 1개 선택
-    Object.keys(VIDEO_MAP).forEach(function(cat) {
-      var videos = VIDEO_MAP[cat];
-      if (videos.length > 1) {
-        var pick = Math.floor(Math.random() * videos.length);
-        VIDEO_MAP[cat] = [videos[pick]];
-      }
+    Object.keys(VIDEO_MAP).forEach(function(cat){
+      var videos=VIDEO_MAP[cat];
+      if(videos.length>1){ var pick=Math.floor(Math.random()*videos.length); VIDEO_MAP[cat]=[videos[pick]]; }
     });
-    VIDEOS_LOADED = true;
-    console.log('콘텐츠매핑 로드 완료:', Object.keys(VIDEO_MAP).length + '개 카테고리');
-  } catch(e) {
-    console.warn('콘텐츠매핑 로드 실패:', e);
-  }
+    VIDEOS_LOADED=true;
+  } catch(e){ console.warn('콘텐츠매핑 로드 실패:',e); }
 }
 
 function videoSection(cat) {
-  var videos = VIDEO_MAP[cat];
-  if (!videos || !videos.length) return '';
-  var html = '<div class="video-section">';
-  html += '<div class="video-header"><span class="video-icon">📺</span><span class="video-title">관련 건강 영상</span><span class="video-sub">전문 기관 제공</span></div>';
-  videos.forEach(function(v) {
-    html += '<div class="video-card">';
-    html += '<div class="video-embed"><iframe src="https://www.youtube.com/embed/'+v.videoId+'?rel=0&modestbranding=1" allowfullscreen loading="lazy"></iframe></div>';
-    html += '<div class="video-info"><div class="video-name">'+v.title+'</div><div class="video-channel">'+v.channel+'<span>공식채널</span></div></div>';
-    html += '</div>';
+  var videos=VIDEO_MAP[cat];
+  if(!videos||!videos.length) return '';
+  var html='<div class="video-section"><div class="video-header"><span class="video-icon">📺</span><span class="video-title">관련 건강 영상</span><span class="video-sub">전문 기관 제공</span></div>';
+  videos.forEach(function(v){
+    html+='<div class="video-card"><div class="video-embed"><iframe src="https://www.youtube.com/embed/'+v.videoId+'?rel=0&modestbranding=1" allowfullscreen loading="lazy"></iframe></div>';
+    html+='<div class="video-info"><div class="video-name">'+v.title+'</div><div class="video-channel">'+v.channel+'<span>공식채널</span></div></div></div>';
   });
-  html += '</div>';
-  return html;
+  return html+'</div>';
 }
 
 function renderCat(cat, isRx, budgetMax) {
-  console.log('renderCat 호출:', cat);
-  console.log('MARKET 키 목록:', Object.keys(MARKET).join(' / '));
-  console.log('MARKET[cat]:', MARKET[cat]);
-  var mkt = (MARKET[cat]||MARKET_FALLBACK[cat]||MARKET['면역·항산화']||Object.values(MARKET)[0]||[]).slice();
-  if(mkt.length < 4) {
-    while(mkt.length < 4) mkt.push({rank:mkt.length+1, name:'준비 중', price:0, mall:'-'});
-  }
-  var adP = getBestProduct(cat);
-  var html = '';
-  html += mCard(mkt[0],true,isRx);
-  html += mCard(mkt[1],true,isRx);
-  html += '<div class="divider">건강창고 추천</div>';
-  if (adP) {
-    html += aCard(adP,isRx);
-  }
-  html += '<div class="divider">관련 영상</div>';
-  html += videoSection(cat);
-  html += '<div class="divider">시장 베스트 계속</div>';
-  html += mCard(mkt[2],false,isRx);
-  html += mCard(mkt[3],false,isRx);
-  document.getElementById('recArea').innerHTML = html;
+  var mkt=(MARKET[cat]||MARKET_FALLBACK[cat]||MARKET['면역·항산화']||Object.values(MARKET)[0]||[]).slice();
+  while(mkt.length<4) mkt.push({rank:mkt.length+1,name:'준비 중',price:0,mall:'-'});
+  var adP=getBestProduct(cat);
+  var html='';
+  html+=mCard(mkt[0],true,isRx);
+  html+=mCard(mkt[1],true,isRx);
+  html+='<div class="divider">건강창고 추천</div>';
+  if(adP) html+=aCard(adP,isRx);
+  html+='<div class="divider">관련 영상</div>';
+  html+=videoSection(cat);
+  html+='<div class="divider">시장 베스트 계속</div>';
+  html+=mCard(mkt[2],false,isRx);
+  html+=mCard(mkt[3],false,isRx);
+  document.getElementById('recArea').innerHTML=html;
 }
 
 function mCard(p,top,isRx) {
-  var level = getSafetyLevel(p.name, '');
-  // 1단계: 하드블록 - 카드 자체 숨김 (빈 문자열 반환)
-  if (level === 1) return '';
-  var warnHtml = '';
-  var btnText = '🔍 네이버에서 보기';
-  var btnClass = 'mkt-btn';
-  if (level === 2) {
-    warnHtml = '<div class="badge-caution">⚠️ 복용 약물과 성분 확인 필요</div><div class="safe-warn" style="margin-bottom:6px;">전문의약품 복용 중이시면 약사와 상담 후 구매를 권장해요.</div>';
-    btnText = '💬 약사 상담 후 구매';
-    btnClass = 'btn-consult';
-  } else if (isRx && level === 3) {
-    warnHtml = '<div class="safe-warn" style="margin-bottom:6px;">⚠️ 전문의약품 복용 중 — 약사 상담 권장</div>';
-    btnText = '💬 약사 상담 후 구매';
+  var level=getSafetyLevel(p.name);
+  if(level===1) return '';
+  var warnHtml='',btnText='🔍 네이버에서 보기',btnClass='mkt-btn';
+  if(level===2){
+    warnHtml='<div class="badge-caution">⚠️ 복용 약물과 성분 확인 필요</div><div class="safe-warn" style="margin-bottom:6px;">전문의약품 복용 중이시면 약사와 상담 후 구매를 권장해요.</div>';
+    btnText='💬 약사 상담 후 구매'; btnClass='btn-consult';
+  } else if(isRx&&level===3){
+    warnHtml='<div class="safe-warn" style="margin-bottom:6px;">⚠️ 전문의약품 복용 중 — 약사 상담 권장</div>';
+    btnText='💬 약사 상담 후 구매';
   }
-  var safeBar = '';
-  if (level === 2) safeBar = '<div class="safety-level-bar"><div class="sl-dot caution"></div><span style="color:#92400e;font-weight:700;">주의 필요</span></div>';
-  else if (level === 3 && isRx) safeBar = '<div class="safety-level-bar"><div class="sl-dot pass"></div><span style="color:#16a34a;font-weight:700;">성분 충돌 없음</span></div>';
-  return '<div class="mkt-card"'+(top?' top':'')+'>'+
-    '<div class="rank-row"><div class="rank-num">'+p.rank+'위</div><div class="rank-lbl">시장 베스트</div></div>'+
-    safeBar+
-    '<div class="mkt-name">'+p.name+'</div>'+
-    '<div class="mkt-meta"><div class="mkt-price">'+p.price.toLocaleString()+'원</div><div class="mkt-mall">'+p.mall+'</div></div>'+
-    warnHtml+
-    '<button class="'+btnClass+'" onclick="goMarket(\'' + (p.link||'') + '\')">' +
-    btnText+'</button></div>';
+  var safeBar='';
+  if(level===2) safeBar='<div class="safety-level-bar"><div class="sl-dot caution"></div><span style="color:#92400e;font-weight:700;">주의 필요</span></div>';
+  else if(level===3&&isRx) safeBar='<div class="safety-level-bar"><div class="sl-dot pass"></div><span style="color:#16a34a;font-weight:700;">성분 충돌 없음</span></div>';
+  return '<div class="mkt-card'+(top?' top':'')+'"><div class="rank-row"><div class="rank-num">'+p.rank+'위</div><div class="rank-lbl">시장 베스트</div></div>'+safeBar+'<div class="mkt-name">'+p.name+'</div><div class="mkt-meta"><div class="mkt-price">'+p.price.toLocaleString()+'원</div><div class="mkt-mall">'+p.mall+'</div></div>'+warnHtml+'<button class="'+btnClass+'" onclick="goMarket(\''+(p.link||'')+'\')">'+btnText+'</button></div>';
 }
+
 function aCard(p,isRx) {
-  var level = getSafetyLevel(p.name, '');
-  // 1단계: 하드블록 - 건강창고 광고 슬롯도 숨김
-  if (level === 1) return '';
-  var tagsHtml = (p.cats||[]).map(function(t){return '<span class="ad-tag">'+t+'</span>';}).join('');
-  var priceHtml = p.price ? '<div class="ad-price">'+p.price.toLocaleString()+'원</div>' : '';
-  var warnHtml = '';
-  var btnText = '🛒 건강창고에서 구매하기';
-  var btnClass = 'ad-btn';
-  if (level === 2) {
-    warnHtml = '<div class="badge-caution" style="margin-bottom:8px;">⚠️ 복용 약물과 성분 확인 필요</div>';
-    btnText = '💬 약사 상담 후 구매';
-    btnClass = 'btn-consult';
-  } else if (isRx) {
-    btnText = '💬 약사 상담 후 구매';
-  }
-  var pid = p.id || '';
-  return '<div class="ad-slot">'+
-    '<div class="ad-badge">건강창고 추천</div>'+
-    warnHtml+
-    '<div class="ad-name">'+p.name+'</div>'+
-    '<div class="ad-tags">'+tagsHtml+'</div>'+
-    (priceHtml ? '<div class="ad-meta">'+priceHtml+'</div>' : '')+
-    '<button class="'+btnClass+'" onclick="buyProduct(\'' + pid + '\')">'+btnText+'</button></div>';
+  var level=getSafetyLevel(p.name);
+  if(level===1) return '';
+  var tagsHtml=(p.cats||[]).map(function(t){ return '<span class="ad-tag">'+t+'</span>'; }).join('');
+  var priceHtml=p.price?'<div class="ad-price">'+p.price.toLocaleString()+'원</div>':'';
+  var warnHtml='',btnText='🛒 건강창고에서 구매하기',btnClass='ad-btn';
+  if(level===2){ warnHtml='<div class="badge-caution" style="margin-bottom:8px;">⚠️ 복용 약물과 성분 확인 필요</div>'; btnText='💬 약사 상담 후 구매'; btnClass='btn-consult'; }
+  else if(isRx){ btnText='💬 약사 상담 후 구매'; }
+  var pid=p.id||'';
+  return '<div class="ad-slot"><div class="ad-badge">건강창고 추천</div>'+warnHtml+'<div class="ad-name">'+p.name+'</div><div class="ad-tags">'+tagsHtml+'</div>'+(priceHtml?'<div class="ad-meta">'+priceHtml+'</div>':'')+'<button class="'+btnClass+'" onclick="buyProduct(\''+pid+'\')">'+btnText+'</button></div>';
 }
 
-// ── 시장 베스트 네이버 링크 연결 ──
 function goMarket(link) {
-  if (link && link.length > 0) {
-    window.open(link, '_blank');
-  } else {
-    alert('준비 중입니다.');
-  }
+  if(link&&link.length>0) window.open(link,'_blank');
+  else alert('준비 중입니다.');
 }
 
-// ── 건강창고 제품 구매 연결 ──
 function buyProduct(pid) {
-  var p = PRODUCTS.filter(function(x){ return x.id === pid; })[0];
-  if (!p) return;
-  if (p.link) {
-    window.open(p.link, '_blank');
-  } else {
-    alert('준비 중입니다. 곧 구매 페이지가 열립니다.');
-  }
+  var p=PRODUCTS.filter(function(x){ return x.id===pid; })[0];
+  if(!p) return;
+  if(p.link) window.open(p.link,'_blank');
+  else alert('준비 중입니다.');
 }
 
-// ── 리셋 ──
 function restart() {
-  S = {budget:2,interests:[],symptoms:[],seniorCats:[],seniorDeep:{},curSup:[],familyHx:[],allergy:[],form:[],symEnergy:[],symDigest:[],symMuscle:[],menopauseSym:[],members:[],spouseInterest:[],childYoungInterest:[],childTeenInterest:[],parentInterest:[],stopCondition:[],drugType:[]};
-  screenStack = [];
+  S={budget:2,interests:[],symptoms:[],seniorCats:[],seniorDeep:{},curSup:[],familyHx:[],allergy:[],form:[],symEnergy:[],symDigest:[],symMuscle:[],menopauseSym:[],members:[],spouseInterest:[],childYoungInterest:[],childTeenInterest:[],parentInterest:[],stopCondition:[],drugType:[]};
+  screenStack=[];
   document.body.classList.remove('sm');
   document.querySelectorAll('.opt').forEach(function(b){b.classList.remove('on');});
   document.querySelectorAll('.ci').forEach(function(el){el.classList.remove('ck');el.querySelector('.cb').textContent='';});
@@ -2290,135 +1706,82 @@ function restart() {
   document.getElementById('menopauseBox').style.display='none';
   document.getElementById('dangerNotice').className='danger-notice';
   document.getElementById('seniorDeepArea').classList.remove('show');
-  ['spouseSection','childYoungSection','childTeenSection','parentSection'].forEach(function(id){
-    document.getElementById(id).style.display='none';
-  });
+  ['spouseSection','childYoungSection','childTeenSection','parentSection'].forEach(function(id){ document.getElementById(id).style.display='none'; });
   document.getElementById('budgetVal').textContent='5만원대';
   document.getElementById('budgetSlider').value=2;
-  go('s1');
-  checkBtn('btn1');
-  checkBtn('btn2');
+  go('s1'); checkBtn('btn1'); checkBtn('btn2');
 }
 
-
-// ══════════════════════════════════════════════
-// 개인정보 동의 시스템
-// ══════════════════════════════════════════════
-var consentState = { c1: false, c2: false, c3: false };
-
+// ══ 개인정보 동의 ══
+var consentState = {c1:false,c2:false,c3:false};
 function initConsent() {
-  // 이미 동의했으면 팝업 안 띄움
-  try {
-    if (localStorage.getItem('hc_consent') === 'true') return;
-  } catch(e) {}
+  try { if(localStorage.getItem('hc_consent')==='true') return; } catch(e) {}
   document.getElementById('consentOverlay').classList.add('show');
   updateAllCheck();
 }
-
 function toggleConsent(key) {
-  consentState[key] = !consentState[key];
-  document.getElementById('check' + key.toUpperCase()).classList.toggle('on', consentState[key]);
-  updateAllCheck();
-  updateConsentBtn();
+  consentState[key]=!consentState[key];
+  document.getElementById('check'+key.toUpperCase()).classList.toggle('on',consentState[key]);
+  updateAllCheck(); updateConsentBtn();
 }
-
 function toggleAll() {
-  var allChecked = consentState.c1 && consentState.c2 && consentState.c3;
-  var newVal = !allChecked;
-  ['c1','c2','c3'].forEach(function(k) {
-    consentState[k] = newVal;
-    document.getElementById('check' + k.toUpperCase()).classList.toggle('on', newVal);
-  });
-  updateAllCheck();
-  updateConsentBtn();
+  var allChecked=consentState.c1&&consentState.c2&&consentState.c3;
+  var newVal=!allChecked;
+  ['c1','c2','c3'].forEach(function(k){ consentState[k]=newVal; document.getElementById('check'+k.toUpperCase()).classList.toggle('on',newVal); });
+  updateAllCheck(); updateConsentBtn();
 }
-
 function updateAllCheck() {
-  var allChecked = consentState.c1 && consentState.c2 && consentState.c3;
-  var anyChecked = consentState.c1 || consentState.c2 || consentState.c3;
-  var el = document.getElementById('checkAll');
-  var box = document.getElementById('consentAll');
-  el.classList.toggle('on', allChecked);
-  box.classList.toggle('checked', allChecked);
-  el.textContent = anyChecked ? '✓' : '';
+  var allChecked=consentState.c1&&consentState.c2&&consentState.c3;
+  var anyChecked=consentState.c1||consentState.c2||consentState.c3;
+  var el=document.getElementById('checkAll');
+  document.getElementById('consentAll').classList.toggle('checked',allChecked);
+  el.classList.toggle('on',allChecked);
+  el.textContent=anyChecked?'✓':'';
 }
-
 function updateConsentBtn() {
-  // 필수 2개(c1, c2) 모두 동의해야 버튼 활성화
-  var ok = consentState.c1 && consentState.c2;
-  document.getElementById('consentBtn').disabled = !ok;
+  document.getElementById('consentBtn').disabled=!(consentState.c1&&consentState.c2);
 }
-
 function submitConsent() {
-  if (!consentState.c1 || !consentState.c2) return;
+  if(!consentState.c1||!consentState.c2) return;
   try {
-    localStorage.setItem('hc_consent', 'true');
-    localStorage.setItem('hc_consent_date', new Date().toISOString());
-    localStorage.setItem('hc_consent_marketing', consentState.c3 ? 'true' : 'false');
+    localStorage.setItem('hc_consent','true');
+    localStorage.setItem('hc_consent_date',new Date().toISOString());
+    localStorage.setItem('hc_consent_marketing',consentState.c3?'true':'false');
   } catch(e) {}
   document.getElementById('consentOverlay').classList.remove('show');
 }
-
-// 약관 내용
 var POLICY_CONTENT = {
-  privacy: {
-    title: '개인정보 처리방침',
-    content: '<b>수집 항목</b><br>나이, 성별, 키, 체중, 건강 관심사, 생활습관 정보<br><br>' +
-             '<b>수집 목적</b><br>맞춤형 건강기능식품 추천 서비스 제공<br><br>' +
-             '<b>보유 기간</b><br>서비스 이용 세션 종료 즉시 삭제 (서버 저장 없음)<br><br>' +
-             '<b>제3자 제공</b><br>개인정보를 제3자에게 제공하지 않습니다.<br><br>' +
-             '<b>처리 위탁</b><br>해당 없음<br><br>' +
-             '<b>정보주체 권리</b><br>언제든지 동의를 철회할 수 있습니다.'
-  },
-  health: {
-    title: '건강 민감정보 수집·이용 동의',
-    content: '<b>수집하는 민감정보</b><br>건강 상태, 복용 중인 전문의약품 계열, 가족력, 알레르기 정보<br><br>' +
-             '<b>수집 목적</b><br>안전한 건강기능식품 추천 (약물 충돌 필터링, 맞춤 추천)<br><br>' +
-             '<b>보유 기간</b><br>세션 내 일회성 사용 후 즉시 삭제<br><br>' +
-             '<b>거부 권리</b><br>동의를 거부할 권리가 있으나, 거부 시 서비스 이용이 제한됩니다.<br><br>' +
-             '<b>주의사항</b><br>본 서비스는 의료 행위가 아니며, 건강기능식품 추천만을 목적으로 합니다. ' +
-             '질병 진단·치료를 목적으로 사용할 수 없습니다.'
-  }
+  privacy:{title:'개인정보 처리방침',content:'<b>수집 항목</b><br>나이, 성별, 키, 체중, 건강 관심사, 생활습관 정보<br><br><b>수집 목적</b><br>맞춤형 건강기능식품 추천 서비스 제공<br><br><b>보유 기간</b><br>서비스 이용 세션 종료 즉시 삭제 (서버 저장 없음)<br><br><b>제3자 제공</b><br>개인정보를 제3자에게 제공하지 않습니다.<br><br><b>정보주체 권리</b><br>언제든지 동의를 철회할 수 있습니다.'},
+  health:{title:'건강 민감정보 수집·이용 동의',content:'<b>수집하는 민감정보</b><br>건강 상태, 복용 중인 전문의약품 계열, 가족력, 알레르기 정보<br><br><b>수집 목적</b><br>안전한 건강기능식품 추천 (약물 충돌 필터링, 맞춤 추천)<br><br><b>보유 기간</b><br>세션 내 일회성 사용 후 즉시 삭제<br><br><b>주의사항</b><br>본 서비스는 의료 행위가 아니며, 건강기능식품 추천만을 목적으로 합니다.'},
 };
-
 function showPolicy(type) {
-  var policy = POLICY_CONTENT[type];
-  document.getElementById('policyTitle').textContent = policy.title;
-  document.getElementById('policyContent').innerHTML = policy.content;
+  var policy=POLICY_CONTENT[type];
+  document.getElementById('policyTitle').textContent=policy.title;
+  document.getElementById('policyContent').innerHTML=policy.content;
   document.getElementById('policyOverlay').classList.add('show');
 }
-
-// 페이지 로드 시 동의 체크
-window.addEventListener('load', function() {
-  initConsent();
-});
-// ══════════════════════════════════════════════
+window.addEventListener('load',function(){ initConsent(); });
 </script>
 
 <!-- ══ 개인정보 동의 팝업 ══ -->
 <div class="consent-overlay" id="consentOverlay">
   <div class="consent-box">
     <div class="consent-logo">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;width:32px;height:32px;">
+        <div style="background:#C8232B;border-radius:3px;"></div>
+        <div style="background:#F5A800;border-radius:3px;"></div>
+        <div style="background:#5E7C2F;border-radius:3px;"></div>
+        <div style="background:#1558A8;border-radius:3px;"></div>
+      </div>
       <div class="consent-logo-txt">건강<span>창고</span></div>
     </div>
     <div class="consent-title">서비스 이용을 위한 동의</div>
-    <div class="consent-desc">
-      맞춤 건강기능식품 추천을 위해<br>
-      아래 약관에 동의해주세요.
-    </div>
-
-    <!-- 전체 동의 -->
+    <div class="consent-desc">맞춤 건강기능식품 추천을 위해<br>아래 약관에 동의해주세요.</div>
     <div class="consent-all" id="consentAll" onclick="toggleAll()">
       <div class="consent-check" id="checkAll">✓</div>
-      <div>
-        <div class="consent-all-txt">전체 동의</div>
-        <div class="consent-all-sub">필수 및 선택 항목 모두 동의</div>
-      </div>
+      <div><div class="consent-all-txt">전체 동의</div><div class="consent-all-sub">필수 및 선택 항목 모두 동의</div></div>
     </div>
-
     <div class="consent-divider"></div>
-
-    <!-- 필수 1: 개인정보 처리방침 -->
     <div class="consent-item" onclick="toggleConsent('c1')">
       <div class="consent-check" id="checkC1"></div>
       <div class="consent-item-txt">
@@ -2427,8 +1790,6 @@ window.addEventListener('load', function() {
       </div>
       <span class="consent-view" onclick="event.stopPropagation();showPolicy('privacy')">보기</span>
     </div>
-
-    <!-- 필수 2: 건강 민감정보 -->
     <div class="consent-item" onclick="toggleConsent('c2')">
       <div class="consent-check" id="checkC2"></div>
       <div class="consent-item-txt">
@@ -2437,8 +1798,6 @@ window.addEventListener('load', function() {
       </div>
       <span class="consent-view" onclick="event.stopPropagation();showPolicy('health')">보기</span>
     </div>
-
-    <!-- 선택: 마케팅 -->
     <div class="consent-item" onclick="toggleConsent('c3')">
       <div class="consent-check" id="checkC3"></div>
       <div class="consent-item-txt">
@@ -2446,26 +1805,19 @@ window.addEventListener('load', function() {
         <div class="consent-item-desc">건강 정보, 신제품 소식 등 유용한 정보 수신</div>
       </div>
     </div>
-
-    <button class="consent-btn" id="consentBtn" onclick="submitConsent()" disabled>
-      동의하고 시작하기
-    </button>
-    <div class="consent-notice">
-      본 서비스는 의료 행위가 아니며, 건강기능식품 추천 서비스입니다.<br>
-      질병 진단·치료를 목적으로 사용할 수 없습니다.
-    </div>
+    <button class="consent-btn" id="consentBtn" onclick="submitConsent()" disabled>동의하고 시작하기</button>
+    <div class="consent-notice">본 서비스는 의료 행위가 아니며, 건강기능식품 추천 서비스입니다.<br>질병 진단·치료를 목적으로 사용할 수 없습니다.</div>
   </div>
 </div>
 
 <!-- 약관 상세 팝업 -->
 <div class="consent-overlay" id="policyOverlay" style="align-items:center;">
-  <div class="consent-box" style="border-radius:16px; margin:20px; max-height:80vh;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-      <div style="font-size:16px; font-weight:800;" id="policyTitle"></div>
-      <button onclick="document.getElementById('policyOverlay').classList.remove('show')"
-        style="background:none; border:none; font-size:24px; cursor:pointer; color:var(--gy6);">✕</button>
+  <div class="consent-box" style="border-radius:16px;margin:20px;max-height:80vh;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div style="font-size:16px;font-weight:800;" id="policyTitle"></div>
+      <button onclick="document.getElementById('policyOverlay').classList.remove('show')" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--gy6);">✕</button>
     </div>
-    <div id="policyContent" style="font-size:13px; color:var(--gy6); line-height:1.8;"></div>
+    <div id="policyContent" style="font-size:13px;color:var(--gy6);line-height:1.8;"></div>
   </div>
 </div>
 </body>
