@@ -1417,7 +1417,7 @@ async function renderCat(cat, isRx, budgetMax) {
         var data=await res.json();
         if(data&&data.items){
           coupang=data.items.slice(0,4).map(function(item,idx){
-            return{rank:idx+1,name:item.productName||item.name,price:item.productPrice||item.price||0,mall:'쿠팡',link:item.productUrl||item.url||''};
+            return{rank:idx+1,name:item.name||item.productName||'',price:item.price||item.productPrice||0,mall:'쿠팡',link:item.link||item.productUrl||''};
           });
           COUPANG[cat]=coupang;
         }
