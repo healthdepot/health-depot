@@ -935,6 +935,21 @@ function getBestProduct(cat) {
   return primary.length ? primary[0] : matched[0];
 }
 
+// 건강창고 슬롯 최대 2개 반환 (슬롯1: 자체제품1, 슬롯2: 광고주 or 자체제품2)
+function getBestProducts(cat) {
+  var matched = PRODUCTS.filter(function(p){ return p.cats.indexOf(cat) !== -1; });
+  if (!matched.length) return [null, null];
+  // 1순위: 해당 카테고리가 메인(첫번째) 카테고리인 제품
+  var primary = matched.filter(function(p){ return p.cats[0] === cat; });
+  var sorted = primary.length ? primary : matched;
+  // 광고주 제품 (isAdvertiser 플래그가 있는 경우 우선)
+  var advertiser = sorted.filter(function(p){ return p.isAdvertiser; });
+  var own = sorted.filter(function(p){ return !p.isAdvertiser; });
+  var slot1 = own[0] || sorted[0] || null;
+  var slot2 = advertiser[0] || own[1] || null;
+  return [slot1, slot2];
+}
+
 async function loadMarketData() {
   if (MARKET_LOADED || MARKET_LOADING) return;
   MARKET_LOADING = true;
@@ -1396,8 +1411,8 @@ function videoSection(cat) {
   return html+'</div>';
 }
 
-// ══ 핵심: 새 renderCat 함수 ══
-// 구조: 시장1위→시장2위→건강창고슬롯→(쿠팡승인후:네이버1→네이버2→건강창고슬롯2)→시장3위→시장4위
+// ══ 핵심: renderCat 함수 ══
+// 구조: 시장1,2위→건강창고슬롯1→시장3,4위→(쿠팡시:네이버1,2위)→건강창고슬롯2(광고주or자체2번째,없으면통과)→관련영상
 async function renderCat(cat, isRx, budgetMax) {
   var recArea=document.getElementById('recArea');
   recArea.innerHTML='<div style="text-align:center;padding:30px;color:#a0aec0;font-size:14px;">추천 제품을 불러오는 중...</div>';
@@ -1430,30 +1445,36 @@ async function renderCat(cat, isRx, budgetMax) {
   var mainLabel=coupang?'쿠팡 베스트':'시장 베스트';
   var mainColor=coupang?'#e9463c':'#1558A8';
 
-  var adP=getBestProduct(cat);
+  var adPs=getBestProducts(cat);
+  var adP1=adPs[0]; // 슬롯1: 건강창고 자체 제품 1번째
+  var adP2=adPs[1]; // 슬롯2: 광고주 or 건강창고 2번째 제품
   var html='';
 
   // ① 1위, 2위
   html+=mCard(mainData[0],true,isRx,mainLabel,mainColor);
   html+=mCard(mainData[1],true,isRx,mainLabel,mainColor);
 
-  // ② 건강창고 슬롯 1
+  // ② 건강창고 슬롯 1 (자체 제품 1번째)
   html+='<div class="divider">건강창고 추천</div>';
-  html+=adP?aCard(adP,isRx):'<div style="text-align:center;padding:14px;color:#a0aec0;font-size:13px;">준비 중인 제품이에요</div>';
+  html+=adP1?aCard(adP1,isRx):'<div style="text-align:center;padding:14px;color:#a0aec0;font-size:13px;">준비 중인 제품이에요</div>';
 
-  // ③ 쿠팡 승인 후: 네이버 1,2위 + 슬롯2 추가
+  // ③ 3위, 4위
+  html+='<div class="divider">'+(coupang?'쿠팡 베스트 계속':'시장 베스트 계속')+'</div>';
+  html+=mCard(mainData[2],false,isRx,mainLabel,mainColor);
+  html+=mCard(mainData[3],false,isRx,mainLabel,mainColor);
+
+  // ④ 네이버 베스트 (쿠팡 데이터 있을 때만)
   if(coupang){
     html+='<div class="divider">네이버 베스트</div>';
     html+=mCard(naver[0],false,isRx,'네이버 베스트','#03c75a');
     html+=mCard(naver[1],false,isRx,'네이버 베스트','#03c75a');
-    html+='<div class="divider">건강창고 추천</div>';
-    html+=adP?aCard(adP,isRx):'';
   }
 
-  // ④ 3위, 4위
-  html+='<div class="divider">'+(coupang?'쿠팡 베스트 계속':'시장 베스트 계속')+'</div>';
-  html+=mCard(mainData[2],false,isRx,mainLabel,mainColor);
-  html+=mCard(mainData[3],false,isRx,mainLabel,mainColor);
+  // ⑤ 건강창고 슬롯 2 (광고주 or 자체 제품 2번째, 없으면 통과)
+  if(adP2){
+    html+='<div class="divider">건강창고 추천</div>';
+    html+=aCard(adP2,isRx);
+  }
 
   // ⑤ 관련 영상
   html+='<div class="divider">관련 영상</div>';
