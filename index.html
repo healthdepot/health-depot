@@ -900,14 +900,73 @@ var COUPANG_SECRET_KEY = '98f2d79e07507d53c79f5629c62ae31556c90fd3';
 var COUPANG_PROXY_URL  = 'https://script.google.com/macros/s/AKfycbwlZSFoYVDRtk6PKBp8NXWpfZtzcQH6g8NfmWsp-3oS7a_BDhvsgYINz_Q_adtB_AIKGg/exec';
 var COUPANG = {};
 var COUPANG_KEYWORD_MAP = {
-  '에너지·피로 회복':'비타민B 피로회복','뼈·관절·근육':'칼슘 마그네슘 비타민D',
-  '두뇌·기억·인지':'포스파티딜세린 오메가3','면역·항산화':'비타민C 아연 면역',
-  '소화·장 건강':'프로바이오틱스 유산균','심혈관·혈액순환':'오메가3 코엔자임Q10',
-  '눈 건강':'루테인 지아잔틴','피부·미용':'콜라겐 비타민C',
-  '체중·체형 관리':'가르시니아 L카르니틴','근감소·단백질':'단백질 프로틴',
-  '스트레스·수면':'마그네슘 테아닌','혈압·혈중지질':'나토키나제 오메가3',
-  '모발·두피 건강':'비오틴 탈모 영양제','여성 갱년기·호르몬':'이소플라본 석류 갱년기',
+  '에너지·피로 회복':   '피로회복제',
+  '뼈·관절·근육':       '관절 영양제',
+  '두뇌·기억·인지':     '기억력 영양제',
+  '면역·항산화':        '면역력 영양제',
+  '소화·장 건강':       '유산균',
+  '심혈관·혈액순환':    '혈액순환 영양제',
+  '눈 건강':            '루테인',
+  '피부·미용':          '콜라겐',
+  '체중·체형 관리':     '가르시니아',
+  '근감소·단백질':      '단백질 보충제',
+  '스트레스·수면':      '수면 영양제',
+  '혈압·혈중지질':      '혈압 영양제',
+  '모발·두피 건강':     '탈모 영양제',
+  '여성 갱년기·호르몬': '갱년기 영양제'
 };
+
+// ── 키 정규화 + Fallback + 블랙리스트 (카테고리 오염 방어) ──
+var COUPANG_FALLBACK_KEYWORD = '건강기능식품';
+
+function normalizeCatKey(cat) {
+  if (!cat) return '';
+  if (COUPANG_KEYWORD_MAP[cat]) return cat;
+  var stripped = cat.replace(/[\s·]/g, '').toLowerCase();
+  for (var k in COUPANG_KEYWORD_MAP) {
+    if (k.replace(/[\s·]/g, '').toLowerCase() === stripped) return k;
+  }
+  return null;
+}
+
+function getCoupangKeyword(cat) {
+  var key = normalizeCatKey(cat);
+  return key ? COUPANG_KEYWORD_MAP[key] : COUPANG_FALLBACK_KEYWORD;
+}
+
+var COUPANG_BLACKLIST = {
+  '에너지·피로 회복':   ['프로폴리스','루테인','콜라겐','갱년기','이소플라본','석류','탈모','비오틴'],
+  '뼈·관절·근육':       ['프로폴리스','피로회복','루테인','콜라겐','유산균','다이어트','탈모','비오틴'],
+  '두뇌·기억·인지':     ['프로폴리스','루테인','콜라겐','유산균','다이어트','탈모','비오틴'],
+  '면역·항산화':        ['루테인','다이어트','탈모','비오틴','갱년기'],
+  '소화·장 건강':       ['프로폴리스','루테인','콜라겐','갱년기','탈모','비오틴'],
+  '심혈관·혈액순환':    ['프로폴리스','루테인','콜라겐','다이어트','탈모','비오틴'],
+  '눈 건강':            ['프로폴리스','콜라겐','유산균','다이어트','탈모','비오틴','갱년기'],
+  '피부·미용':          ['프로폴리스','루테인','유산균','다이어트','탈모','비오틴'],
+  '체중·체형 관리':     ['프로폴리스','루테인','콜라겐','갱년기','탈모','비오틴'],
+  '근감소·단백질':      ['프로폴리스','루테인','콜라겐','유산균','갱년기','탈모','비오틴'],
+  '스트레스·수면':      ['프로폴리스','루테인','콜라겐','유산균','다이어트','탈모','비오틴'],
+  '혈압·혈중지질':      ['프로폴리스','루테인','콜라겐','유산균','다이어트','탈모','비오틴'],
+  '모발·두피 건강':     ['프로폴리스','루테인','유산균','다이어트','갱년기'],
+  '여성 갱년기·호르몬': ['프로폴리스','루테인','다이어트','탈모','비오틴']
+};
+
+function isProductBlacklisted(productName, cat) {
+  if (!productName) return false;
+  var key = normalizeCatKey(cat);
+  if (!key) return false;
+  var blacks = COUPANG_BLACKLIST[key] || [];
+  var name = productName.toLowerCase();
+  return blacks.some(function(b){ return name.indexOf(b.toLowerCase()) !== -1; });
+}
+
+function filterCoupangByCategory(items, cat) {
+  if (!items || !items.length) return [];
+  return items.filter(function(item){
+    var name = item.name || item.productName || '';
+    return !isProductBlacklisted(name, cat);
+  });
+}
 
 async function loadProductDB() {
   if (PRODUCTS_LOADED) return;
@@ -1430,11 +1489,23 @@ async function renderCat(cat, isRx, budgetMax) {
     coupang=COUPANG[cat]||null;
     if(!coupang){
       try{
-        var keyword=COUPANG_KEYWORD_MAP[cat]||cat;
+        // ① 안전한 키워드 추출 (fallback 포함)
+        var keyword=getCoupangKeyword(cat);
+        console.log('[쿠팡 호출] cat:', cat, '→ keyword:', keyword);
+        
         var res=await fetch(COUPANG_PROXY_URL+'?action=coupang&keyword='+encodeURIComponent(keyword));
         var data=await res.json();
         if(data&&data.items){
-          coupang=data.items.slice(0,4).map(function(item,idx){
+          // ② 화이트/블랙 리스트로 카테고리 오염 차단
+          var filtered=filterCoupangByCategory(data.items, cat);
+          
+          // ③ 필터링 후에도 4개 채울 수 있게: 부족하면 원본 일부 사용
+          if(filtered.length < 2 && data.items.length >= 2){
+            console.warn('[쿠팡 필터] 너무 빡빡함 — 원본 사용:', cat);
+            filtered = data.items;
+          }
+          
+          coupang=filtered.slice(0,4).map(function(item,idx){
             return{rank:idx+1,name:item.name||item.productName||'',price:item.price||item.productPrice||0,mall:'쿠팡',link:item.link||item.productUrl||''};
           });
           COUPANG[cat]=coupang;
