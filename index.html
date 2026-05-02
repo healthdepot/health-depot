@@ -956,6 +956,29 @@ function getCoupangKeywordChain(cat) {
   if(key && COUPANG_KEYWORD_CHAIN[key]) return COUPANG_KEYWORD_CHAIN[key];
   return [getCoupangKeyword(cat), '건강기능식품'];
 }
+  // 키워드 체인 — 1차 실패 시 2차/3차로 재시도
+var COUPANG_KEYWORD_CHAIN = {
+  '에너지·피로 회복':   ['피로회복제', '비타민B 영양제', '코엔자임Q10'],
+  '뼈·관절·근육':       ['관절 영양제', '글루코사민', '칼슘 영양제'],
+  '두뇌·기억·인지':     ['기억력 영양제', '오메가3', '포스파티딜세린'],
+  '면역·항산화':        ['면역력 영양제', '비타민C', '홍삼'],
+  '소화·장 건강':       ['유산균', '프로바이오틱스', '식이섬유'],
+  '심혈관·혈액순환':    ['혈액순환 영양제', '오메가3', '코엔자임Q10'],
+  '눈 건강':            ['루테인', '아스타잔틴', '눈영양제'],
+  '피부·미용':          ['콜라겐', '히알루론산', '비타민C 영양제'],
+  '체중·체형 관리':     ['가르시니아', 'L카르니틴', '다이어트 영양제'],
+  '근감소·단백질':      ['단백질 보충제', '프로틴 파우더', '아미노산'],
+  '스트레스·수면':      ['수면 영양제', '마그네슘', '테아닌'],
+  '혈압·혈중지질':      ['혈압 영양제', '나토키나제', '오메가3'],
+  '모발·두피 건강':     ['탈모 영양제', '비오틴', '판시딜'],
+  '여성 갱년기·호르몬': ['갱년기 영양제', '이소플라본', '석류 영양제']
+};
+
+function getCoupangKeywordChain(cat) {
+  var key = normalizeCatKey(cat);
+  if(key && COUPANG_KEYWORD_CHAIN[key]) return COUPANG_KEYWORD_CHAIN[key];
+  return [getCoupangKeyword(cat), '건강기능식품'];
+}
 
 var COUPANG_BLACKLIST = {
   '에너지·피로 회복':   ['프로폴리스','루테인','콜라겐','갱년기','이소플라본','석류','탈모','비오틴'],
