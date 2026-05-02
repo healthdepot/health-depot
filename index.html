@@ -1522,10 +1522,30 @@ async function renderCat(cat, isRx, budgetMax) {
         var res=await fetch(COUPANG_PROXY_URL+'?action=coupang&keyword='+encodeURIComponent(keyword));
         var data=await res.json();
         if(data&&data.items){
-          // ② 화이트/블랙 리스트로 카테고리 오염 차단
-          var filtered=filterCoupangByCategory(data.items, cat);
+          // ② 차단 목록 수집 (디버그용)
+          var blocked=[];
+          var passed=[];
+          data.items.forEach(function(item){
+            var name=item.name||item.productName||'';
+            if(isProductBlacklisted(name, cat)){
+              var reason=isGlobalBlacklisted(name)?'음료/일반식품':'카테고리 부적합';
+              blocked.push({name:name, reason:reason});
+            } else {
+              passed.push(item);
+            }
+          });
           
-          // ③ 필터링 후에도 4개 채울 수 있게: 부족하면 원본 일부 사용
+          // 디버그 정보 저장 (화면 표시용)
+          window.LAST_COUPANG_DEBUG = {
+            cat: cat,
+            keyword: keyword,
+            total: data.items.length,
+            passed: passed.length,
+            blocked: blocked
+          };
+          
+          // ③ 너무 빡빡하면 원본 사용 (안전장치)
+          var filtered = passed;
           if(filtered.length < 2 && data.items.length >= 2){
             console.warn('[쿠팡 필터] 너무 빡빡함 — 원본 사용:', cat);
             filtered = data.items;
@@ -1535,6 +1555,9 @@ async function renderCat(cat, isRx, budgetMax) {
             return{rank:idx+1,name:item.name||item.productName||'',price:item.price||item.productPrice||0,mall:'쿠팡',link:item.link||item.productUrl||''};
           });
           COUPANG[cat]=coupang;
+          
+          // 화면에 디버그 정보 렌더링
+          renderDebugInfo();
         }
       }catch(e){console.warn('쿠팡 API 실패:',e);}
     }
@@ -1582,8 +1605,43 @@ async function renderCat(cat, isRx, budgetMax) {
   // ⑥ 관련 영상
   html+='<div class="divider">관련 영상</div>';
   html+=videoSection(cat);
+  
+  // ⑦ 디버그 영역 (베타 끝나면 이 줄 한 줄만 삭제)
+  html+='<div id="debugInfo" style="margin-top:20px;"></div>';
 
   recArea.innerHTML=html;
+  renderDebugInfo();
+}
+
+// ── 디버그 정보 렌더링 (베타 끝나면 이 함수 통째로 삭제) ──
+function renderDebugInfo() {
+  var el = document.getElementById('debugInfo');
+  if (!el) return;
+  var d = window.LAST_COUPANG_DEBUG;
+  if (!d) { el.innerHTML = ''; return; }
+  
+  var blockedHtml = '';
+  if (d.blocked.length === 0) {
+    blockedHtml = '<div style="color:#16a34a;font-size:11px;margin-top:6px;">✅ 차단된 제품 없음</div>';
+  } else {
+    blockedHtml = '<div style="margin-top:6px;">';
+    d.blocked.forEach(function(b){
+      var color = b.reason === '음료/일반식품' ? '#dc2626' : '#f59e0b';
+      blockedHtml += '<div style="font-size:11px;color:'+color+';line-height:1.6;">'
+        + '🚫 ' + b.name + ' <span style="color:#94a3b8;">('+b.reason+')</span>'
+        + '</div>';
+    });
+    blockedHtml += '</div>';
+  }
+  
+  el.innerHTML = '<details style="background:#f8fafc;border:1px dashed #cbd5e1;border-radius:8px;padding:10px 14px;font-size:12px;color:#64748b;">'
+    + '<summary style="cursor:pointer;font-weight:700;color:#475569;">🔧 디버그: 쿠팡 응답 ' + d.total + '개 중 '
+    + d.passed + '개 통과 · ' + d.blocked.length + '개 차단</summary>'
+    + '<div style="margin-top:8px;padding-top:8px;border-top:1px solid #e2e8f0;">'
+    + '<div style="margin-bottom:4px;"><b>카테고리:</b> ' + d.cat + '</div>'
+    + '<div style="margin-bottom:4px;"><b>호출 키워드:</b> "' + d.keyword + '"</div>'
+    + blockedHtml
+    + '</div></details>';
 }
 
 // ══ mCard (출처 라벨 + 색상 파라미터 추가) ══
