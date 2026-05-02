@@ -1007,14 +1007,9 @@ function isGlobalBlacklisted(productName) {
 
 function isProductBlacklisted(productName, cat) {
   if (!productName) return false;
-  // 1차: 음료·일반식품 글로벌 차단
+  // 음료·일반식품 글로벌 차단
   if (isGlobalBlacklisted(productName)) return true;
-  // 2차: 카테고리별 차단
-  var key = normalizeCatKey(cat);
-  if (!key) return false;
-  var blacks = COUPANG_BLACKLIST[key] || [];
-  var name = productName.toLowerCase();
-  return blacks.some(function(b){ return name.indexOf(b.toLowerCase()) !== -1; });
+  return false;
 }
 
 function filterCoupangByCategory(items, cat) {
