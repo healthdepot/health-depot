@@ -951,8 +951,34 @@ var COUPANG_BLACKLIST = {
   '여성 갱년기·호르몬': ['프로폴리스','루테인','다이어트','탈모','비오틴']
 };
 
+// ── 모든 카테고리 공통: 음료·일반식품 차단 ──
+// 건강기능식품 앱 정체성 유지를 위해 음료/캔디/젤리/시리얼 등 일반식품 전면 차단
+var COUPANG_GLOBAL_BLACKLIST = [
+  // 일반 음료(드링크) — 식약처상 건강기능식품 아님
+  '드링크','구론산','바몬드','박카스','우루샷','활력드링크','자양강장',
+  '비타500','비타1000','오로나민','컨디션','여명808','쌍화','쌍화탕',
+  // 일반 가공식품
+  '젤리','구미','캔디','사탕','초콜릿','시리얼','쿠키','과자',
+  '음료수','탄산','이온음료','에너지드링크','커피믹스',
+  // 식품 일반
+  '우유','요거트','요구르트','두유','곡물','잡곡',
+  // 화장품·외용제(혹시 들어올 경우)
+  '크림','로션','샴푸','마스크팩','립밤'
+];
+
+function isGlobalBlacklisted(productName) {
+  if (!productName) return false;
+  var name = productName.toLowerCase();
+  return COUPANG_GLOBAL_BLACKLIST.some(function(b){
+    return name.indexOf(b.toLowerCase()) !== -1;
+  });
+}
+
 function isProductBlacklisted(productName, cat) {
   if (!productName) return false;
+  // 1차: 음료·일반식품 글로벌 차단
+  if (isGlobalBlacklisted(productName)) return true;
+  // 2차: 카테고리별 차단
   var key = normalizeCatKey(cat);
   if (!key) return false;
   var blacks = COUPANG_BLACKLIST[key] || [];
