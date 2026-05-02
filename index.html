@@ -374,7 +374,7 @@ input[type=number] { -moz-appearance:textfield; }
 <body>
 
 <div class="hd">
-  <button class="btn-back" id="btnBack" onclick="goBack()">‹</button>
+  <button class="btn-back" id="btnBack" onclick="goBack()">&#8249;</button>
   <div style="display:flex;align-items:center;gap:10px;">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;width:28px;height:28px;flex-shrink:0;">
       <div style="background:#C8232B;border-radius:3px;"></div>
@@ -596,7 +596,7 @@ input[type=number] { -moz-appearance:textfield; }
 <!-- S4 -->
 <div class="scr" id="s4">
   <div class="badge" style="background:#fffbeb;color:#92400e;">STEP 4 · 생활습관</div>
-  <div class="sec-title">생활습관 & 체질</div>
+  <div class="sec-title">생활습관 &amp; 체질</div>
   <div class="sec-sub">수면, 운동, 스트레스 패턴을 알려주세요.</div>
   <div class="card">
     <div class="qb">
@@ -866,12 +866,11 @@ input[type=number] { -moz-appearance:textfield; }
   </div>
   <div class="tab-scroll"><div class="tabs" id="tabArea"></div></div>
   <div id="recArea"></div>
- <div class="disclaimer">
+  <div class="disclaimer">
     ※ 본 추천은 건강기능식품 정보 제공 목적이며, 의료적 진단·처방이 아닙니다.<br>
     질환이 있거나 의약품 복용 중이신 경우 전문가와 상담 후 섭취하세요.<br>
     식약처 기능성 인정 범위 내 정보를 기준으로 제공됩니다.<br><br>
-    <strong style="color:#0C447C;"> 쿠팡 파트너스 활동 고지</strong><br>
-    본 서비스는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
+    ※ 본 서비스는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
   </div>
   <button class="btn-restart" onclick="restart()">↺ 처음부터 다시하기</button>
 </div>
@@ -896,11 +895,11 @@ var MARKET_LOADING = false;
 var PRODUCTS = [];
 var PRODUCTS_LOADED = false;
 
-// ══ 쿠팡 API 설정 (승인 후 아래 3개 값 입력) ══
 var COUPANG_ACCESS_KEY = '62414084-203f-4764-822b-432be00bfda3';
 var COUPANG_SECRET_KEY = '98f2d79e07507d53c79f5629c62ae31556c90fd3';
 var COUPANG_PROXY_URL  = 'https://script.google.com/macros/s/AKfycbwlZSFoYVDRtk6PKBp8NXWpfZtzcQH6g8NfmWsp-3oS7a_BDhvsgYINz_Q_adtB_AIKGg/exec';
 var COUPANG = {};
+
 var COUPANG_KEYWORD_MAP = {
   '에너지·피로 회복':   '피로회복 영양제',
   '뼈·관절·근육':       '관절 영양제',
@@ -918,7 +917,6 @@ var COUPANG_KEYWORD_MAP = {
   '여성 갱년기·호르몬': '갱년기 영양제'
 };
 
-// ── 키 정규화 + Fallback + 블랙리스트 (카테고리 오염 방어) ──
 var COUPANG_FALLBACK_KEYWORD = '건강기능식품';
 
 function normalizeCatKey(cat) {
@@ -935,65 +933,36 @@ function getCoupangKeyword(cat) {
   var key = normalizeCatKey(cat);
   return key ? COUPANG_KEYWORD_MAP[key] : COUPANG_FALLBACK_KEYWORD;
 }
-  // 키워드 체인 — 1차 실패 시 2차/3차로 재시도
+
 var COUPANG_KEYWORD_CHAIN = {
-  '에너지·피로 회복':   ['피로회복제', '비타민B 영양제', '코엔자임Q10'],
-  '뼈·관절·근육':       ['관절 영양제', '글루코사민', '칼슘 영양제'],
-  '두뇌·기억·인지':     ['기억력 영양제', '오메가3', '포스파티딜세린'],
+  '에너지·피로 회복':   ['피로회복 영양제', '비타민B 영양제', '종합비타민'],
+  '뼈·관절·근육':       ['관절 영양제', '글루코사민', '칼슘 마그네슘'],
+  '두뇌·기억·인지':     ['기억력 두뇌 영양제', '오메가3', '포스파티딜세린'],
   '면역·항산화':        ['면역력 영양제', '비타민C', '홍삼'],
-  '소화·장 건강':       ['유산균', '프로바이오틱스', '식이섬유'],
-  '심혈관·혈액순환':    ['혈액순환 영양제', '오메가3', '코엔자임Q10'],
-  '눈 건강':            ['루테인', '아스타잔틴', '눈영양제'],
-  '피부·미용':          ['콜라겐', '히알루론산', '비타민C 영양제'],
-  '체중·체형 관리':     ['가르시니아', 'L카르니틴', '다이어트 영양제'],
-  '근감소·단백질':      ['단백질 보충제', '프로틴 파우더', '아미노산'],
-  '스트레스·수면':      ['수면 영양제', '마그네슘', '테아닌'],
-  '혈압·혈중지질':      ['혈압 영양제', '나토키나제', '오메가3'],
-  '모발·두피 건강':     ['탈모 영양제', '비오틴', '판시딜'],
+  '소화·장 건강':       ['장건강 소화 영양제', '프로바이오틱스', '유산균'],
+  '심혈관·혈액순환':    ['혈행개선 영양제', '오메가3', '코엔자임Q10'],
+  '눈 건강':            ['눈건강 영양제', '루테인', '아스타잔틴'],
+  '피부·미용':          ['피부미용 영양제', '콜라겐', '히알루론산'],
+  '체중·체형 관리':     ['체지방 다이어트 영양제', '가르시니아', 'L카르니틴'],
+  '근감소·단백질':      ['근육 단백질 영양제', '단백질 보충제', '아미노산'],
+  '스트레스·수면':      ['스트레스 수면 영양제', '마그네슘', '테아닌'],
+  '혈압·혈중지질':      ['혈압 콜레스테롤 영양제', '나토키나제', '오메가3'],
+  '모발·두피 건강':     ['탈모 모발 영양제', '비오틴', '판시딜'],
   '여성 갱년기·호르몬': ['갱년기 영양제', '이소플라본', '석류 영양제']
 };
 
 function getCoupangKeywordChain(cat) {
   var key = normalizeCatKey(cat);
-  if(key && COUPANG_KEYWORD_CHAIN[key]) return COUPANG_KEYWORD_CHAIN[key];
-  return [getCoupangKeyword(cat), '건강기능식품'];
-}
-  // 키워드 체인 — 1차 실패 시 2차/3차로 재시도
-var COUPANG_KEYWORD_CHAIN = {
-  '에너지·피로 회복':   ['피로회복제', '비타민B 영양제', '코엔자임Q10'],
-  '뼈·관절·근육':       ['관절 영양제', '글루코사민', '칼슘 영양제'],
-  '두뇌·기억·인지':     ['기억력 영양제', '오메가3', '포스파티딜세린'],
-  '면역·항산화':        ['면역력 영양제', '비타민C', '홍삼'],
-  '소화·장 건강':       ['유산균', '프로바이오틱스', '식이섬유'],
-  '심혈관·혈액순환':    ['혈액순환 영양제', '오메가3', '코엔자임Q10'],
-  '눈 건강':            ['루테인', '아스타잔틴', '눈영양제'],
-  '피부·미용':          ['콜라겐', '히알루론산', '비타민C 영양제'],
-  '체중·체형 관리':     ['가르시니아', 'L카르니틴', '다이어트 영양제'],
-  '근감소·단백질':      ['단백질 보충제', '프로틴 파우더', '아미노산'],
-  '스트레스·수면':      ['수면 영양제', '마그네슘', '테아닌'],
-  '혈압·혈중지질':      ['혈압 영양제', '나토키나제', '오메가3'],
-  '모발·두피 건강':     ['탈모 영양제', '비오틴', '판시딜'],
-  '여성 갱년기·호르몬': ['갱년기 영양제', '이소플라본', '석류 영양제']
-};
-
-function getCoupangKeywordChain(cat) {
-  var key = normalizeCatKey(cat);
-  if(key && COUPANG_KEYWORD_CHAIN[key]) return COUPANG_KEYWORD_CHAIN[key];
+  if (key && COUPANG_KEYWORD_CHAIN[key]) return COUPANG_KEYWORD_CHAIN[key];
   return [getCoupangKeyword(cat), '건강기능식품'];
 }
 
-// ── 모든 카테고리 공통: 음료·일반식품 차단 ──
-// 건강기능식품 앱 정체성 유지를 위해 음료/캔디/젤리/시리얼 등 일반식품 전면 차단
 var COUPANG_GLOBAL_BLACKLIST = [
-  // 일반 음료(드링크) — 식약처상 건강기능식품 아님
   '드링크','구론산','바몬드','박카스','우루샷','활력드링크','자양강장',
   '비타500','비타1000','오로나민','컨디션','여명808','쌍화','쌍화탕',
-  // 일반 가공식품
   '젤리','구미','캔디','사탕','초콜릿','시리얼','쿠키','과자',
   '음료수','탄산','이온음료','에너지드링크','커피믹스',
-  // 식품 일반
   '우유','요거트','요구르트','두유','곡물','잡곡',
-  // 화장품·외용제(혹시 들어올 경우)
   '크림','로션','샴푸','마스크팩','립밤'
 ];
 
@@ -1007,17 +976,8 @@ function isGlobalBlacklisted(productName) {
 
 function isProductBlacklisted(productName, cat) {
   if (!productName) return false;
-  // 음료·일반식품 글로벌 차단
   if (isGlobalBlacklisted(productName)) return true;
   return false;
-}
-
-function filterCoupangByCategory(items, cat) {
-  if (!items || !items.length) return [];
-  return items.filter(function(item){
-    var name = item.name || item.productName || '';
-    return !isProductBlacklisted(name, cat);
-  });
 }
 
 async function loadProductDB() {
@@ -1310,7 +1270,6 @@ function updateProgress(id) {
   else btnBack.classList.add('show');
 }
 
-// 안전 필터
 var HARD_BLOCK = {
   '혈액희석제':['오메가3','omega3','비타민E','vitamin e','은행잎','ginkgo'],
   '혈압약':['코엔자임Q10','coq10','마그네슘','magnesium'],
@@ -1382,7 +1341,6 @@ function safetyGo() {
   else go('s3');
 }
 
-// 가족 탭
 var currentFamilyTab='self';
 var FAMILY_MEMBERS={
   self:{label:'본인',icon:'👤'},
@@ -1460,7 +1418,6 @@ function switchFamilyTab(member,el) {
   renderCat(cats[0],false,S.budgetMax||50000);
 }
 
-// 영상 매핑
 var VIDEO_MAP={};
 var VIDEOS_LOADED=false;
 async function loadVideoMap() {
@@ -1507,7 +1464,6 @@ function videoSection(cat) {
   return html+'</div>';
 }
 
-// ══ 카테고리별 추천 이유 문구 ══
 var CAT_REASON = {
   '에너지·피로 회복':   '만성 피로 관리 시 비타민B·철분·코큐텐도 함께 알아보세요.',
   '뼈·관절·근육':       '뼈 건강 관리 시 칼슘과 함께 마그네슘·비타민D도 살펴보세요.',
@@ -1525,85 +1481,55 @@ var CAT_REASON = {
   '여성 갱년기·호르몬': '갱년기 관리 시 호르몬 균형과 함께 수면·뼈·피부 건강도 살펴보세요.'
 };
 
-// ══ 핵심: 새 renderCat 함수 ══
-// 구조: 시장1위→시장2위→건강창고슬롯→(쿠팡승인후:네이버1→네이버2→건강창고슬롯2)→시장3위→시장4위
 async function renderCat(cat, isRx, budgetMax) {
   var recArea=document.getElementById('recArea');
   recArea.innerHTML='<div style="text-align:center;padding:30px;color:#a0aec0;font-size:14px;">추천 제품을 불러오는 중...</div>';
 
-  // 네이버/시트 데이터
   var naver=(MARKET[cat]||MARKET_FALLBACK[cat]||Object.values(MARKET_FALLBACK)[0]||[]).slice();
   while(naver.length<4) naver.push({rank:naver.length+1,name:'준비 중',price:0,mall:'-',link:''});
 
- // 쿠팡 데이터 — 다단계 폴백으로 무조건 4개 확보
+  // 쿠팡 데이터 — 다단계 폴백으로 4개 확보
   var coupang=null;
   if(COUPANG_ACCESS_KEY&&COUPANG_PROXY_URL){
     coupang=COUPANG[cat]||null;
     if(!coupang){
-      var keywordCandidates = getCoupangKeywordChain(cat);
-      var allPassed = [];
-      var allBlocked = [];
-      var usedKeywords = [];
-      
+      var keywordCandidates=getCoupangKeywordChain(cat);
+      var allPassed=[]; var allBlocked=[]; var usedKeywords=[];
       try{
-        for(var ki=0; ki<keywordCandidates.length && allPassed.length<4; ki++){
-          var keyword = keywordCandidates[ki];
+        for(var ki=0;ki<keywordCandidates.length&&allPassed.length<4;ki++){
+          var keyword=keywordCandidates[ki];
           usedKeywords.push(keyword);
-          console.log('[쿠팡 호출 '+(ki+1)+'차] cat:', cat, '→ keyword:', keyword);
-          
-          var res = await fetch(COUPANG_PROXY_URL+'?action=coupang&keyword='+encodeURIComponent(keyword));
-          var data = await res.json();
-          if(!data || !data.items) continue;
-          
+          console.log('[쿠팡 호출 '+(ki+1)+'차] cat:',cat,'→ keyword:',keyword);
+          var res=await fetch(COUPANG_PROXY_URL+'?action=coupang&keyword='+encodeURIComponent(keyword));
+          var data=await res.json();
+          if(!data||!data.items) continue;
           data.items.forEach(function(item){
-            var name = item.name || item.productName || '';
+            var name=item.name||item.productName||'';
             if(!name) return;
-            var dup = allPassed.some(function(p){ return p.name===name; });
+            var dup=allPassed.some(function(p){return p.name===name;});
             if(dup) return;
-            
-            if(isProductBlacklisted(name, cat)){
-              var reason = isGlobalBlacklisted(name) ? '음료/일반식품' : '카테고리 부적합';
-              allBlocked.push({name:name, reason:reason, kwTry:ki+1});
+            if(isProductBlacklisted(name,cat)){
+              allBlocked.push({name:name,reason:'음료/일반식품'});
             } else {
-              allPassed.push(Object.assign({}, item, {name:name}));
+              allPassed.push(Object.assign({},item,{name:name}));
             }
           });
         }
-        
-        window.LAST_COUPANG_DEBUG = {
-          cat: cat,
-          keyword: usedKeywords.join(' → '),
-          total: allPassed.length + allBlocked.length,
-          passed: allPassed.length,
-          blocked: allBlocked
-        };
-        
-        if(allPassed.length < 4 && allBlocked.length > 0){
-          console.warn('[쿠팡 폴백] 4개 미달 — 차단 일부 사용:', cat);
-          var fillCount = 4 - allPassed.length;
-          var nonBev = allBlocked.filter(function(b){ return b.reason !== '음료/일반식품'; });
-          for(var i=0; i<fillCount && i<nonBev.length; i++){
-            allPassed.push({name:nonBev[i].name, productPrice:0});
+        window.LAST_COUPANG_DEBUG={cat:cat,keyword:usedKeywords.join(' → '),total:allPassed.length+allBlocked.length,passed:allPassed.length,blocked:allBlocked};
+        if(allPassed.length<4&&allBlocked.length>0){
+          var fillCount=4-allPassed.length;
+          for(var fi=0;fi<fillCount&&fi<allBlocked.length;fi++){
+            allPassed.push({name:allBlocked[fi].name,productPrice:0});
           }
         }
-        
-        coupang = allPassed.slice(0,4).map(function(item,idx){
-          return {
-            rank: idx+1,
-            name: item.name || item.productName || '',
-            price: item.price || item.productPrice || 0,
-            mall: '쿠팡',
-            link: item.link || item.productUrl || ''
-          };
+        coupang=allPassed.slice(0,4).map(function(item,idx){
+          return{rank:idx+1,name:item.name||item.productName||'',price:item.price||item.productPrice||0,mall:'쿠팡',link:item.link||item.productUrl||''};
         });
-        COUPANG[cat] = coupang;
-      }catch(e){
-        console.warn('쿠팡 API 실패:',e);
-      }
+        COUPANG[cat]=coupang;
+      }catch(e){console.warn('쿠팡 API 실패:',e);}
     }
   }
 
-  // 메인 데이터 결정
   var mainData=coupang||naver;
   var mainLabel=coupang?'쿠팡 베스트':'시장 베스트';
   var mainColor=coupang?'#e9463c':'#1558A8';
@@ -1611,7 +1537,6 @@ async function renderCat(cat, isRx, budgetMax) {
   var adP=getBestProduct(cat);
   var html='';
 
-  // ① 추천 이유 문구
   var reason=CAT_REASON[cat]||'';
   if(reason){
     html+='<div style="background:#EBF4FF;border:1px solid #B5D4F4;border-radius:12px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:flex-start;gap:8px;">'
@@ -1620,15 +1545,12 @@ async function renderCat(cat, isRx, budgetMax) {
       +'</div>';
   }
 
-  // ② 1위, 2위
   html+=mCard(mainData[0],true,isRx,mainLabel,mainColor);
   html+=mCard(mainData[1],true,isRx,mainLabel,mainColor);
 
-  // ③ 건강창고 슬롯 1
   html+='<div class="divider">건강창고 추천</div>';
   html+=adP?aCard(adP,isRx):'<div style="text-align:center;padding:14px;color:#a0aec0;font-size:13px;">준비 중인 제품이에요</div>';
 
-  // ④ 쿠팡 승인 후: 네이버 1,2위 + 슬롯2 추가
   if(coupang){
     html+='<div class="divider">네이버 베스트</div>';
     html+=mCard(naver[0],false,isRx,'네이버 베스트','#03c75a');
@@ -1637,56 +1559,47 @@ async function renderCat(cat, isRx, budgetMax) {
     html+=adP?aCard(adP,isRx):'';
   }
 
-  // ⑤ 3위, 4위
   html+='<div class="divider">'+(coupang?'쿠팡 베스트 계속':'시장 베스트 계속')+'</div>';
   html+=mCard(mainData[2],false,isRx,mainLabel,mainColor);
   html+=mCard(mainData[3],false,isRx,mainLabel,mainColor);
 
-  // ⑥ 관련 영상
   html+='<div class="divider">관련 영상</div>';
   html+=videoSection(cat);
-  
-  // ⑦ 디버그 영역 (베타 끝나면 이 줄 한 줄만 삭제)
+
+  // 디버그 박스 (베타용 — 나중에 이 줄과 renderDebugInfo 함수 삭제)
   html+='<div id="debugInfo" style="margin-top:20px;"></div>';
 
   recArea.innerHTML=html;
   renderDebugInfo();
 }
 
-// ── 디버그 정보 렌더링 (베타 끝나면 이 함수 통째로 삭제) ──
+// 디버그 정보 렌더링 (베타 끝나면 이 함수 삭제)
 function renderDebugInfo() {
-  var el = document.getElementById('debugInfo');
-  if (!el) return;
-  var d = window.LAST_COUPANG_DEBUG;
-  if (!d) { el.innerHTML = ''; return; }
-  
-  var blockedHtml = '';
-  if (d.blocked.length === 0) {
-    blockedHtml = '<div style="color:#16a34a;font-size:11px;margin-top:6px;">✅ 차단된 제품 없음</div>';
+  var el=document.getElementById('debugInfo');
+  if(!el) return;
+  var d=window.LAST_COUPANG_DEBUG;
+  if(!d){el.innerHTML='';return;}
+  var blockedHtml='';
+  if(d.blocked.length===0){
+    blockedHtml='<div style="color:#16a34a;font-size:11px;margin-top:6px;">✅ 차단된 제품 없음</div>';
   } else {
-    blockedHtml = '<div style="margin-top:6px;">';
+    blockedHtml='<div style="margin-top:6px;">';
     d.blocked.forEach(function(b){
-      var color = b.reason === '음료/일반식품' ? '#dc2626' : '#f59e0b';
-      blockedHtml += '<div style="font-size:11px;color:'+color+';line-height:1.6;">'
-        + '🚫 ' + b.name + ' <span style="color:#94a3b8;">('+b.reason+')</span>'
-        + '</div>';
+      blockedHtml+='<div style="font-size:11px;color:#dc2626;line-height:1.6;">🚫 '+b.name+' <span style="color:#94a3b8;">('+b.reason+')</span></div>';
     });
-    blockedHtml += '</div>';
+    blockedHtml+='</div>';
   }
-  
-  el.innerHTML = '<details style="background:#f8fafc;border:1px dashed #cbd5e1;border-radius:8px;padding:10px 14px;font-size:12px;color:#64748b;">'
-    + '<summary style="cursor:pointer;font-weight:700;color:#475569;">🔧 디버그: 쿠팡 응답 ' + d.total + '개 중 '
-    + d.passed + '개 통과 · ' + d.blocked.length + '개 차단</summary>'
-    + '<div style="margin-top:8px;padding-top:8px;border-top:1px solid #e2e8f0;">'
-    + '<div style="margin-bottom:4px;"><b>카테고리:</b> ' + d.cat + '</div>'
-    + '<div style="margin-bottom:4px;"><b>호출 키워드:</b> "' + d.keyword + '"</div>'
-    + blockedHtml
-    + '</div></details>';
+  el.innerHTML='<details style="background:#f8fafc;border:1px dashed #cbd5e1;border-radius:8px;padding:10px 14px;font-size:12px;color:#64748b;">'
+    +'<summary style="cursor:pointer;font-weight:700;color:#475569;">🔧 디버그: 쿠팡 응답 '+d.total+'개 중 '+d.passed+'개 통과 · '+d.blocked.length+'개 차단</summary>'
+    +'<div style="margin-top:8px;padding-top:8px;border-top:1px solid #e2e8f0;">'
+    +'<div style="margin-bottom:4px;"><b>카테고리:</b> '+d.cat+'</div>'
+    +'<div style="margin-bottom:4px;"><b>호출 키워드:</b> "'+d.keyword+'"</div>'
+    +blockedHtml
+    +'</div></details>';
 }
 
-// ══ mCard (출처 라벨 + 색상 파라미터 추가) ══
 function mCard(p,top,isRx,label,accentColor){
-  if(!p || !p.name) return '';
+  if(!p||!p.name) return '';
   label=label||'시장 베스트';
   accentColor=accentColor||'#1558A8';
   var level=getSafetyLevel(p.name);
@@ -1712,7 +1625,7 @@ function mCard(p,top,isRx,label,accentColor){
 }
 
 function aCard(p,isRx){
-  if(!p || !p.name) return '';
+  if(!p||!p.name) return '';
   var level=getSafetyLevel(p.name);
   if(level===1) return '';
   var tagsHtml=(p.cats||[]).map(function(t){return '<span class="ad-tag">'+t+'</span>';}).join('');
@@ -1735,7 +1648,6 @@ function buyProduct(pid){
   else alert('준비 중입니다.');
 }
 
-// 결과 렌더링
 function showResult(){
   document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
   document.getElementById('sResult').classList.add('on');
@@ -1872,7 +1784,6 @@ function restart(){
   go('s1'); checkBtn('btn1'); checkBtn('btn2');
 }
 
-// 개인정보 동의
 var consentState={c1:false,c2:false,c3:false};
 function initConsent(){
   try{if(localStorage.getItem('hc_consent')==='true')return;}catch(e){}
