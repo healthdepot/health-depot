@@ -444,12 +444,12 @@ input[type=number] { -moz-appearance:textfield; }
     <div class="qb" style="margin-bottom:0">
       <div class="ql">현재 복용 중인 건강기능식품이 있나요?<small>중복 섭취 성분 확인에 활용됩니다</small></div>
       <div class="clist" id="curSupList">
-        <div class="ci" onclick="chk(this,'curSup','없음')"><div class="cb"></div><div class="cl">없음</div></div>
-        <div class="ci" onclick="chk(this,'curSup','비타민·미네랄')"><div class="cb"></div><div class="cl">비타민·미네랄</div></div>
-        <div class="ci" onclick="chk(this,'curSup','오메가3')"><div class="cb"></div><div class="cl">오메가3</div></div>
-        <div class="ci" onclick="chk(this,'curSup','유산균·프로바이오틱스')"><div class="cb"></div><div class="cl">유산균·프로바이오틱스</div></div>
-        <div class="ci" onclick="chk(this,'curSup','홍삼')"><div class="cb"></div><div class="cl">홍삼</div></div>
-        <div class="ci" onclick="chk(this,'curSup','기타')"><div class="cb"></div><div class="cl">기타</div></div>
+        <div class="ci" onclick="chkNone(this,'curSup','없음','curSupList')"><div class="cb"></div><div class="cl">없음</div></div>
+        <div class="ci" onclick="chkExcludeNone(this,'curSup','비타민·미네랄','curSupList')"><div class="cb"></div><div class="cl">비타민·미네랄</div></div>
+        <div class="ci" onclick="chkExcludeNone(this,'curSup','오메가3','curSupList')"><div class="cb"></div><div class="cl">오메가3</div></div>
+        <div class="ci" onclick="chkExcludeNone(this,'curSup','유산균·프로바이오틱스','curSupList')"><div class="cb"></div><div class="cl">유산균·프로바이오틱스</div></div>
+        <div class="ci" onclick="chkExcludeNone(this,'curSup','홍삼','curSupList')"><div class="cb"></div><div class="cl">홍삼</div></div>
+        <div class="ci" onclick="chkExcludeNone(this,'curSup','기타','curSupList')"><div class="cb"></div><div class="cl">기타</div></div>
       </div>
     </div>
   </div>
@@ -1176,6 +1176,27 @@ function chk(el,key,val) {
   el.classList.toggle('ck');
   el.querySelector('.cb').textContent=el.classList.contains('ck')?'✓':'';
   if(!Array.isArray(S[key])) S[key]=[];
+  if(el.classList.contains('ck')){S[key].push(val);}
+  else{S[key]=S[key].filter(function(v){return v!==val;});}
+}
+function chkNone(el,key,val,listId) {
+  // 없음 선택 시 나머지 전부 해제
+  var list=document.getElementById(listId);
+  list.querySelectorAll('.ci').forEach(function(c){c.classList.remove('ck');c.querySelector('.cb').textContent='';});
+  el.classList.add('ck'); el.querySelector('.cb').textContent='✓';
+  S[key]=[val];
+}
+function chkExcludeNone(el,key,val,listId) {
+  // 다른 항목 선택 시 없음 해제
+  var list=document.getElementById(listId);
+  list.querySelectorAll('.ci').forEach(function(c){
+    if(c.querySelector('.cl').textContent.trim()==='없음'){
+      c.classList.remove('ck'); c.querySelector('.cb').textContent='';
+    }
+  });
+  S[key]=(S[key]||[]).filter(function(v){return v!=='없음';});
+  el.classList.toggle('ck');
+  el.querySelector('.cb').textContent=el.classList.contains('ck')?'✓':'';
   if(el.classList.contains('ck')){S[key].push(val);}
   else{S[key]=S[key].filter(function(v){return v!==val;});}
 }
