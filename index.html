@@ -243,6 +243,8 @@ input[type=range] { flex:1; accent-color:#1558A8; cursor:pointer; }
   cursor:pointer; transition:all .2s;
 }
 .mkt-btn:hover { border-color:#378ADD; color:#1558A8; background:#E6F1FB; transform:translateY(-1px); }
+.mkt-btn.naver { border-color:#03c75a; color:#03c75a; }
+.mkt-btn.naver:hover { background:#f0fff7; border-color:#03c75a; color:#028a3e; }
 .ad-slot {
   background: linear-gradient(140deg, #1A1200 0%, #412402 40%, #633806 100%);
   border-radius:20px; padding:20px 18px; margin-bottom:12px; color:#fff;
@@ -1067,8 +1069,9 @@ async function loadMarketData() {
       if(!temp[cat]) temp[cat]=[];
       var exists=temp[cat].some(function(x){ return x.name===name; });
       if(!exists&&temp[cat].length<4) {
-      var naverLink='https://search.shopping.naver.com/search/all?query='+encodeURIComponent(name);
-      temp[cat].push({rank:rank,name:name,price:price,mall:mall,link:naverLink});
+        var naverLink='https://search.shopping.naver.com/search/all?query='+encodeURIComponent(name);
+        temp[cat].push({rank:rank,name:name,price:price,mall:mall,link:naverLink});
+      }
     }
     Object.keys(temp).forEach(function(cat){
       temp[cat].sort(function(a,b){ return a.rank-b.rank; });
@@ -1182,14 +1185,12 @@ function chk(el,key,val) {
   else{S[key]=S[key].filter(function(v){return v!==val;});}
 }
 function chkNone(el,key,val,listId) {
-  // 없음 선택 시 나머지 전부 해제
   var list=document.getElementById(listId);
   list.querySelectorAll('.ci').forEach(function(c){c.classList.remove('ck');c.querySelector('.cb').textContent='';});
   el.classList.add('ck'); el.querySelector('.cb').textContent='✓';
   S[key]=[val];
 }
 function chkExcludeNone(el,key,val,listId) {
-  // 다른 항목 선택 시 없음 해제
   var list=document.getElementById(listId);
   list.querySelectorAll('.ci').forEach(function(c){
     if(c.querySelector('.cl').textContent.trim()==='없음'){
@@ -1512,7 +1513,6 @@ async function renderCat(cat, isRx, budgetMax) {
   var naver=(MARKET[cat]||MARKET_FALLBACK[cat]||Object.values(MARKET_FALLBACK)[0]||[]).slice();
   while(naver.length<4) naver.push({rank:naver.length+1,name:'준비 중',price:0,mall:'-',link:''});
 
-  // 쿠팡 데이터 — 다단계 폴백으로 4개 확보
   var coupang=null;
   if(COUPANG_ACCESS_KEY&&COUPANG_PROXY_URL){
     coupang=COUPANG[cat]||null;
@@ -1571,7 +1571,6 @@ async function renderCat(cat, isRx, budgetMax) {
 
   html+=mCard(mainData[0],true,isRx,mainLabel,mainColor);
   html+=mCard(mainData[1],true,isRx,mainLabel,mainColor);
-
   html+='<div class="divider">건강창고 추천</div>';
   html+=adP?aCard(adP,isRx):'<div style="text-align:center;padding:14px;color:#a0aec0;font-size:13px;">준비 중인 제품이에요</div>';
 
@@ -1586,18 +1585,13 @@ async function renderCat(cat, isRx, budgetMax) {
   html+='<div class="divider">'+(coupang?'쿠팡 베스트 계속':'시장 베스트 계속')+'</div>';
   html+=mCard(mainData[2],false,isRx,mainLabel,mainColor);
   html+=mCard(mainData[3],false,isRx,mainLabel,mainColor);
-
   html+='<div class="divider">관련 영상</div>';
   html+=videoSection(cat);
-
-  // 디버그 박스 (베타용 — 나중에 이 줄과 renderDebugInfo 함수 삭제)
   html+='<div id="debugInfo" style="margin-top:20px;"></div>';
-
   recArea.innerHTML=html;
   renderDebugInfo();
 }
 
-// 디버그 정보 렌더링 (베타 끝나면 이 함수 삭제)
 function renderDebugInfo() {
   var el=document.getElementById('debugInfo');
   if(!el) return;
@@ -1628,8 +1622,8 @@ function mCard(p,top,isRx,label,accentColor){
   accentColor=accentColor||'#1558A8';
   var level=getSafetyLevel(p.name);
   if(level===1) return '';
-    var isNaver=(p.mall&&p.mall!=='쿠팡');
-    var warnHtml='',btnText=isNaver?'🟢 네이버에서 보기':'🔍 쿠팡에서 보기',btnClass=isNaver?'mkt-btn naver':'mkt-btn';
+  var isNaver=(p.mall&&p.mall!=='쿠팡');
+  var warnHtml='',btnText=isNaver?'🟢 네이버에서 보기':'🔍 쿠팡에서 보기',btnClass=isNaver?'mkt-btn naver':'mkt-btn';
   if(level===2){
     warnHtml='<div class="badge-caution">⚠️ 복용 약물과 성분 확인 필요</div><div class="safe-warn" style="margin-bottom:6px;">전문의약품 복용 중이시면 약사와 상담 후 구매를 권장해요.</div>';
     btnText='💬 약사 상담 후 구매';btnClass='btn-consult';
