@@ -9,6 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 <style>
 :root {
   --blue-dark:#0C447C;  --blue-main:#1558A8;  --blue-mid:#378ADD;
@@ -998,7 +1000,7 @@ input[type=number] { -moz-appearance:textfield; }
 <div class="scr" id="sReport">
   <div id="reportArea"></div>
   <button class="pay-btn" id="pdfDownloadBtn" onclick="downloadReportPDF()" style="margin-top:14px;">📥 PDF로 저장하기</button>
-  <div class="pay-test-note" style="text-align:center;">인쇄 화면이 뜨면 "대상"을 <b>PDF로 저장</b>으로 선택 후 저장해주세요.</div>
+  <div class="pay-test-note" style="text-align:center;">버튼을 누르면 몇 초 후 파일이 자동으로 다운로드돼요.</div>
   <button class="btn-restart" onclick="go('sResult')" style="margin-top:4px;">← 결과 화면으로</button>
 </div>
 
@@ -2166,11 +2168,62 @@ function renderReport(){
   document.getElementById('reportArea').innerHTML=html;
 }
 
-function downloadReportPDF(){
+async function downloadReportPDF(){
   var el=document.getElementById('reportArea');
   if(!el||!el.innerHTML){ alert('먼저 리포트를 확인해주세요.'); return; }
-  document.title='건강창고_심화리포트_'+(S.age||'')+(S.gender||'')+'세';
-  window.print();
+  if(typeof html2canvas==='undefined' || typeof window.jspdf==='undefined'){
+    alert('PDF 생성 모듈을 불러오지 못했어요. 인터넷 연결을 확인 후 다시 시도해주세요.');
+    return;
+  }
+  var btn=document.getElementById('pdfDownloadBtn');
+  var origTxt=btn.textContent;
+  btn.disabled=true; btn.textContent='📥 PDF 생성 중... (몇 초 소요)';
+  try{
+    if(document.fonts && document.fonts.ready){ await document.fonts.ready; }
+    window.scrollTo(0,0);
+    await new Promise(function(r){ setTimeout(r,200); });
+
+    var estHeight=el.scrollHeight;
+    var scale=2;
+    if(estHeight*scale>9000){ scale=Math.max(1, 9000/estHeight); }
+
+    var canvas=await html2canvas(el,{
+      scale:scale,
+      useCORS:true,
+      backgroundColor:'#f5f8fd',
+      scrollX:0,
+      scrollY:-window.scrollY,
+      windowWidth:document.documentElement.scrollWidth,
+      windowHeight:document.documentElement.scrollHeight
+    });
+
+    var imgData=canvas.toDataURL('image/jpeg',0.92);
+    var jsPDF=window.jspdf.jsPDF;
+    var pdf=new jsPDF('p','mm','a4');
+    var pageW=pdf.internal.pageSize.getWidth();
+    var pageH=pdf.internal.pageSize.getHeight();
+    var imgW=pageW;
+    var imgH=canvas.height*imgW/canvas.width;
+    var heightLeft=imgH;
+    var position=0;
+
+    pdf.addImage(imgData,'JPEG',0,position,imgW,imgH);
+    heightLeft-=pageH;
+    while(heightLeft>0){
+      position=heightLeft-imgH;
+      pdf.addPage();
+      pdf.addImage(imgData,'JPEG',0,position,imgW,imgH);
+      heightLeft-=pageH;
+    }
+
+    var fname='건강창고_심화리포트_'+(S.age||'')+(S.gender||'')+'세.pdf';
+    pdf.save(fname);
+  }catch(e){
+    console.warn('PDF 생성 실패:',e);
+    alert('PDF 생성에 실패했어요. 다시 시도해주세요.');
+  }finally{
+    btn.disabled=false; btn.textContent=origTxt;
+  }
 }
 
 function restart(){
