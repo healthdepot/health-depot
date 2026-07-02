@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
 <style>
 :root {
   --blue-dark:#0C447C;  --blue-main:#1558A8;  --blue-mid:#378ADD;
@@ -371,6 +372,76 @@ input[type=number] { -moz-appearance:textfield; }
 .family-tab-icon { font-size:16px; }
 .family-tab-label { font-size:13px; }
 .family-tab-hint { font-size:11px; color:#1558A8; text-align:center; margin-top:10px; font-weight:600; }
+
+/* ── 심화 리포트 / 결제 ── */
+.report-unlock { margin-top:14px; background:linear-gradient(135deg,#fff9ec,#fff3d6); border:1.5px dashed #F5A800; border-radius:16px; padding:18px 16px; text-align:center; }
+.report-unlock-title { font-size:15px; font-weight:900; color:#7a4a00; margin-bottom:4px; }
+.report-unlock-desc { font-size:12.5px; color:#92400e; line-height:1.6; margin-bottom:12px; }
+.report-unlock-btn { width:100%; padding:15px; background:linear-gradient(135deg,#F5A800,#d98c00); color:#1A1200; border:none; border-radius:14px; font-size:14.5px; font-weight:900; cursor:pointer; box-shadow:0 6px 20px rgba(245,168,0,.35); transition:all .2s; }
+.report-unlock-btn:hover { transform:translateY(-1px); box-shadow:0 8px 24px rgba(245,168,0,.45); }
+.report-unlock-price { font-size:11px; color:#92400e; margin-top:8px; font-weight:600; }
+.pay-card { background:#fff; border-radius:20px; padding:26px 22px; text-align:center; box-shadow:0 4px 24px rgba(0,0,0,.08); border:1px solid rgba(0,0,0,.04); }
+.pay-icon { font-size:44px; margin-bottom:10px; }
+.pay-title { font-size:18px; font-weight:900; color:#0C447C; margin-bottom:6px; }
+.pay-desc { font-size:13px; color:var(--gy6); line-height:1.7; margin-bottom:20px; }
+.pay-price-box { background:var(--gy1); border-radius:14px; padding:16px; margin-bottom:18px; }
+.pay-price-label { font-size:12px; color:var(--gy6); margin-bottom:4px; font-weight:600; }
+.pay-price { font-size:30px; font-weight:900; color:#0C447C; letter-spacing:-0.5px; }
+.pay-includes { text-align:left; background:#E6F1FB; border-radius:12px; padding:14px 16px 14px 20px; margin-bottom:20px; }
+.pay-includes li { font-size:12.5px; color:#0C447C; padding:4px 0; font-weight:600; }
+.pay-btn { width:100%; padding:17px; background:linear-gradient(135deg,#1558A8,#0C447C); color:#fff; border:none; border-radius:16px; font-size:15px; font-weight:900; cursor:pointer; box-shadow:0 6px 24px rgba(21,88,168,.35); transition:all .2s; }
+.pay-btn:hover { transform:translateY(-1px); }
+.pay-btn:disabled { background:var(--gy3); box-shadow:none; }
+.pay-loading { display:none; text-align:center; padding:50px 20px; }
+.pay-loading.show { display:block; }
+.pay-spinner { width:38px; height:38px; border:3px solid #B5D4F4; border-top-color:#1558A8; border-radius:50%; margin:0 auto 16px; animation:spin .8s linear infinite; }
+@keyframes spin { to{ transform:rotate(360deg); } }
+.pay-test-note { font-size:11px; color:var(--gy4); margin-top:14px; line-height:1.6; }
+.pay-back { width:100%; padding:13px; background:transparent; color:var(--gy6); border:none; font-size:13px; font-weight:600; cursor:pointer; margin-top:6px; }
+.rpt-cover { background:linear-gradient(135deg,#0C447C 0%,#1558A8 60%,#378ADD 100%); border-radius:20px; padding:24px 20px; color:#fff; margin-bottom:16px; position:relative; overflow:hidden; box-shadow:0 8px 32px rgba(12,68,124,.3); }
+.rpt-cover::after { content:''; position:absolute; right:-30px; top:-30px; width:150px; height:150px; background:rgba(255,255,255,.06); border-radius:50%; }
+.rpt-badge { display:inline-block; font-size:10.5px; font-weight:800; letter-spacing:.5px; background:rgba(255,255,255,.18); padding:4px 12px; border-radius:99px; margin-bottom:12px; position:relative; }
+.rpt-cover-title { font-size:19px; font-weight:900; line-height:1.4; margin-bottom:6px; position:relative; }
+.rpt-cover-sub { font-size:12.5px; color:rgba(255,255,255,.75); line-height:1.6; position:relative; }
+.rpt-cover-meta { display:flex; gap:16px; margin-top:16px; padding-top:14px; border-top:1px solid rgba(255,255,255,.2); position:relative; flex-wrap:wrap; }
+.rpt-cover-meta div { font-size:11px; color:rgba(255,255,255,.65); }
+.rpt-cover-meta strong { display:block; font-size:14px; color:#fff; font-weight:800; margin-top:2px; }
+.rpt-sec-label { font-size:11px; font-weight:800; letter-spacing:.08em; color:#0C447C; text-transform:uppercase; margin:22px 0 10px; display:flex; align-items:center; gap:8px; }
+.rpt-sec-label::after { content:''; flex:1; height:1px; background:var(--gy3); }
+.rpt-score-hero { background:#fff; border-radius:18px; padding:22px 20px; text-align:center; box-shadow:0 2px 16px rgba(0,0,0,.06); margin-bottom:14px; border:1px solid rgba(0,0,0,.04); }
+.rpt-score-num { font-size:48px; font-weight:900; color:#1558A8; line-height:1; letter-spacing:-1px; }
+.rpt-score-sub { font-size:12px; color:var(--gy6); margin-top:8px; line-height:1.6; }
+.rpt-bar-row { display:flex; align-items:center; gap:10px; margin-bottom:11px; }
+.rpt-bar-label { font-size:12px; font-weight:700; color:var(--gy7); width:92px; flex-shrink:0; line-height:1.3; }
+.rpt-bar-track { flex:1; height:9px; background:var(--gy3); border-radius:99px; overflow:hidden; }
+.rpt-bar-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,#378ADD,#0C447C); }
+.rpt-bar-val { font-size:12px; font-weight:800; color:#0C447C; width:34px; text-align:right; flex-shrink:0; }
+.rpt-detail-card { background:#fff; border-radius:16px; padding:18px; margin-bottom:12px; box-shadow:0 2px 16px rgba(0,0,0,.06); border-left:4px solid #1558A8; }
+.rpt-detail-cat { font-size:14px; font-weight:900; color:#0C447C; margin-bottom:4px; }
+.rpt-detail-score { font-size:11px; color:var(--gy4); font-weight:700; margin-bottom:10px; }
+.rpt-detail-txt { font-size:13px; color:var(--gy7); line-height:1.8; }
+.rpt-nutri-row { display:flex; gap:12px; align-items:flex-start; padding:11px 0; border-bottom:1px solid var(--gy3); }
+.rpt-nutri-row:last-child { border-bottom:none; }
+.rpt-nutri-rank { width:24px; height:24px; border-radius:50%; background:#E6F1FB; color:#1558A8; font-size:12px; font-weight:900; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+.rpt-nutri-name { font-size:13px; font-weight:800; color:var(--gy9); }
+.rpt-nutri-desc { font-size:12px; color:var(--gy6); margin-top:3px; line-height:1.55; }
+.rpt-nutri-food { font-size:11.5px; color:#1558A8; margin-top:3px; font-weight:600; }
+.rpt-safety-item { display:flex; gap:10px; padding:10px 0; border-bottom:1px solid var(--gy3); font-size:12.5px; color:var(--gy7); line-height:1.6; }
+.rpt-safety-item:last-child { border-bottom:none; }
+.rpt-fam-row { display:flex; gap:10px; align-items:flex-start; padding:10px 0; border-bottom:1px solid var(--gy3); }
+.rpt-fam-row:last-child { border-bottom:none; }
+.rpt-fam-icon { font-size:18px; flex-shrink:0; }
+.rpt-fam-name { font-size:12.5px; font-weight:800; color:var(--gy9); }
+.rpt-fam-txt { font-size:12px; color:var(--gy6); margin-top:2px; line-height:1.55; }
+.rpt-action-item { background:#E6F1FB; border-radius:12px; padding:12px 14px; margin-bottom:8px; font-size:13px; color:#0C447C; font-weight:700; display:flex; gap:10px; align-items:flex-start; line-height:1.55; }
+.rpt-action-num { background:#1558A8; color:#fff; width:20px; height:20px; border-radius:50%; font-size:11px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+.rpt-goal-box { background:linear-gradient(135deg,#EAF3DE,#dcedc8); border-radius:14px; padding:16px; margin-top:12px; border:1px solid #c5e1a5; }
+.rpt-goal-title { font-size:12px; font-weight:800; color:#27500A; margin-bottom:6px; }
+.rpt-goal-txt { font-size:13px; color:#33691e; line-height:1.7; }
+.rpt-pharma-box { display:flex; gap:10px; align-items:center; background:#fff; border-radius:14px; padding:14px 16px; margin-top:14px; border:1px solid var(--gy3); }
+.rpt-pharma-icon { font-size:24px; flex-shrink:0; }
+.rpt-pharma-txt { font-size:11.5px; color:var(--gy6); line-height:1.6; }
+.rpt-pharma-txt b { color:#0C447C; }
 </style>
 </head>
 <body>
@@ -868,6 +939,12 @@ input[type=number] { -moz-appearance:textfield; }
   </div>
   <div class="tab-scroll"><div class="tabs" id="tabArea"></div></div>
   <div id="recArea"></div>
+  <div class="report-unlock" id="reportUnlock">
+    <div class="report-unlock-title">🔒 나만의 심화 건강 리포트</div>
+    <div class="report-unlock-desc">종합 건강 점수부터 결핍 성분 분석, 안전 체크, 가족 요약, 맞춤 액션 플랜까지<br>전문 리포트로 자세히 확인해보세요.</div>
+    <button class="report-unlock-btn" onclick="goReportPay()">📋 심화 리포트 보기</button>
+    <div class="report-unlock-price">2,900원 · 1회 결제 · 즉시 확인</div>
+  </div>
   <div class="disclaimer">
     ※ 본 추천은 건강기능식품 정보 제공 목적이며, 의료적 진단·처방이 아닙니다.<br>
     질환이 있거나 의약품 복용 중이신 경우 전문가와 상담 후 섭취하세요.<br>
@@ -875,6 +952,44 @@ input[type=number] { -moz-appearance:textfield; }
     ※ 본 서비스는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
   </div>
   <button class="btn-restart" onclick="restart()">↺ 처음부터 다시하기</button>
+</div>
+
+<!-- 결제 (베타: 실제 결제 미연동) -->
+<div class="scr" id="sPay">
+  <div class="badge" style="background:#FFFBEF;color:#92400e;">심화 리포트</div>
+  <div class="sec-title">심화 건강 리포트</div>
+  <div class="sec-sub">문진 데이터를 기반으로 한 전문 분석 리포트예요.</div>
+  <div class="pay-card" id="payCardMain">
+    <div class="pay-icon">📊</div>
+    <div class="pay-title">나의 심화 건강 리포트</div>
+    <div class="pay-desc">종합 점수·카테고리 분석·결핍 성분·안전 체크·가족 요약·맞춤 액션 플랜까지<br>6부 구성의 전문 리포트를 받아보세요.</div>
+    <div class="pay-price-box">
+      <div class="pay-price-label">리포트 이용료</div>
+      <div class="pay-price">2,900원</div>
+    </div>
+    <ul class="pay-includes">
+      <li>나의 건강 종합 점수 + 카테고리별 분석</li>
+      <li>취약 영역 심층 분석 (근거 포함)</li>
+      <li>결핍 가능성 성분 순위 + 보충법</li>
+      <li>복용 약물 안전 체크 요약</li>
+      <li>가족 건강 요약</li>
+      <li>맞춤 액션 플랜</li>
+    </ul>
+    <button class="pay-btn" id="payBtn" onclick="fakePay()">2,900원 결제하고 확인하기</button>
+    <button class="pay-back" onclick="go('sResult')">← 취소하고 돌아가기</button>
+    <div class="pay-test-note">※ 현재 베타 테스트 단계로 실제 결제가 이루어지지 않습니다. 정식 출시 시 실제 결제로 전환됩니다.</div>
+  </div>
+  <div class="pay-loading" id="payLoading">
+    <div class="pay-spinner"></div>
+    <div style="font-size:14px;font-weight:700;color:#0C447C;">결제 확인 중입니다...</div>
+  </div>
+</div>
+
+<!-- 심화 리포트 -->
+<div class="scr" id="sReport">
+  <div id="reportArea"></div>
+  <button class="pay-btn" id="pdfDownloadBtn" onclick="downloadReportPDF()" style="margin-top:14px;">📥 PDF로 저장하기</button>
+  <button class="btn-restart" onclick="go('sResult')" style="margin-top:4px;">← 결과 화면으로</button>
 </div>
 
 </div>
@@ -1287,10 +1402,16 @@ function goBack() {
 }
 function updateProgress(id) {
   var steps={s1:1,s2:2,s3:3,s4:4,s5:5,s6:6,s7:7,sResult:8};
+  var btnBack=document.getElementById('btnBack');
+  if(id==='sPay'||id==='sReport'){
+    document.getElementById('pb').style.width='100%';
+    document.getElementById('steptxt').textContent=id==='sPay'?'결제':'리포트';
+    btnBack.classList.add('show');
+    return;
+  }
   var total=7; var step=steps[id]||1;
   document.getElementById('pb').style.width=(Math.min(step,total)/total*100)+'%';
   document.getElementById('steptxt').textContent=step<=total?step+' / '+total:'완료';
-  var btnBack=document.getElementById('btnBack');
   if(id==='s1'||id==='sResult') btnBack.classList.remove('show');
   else btnBack.classList.add('show');
 }
@@ -1769,12 +1890,295 @@ function renderResult(){
   renderCat(cats[0],isRx,budgetMax);
   currentFamilyTab='self';
   renderFamilyTabs();
+  window.LAST_SCORE_DATA=score;
 }
 
 function showCat(el,cat){
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
   el.classList.add('on');
   renderCat(cat,S.rx==='있음',S.budgetMax||50000);
+}
+
+/* ══════════════ 심화 리포트 (유료 트랙) ══════════════ */
+
+function goReportPay(){
+  document.getElementById('payCardMain').style.display='block';
+  document.getElementById('payLoading').classList.remove('show');
+  document.getElementById('payBtn').disabled=false;
+  go('sPay');
+}
+
+function fakePay(){
+  document.getElementById('payBtn').disabled=true;
+  document.getElementById('payCardMain').style.display='none';
+  document.getElementById('payLoading').classList.add('show');
+  setTimeout(function(){
+    renderReport();
+    go('sReport');
+  }, 1300);
+}
+
+var RPT_BASE_TEXT = {
+  '에너지·피로 회복':   '평소 활동량과 회복 패턴을 볼 때, 만성적인 피로 누적 가능성이 있는 것으로 분석됩니다.',
+  '뼈·관절·근육':       '연령·생활 패턴상 뼈와 관절, 근육 건강에 좀 더 신경 쓸 필요가 있는 것으로 보입니다.',
+  '두뇌·기억·인지':     '일상 속 집중력·기억력 관련 답변을 종합하면, 인지 기능 관리가 도움이 될 가능성이 있습니다.',
+  '면역·항산화':        '생활습관 전반을 볼 때 면역력 저하 가능성이 있어, 항산화 관리가 필요해 보입니다.',
+  '소화·장 건강':       '식습관과 소화 관련 답변으로 볼 때, 장 건강 관리가 우선적으로 필요할 가능성이 있습니다.',
+  '심혈관·혈액순환':    '생활 패턴상 혈액순환·심혈관 건강 관리가 필요할 가능성이 있는 것으로 분석됩니다.',
+  '눈 건강':            '눈의 피로도와 사용 패턴을 볼 때, 눈 건강 관리가 도움이 될 가능성이 있습니다.',
+  '피부·미용':          '피부 컨디션 관련 답변을 볼 때, 피부 탄력·보습 관리가 필요할 가능성이 있습니다.',
+  '체중·체형 관리':     'BMI와 생활습관을 종합할 때, 체중·체형 관리가 우선순위로 필요해 보입니다.',
+  '근감소·단백질':      '연령과 활동량을 볼 때, 근육량 유지를 위한 단백질 관리가 필요할 가능성이 있습니다.',
+  '스트레스·수면':      '수면·스트레스 관련 답변을 종합하면, 스트레스 관리와 수면의 질 개선이 필요해 보입니다.',
+  '혈압·혈중지질':      '생활 패턴상 혈압·혈중지질 관리에 신경 쓸 필요가 있는 것으로 분석됩니다.',
+  '모발·두피 건강':     '모발·두피 관련 답변을 볼 때, 관련 영양소 보충이 도움이 될 가능성이 있습니다.',
+  '여성 갱년기·호르몬': '갱년기 관련 답변을 종합할 때, 호르몬 균형 관리가 우선적으로 필요한 것으로 분석됩니다.'
+};
+
+var RPT_SYM_ADD = {
+  '오후만 되면 극심한 피로':'특히 오후 시간대 피로감을 크게 느끼신다고 답하셨는데, 이는 혈당 기복이나 철분·비타민B군 부족과도 연관될 수 있습니다.',
+  '머리가 자주 무겁거나 멍함':'머리가 무겁거나 멍한 느낌이 잦다고 하셨는데, 수면의 질이나 혈액순환과 연관되어 있을 가능성이 있습니다.',
+  '식후 더부룩·팽만감':'식후 더부룩함을 자주 느끼신다고 하셨는데, 소화효소나 유산균 섭취가 도움이 될 수 있습니다.',
+  '변비 (주 3회 미만)':'배변 빈도가 낮으신 편이라, 식이섬유와 수분 섭취를 함께 챙기시는 것을 권해드립니다.',
+  '무릎·관절 통증·뻣뻣함':'무릎·관절 부위 불편감을 말씀하셨는데, 연골 건강과 함께 체중 관리도 함께 살펴보시면 좋습니다.',
+  '허리 통증':'허리 통증이 있다고 하셨는데, 근력 저하나 장시간 앉아있는 생활 패턴과 연관되어 있을 가능성이 있습니다.',
+  '피부 건조·탄력 저하':'피부 건조·탄력 저하를 느끼신다고 하셨는데, 콜라겐·항산화 성분과 함께 수분 섭취도 중요합니다.',
+  '모발 탈락 증가·두피 건조':'모발 탈락과 두피 건조를 함께 느끼신다고 하셨는데, 이는 스트레스나 영양 불균형과 연관될 수 있습니다.'
+};
+
+function rptOverallScore(cats, score){
+  var top = cats.slice(0,6).map(function(c){ return score[c]||0; });
+  var avg = top.length ? top.reduce(function(a,b){return a+b;},0)/top.length : 25;
+  var overall = Math.round(62 + avg*0.38);
+  return Math.max(58, Math.min(96, overall));
+}
+function rptPeerCompare(v){
+  if(v>=65) return '동일 연령대 평균보다 관리가 더 필요한 영역으로 분석됩니다.';
+  if(v>=40) return '동일 연령대 평균과 비슷한 수준으로 분석됩니다.';
+  return '동일 연령대 평균과 비교했을 때 비교적 양호한 편으로 분석됩니다.';
+}
+
+var RPT_RISK_TEXT = {
+  '에너지·피로 회복':'이 상태가 방치되면 만성피로로 이어져 업무·일상 활동의 효율이 떨어질 수 있습니다.',
+  '뼈·관절·근육':'관리 없이 방치되면 근력·골밀도 저하가 가속화되어 낙상·골절 위험이 높아질 수 있습니다.',
+  '두뇌·기억·인지':'지속되면 집중력 저하가 심화되어 일상 업무 수행에 영향을 줄 수 있습니다.',
+  '면역·항산화':'면역력 저하가 지속되면 감염성 질환에 대한 취약성이 높아질 수 있습니다.',
+  '소화·장 건강':'장 건강 불균형이 지속되면 영양소 흡수 효율이 떨어지고 전반적인 컨디션에 영향을 줄 수 있습니다.',
+  '심혈관·혈액순환':'혈액순환 저하가 지속되면 손발 저림, 만성 피로 등 2차적인 불편감으로 이어질 수 있습니다.',
+  '눈 건강':'방치 시 눈의 피로 누적으로 시력 저하 속도가 빨라질 수 있습니다.',
+  '피부·미용':'방치되면 피부 노화가 가속화될 수 있습니다.',
+  '체중·체형 관리':'체중 증가가 지속되면 대사증후군 위험이 높아질 수 있습니다.',
+  '근감소·단백질':'근육량 감소가 지속되면 기초대사량 저하와 함께 근감소증으로 이어질 위험이 있습니다.',
+  '스트레스·수면':'만성적인 수면 부족·스트레스는 전반적인 건강 관리 효율을 떨어뜨릴 수 있습니다.',
+  '혈압·혈중지질':'관리되지 않으면 심혈관계 부담이 누적될 수 있습니다.',
+  '모발·두피 건강':'방치 시 모발 손실이 진행될 수 있습니다.',
+  '여성 갱년기·호르몬':'호르몬 변화가 관리되지 않으면 일상 삶의 질 저하로 이어질 수 있습니다.'
+};
+
+function rptDetailText(cat, scoreVal){
+  var txt = RPT_BASE_TEXT[cat] || (cat+' 영역에서 다른 항목보다 상대적으로 관리가 필요한 것으로 분석됩니다.');
+  var allSym=(S.symEnergy||[]).concat(S.symDigest||[]).concat(S.symMuscle||[]);
+  var extra='';
+  allSym.forEach(function(s){ if(RPT_SYM_ADD[s] && !extra) extra=RPT_SYM_ADD[s]; });
+  if(cat==='여성 갱년기·호르몬' && (S.menopauseSym||[]).length){
+    extra='선택하신 갱년기 증상('+S.menopauseSym.join(', ')+')은 호르몬 변화 시기에 흔히 동반되는 반응으로, 생활습관 관리와 함께 살펴보시면 도움이 됩니다.';
+  }
+  var risk = RPT_RISK_TEXT[cat] || '';
+  var peer = rptPeerCompare(scoreVal||0);
+  var parts=[txt];
+  if(extra) parts.push(extra);
+  if(risk) parts.push(risk);
+  parts.push(peer);
+  parts.push('(※ 의료적 진단이 아닌 생활습관 기반 분석 결과입니다)');
+  return parts.join(' ');
+}
+
+function rptNutriList(){
+  var list=[];
+  var age=parseInt(S.age)||0;
+  var isMeno=(S.menopauseSym||[]).length>0||S.menstrual==='갱년기 전환기 (생리 줄어듦)'||S.menstrual==='완경(폐경) 후';
+  if(S.fish==='거의 안 먹음') list.push({name:'오메가3 지방산',reason:'생선·해조류 섭취가 적어 오메가3 지방산이 부족할 가능성이 높습니다.',food:'고등어·연어·들기름으로 보충해보세요.'});
+  else if(S.fish==='주 1~2회') list.push({name:'오메가3 지방산',reason:'생선 섭취가 다소 부족한 편으로 보충이 도움이 될 수 있습니다.',food:'주 3회 이상 등푸른 생선 섭취를 권해드립니다.'});
+  if(S.vegeFruit==='거의 안 먹음') list.push({name:'마그네슘·비타민B군',reason:'채소·과일 섭취가 적어 마그네슘·비타민B군 부족 가능성이 있습니다.',food:'녹색채소·견과류·통곡물 섭취를 늘려보세요.'});
+  if(S.meat==='거의 안 먹음'||S.meat==='주 1~2회') list.push({name:'단백질·철분',reason:'육류 섭취 빈도가 낮아 단백질·철분 보충이 필요할 가능성이 있습니다.',food:'두부·달걀·살코기 섭취를 늘려보세요.'});
+  if(S.caffeine==='4잔 이상'||S.caffeine==='2~3잔') list.push({name:'마그네슘',reason:'카페인 섭취가 많은 편으로 체내 마그네슘 소모가 늘어날 수 있습니다.',food:'견과류·바나나·다크초콜릿으로 보충해보세요.'});
+  if(age>=40) list.push({name:'비타민D',reason:'연령대 특성상 비타민D 합성·흡수가 감소하는 경향이 있습니다.',food:'주 2~3회 햇빛 노출과 등푸른 생선을 챙겨보세요.'});
+  if(S.exercise==='거의 안 함') list.push({name:'칼슘',reason:'운동량이 적은 편으로 골밀도 유지에 더 신경 쓸 필요가 있습니다.',food:'유제품·멸치·두부로 보충해보세요.'});
+  if(isMeno) list.push({name:'이소플라본',reason:'갱년기 전환기·완경 이후에는 이소플라본 섭취가 도움이 될 수 있습니다.',food:'콩·두유·석류를 가까이 해보세요.'});
+  if(S.sleep && S.sleep!=='7~8시간, 잘 잠') list.push({name:'테아닌·마그네슘',reason:'수면의 질이 좋지 않은 편으로 이완을 돕는 성분이 도움이 될 수 있습니다.',food:'취침 전 카페인을 피하고 마그네슘 섭취를 고려해보세요.'});
+  var seen={}; var uniq=[];
+  list.forEach(function(n){ if(!seen[n.name]){ seen[n.name]=true; uniq.push(n); } });
+  if(!uniq.length) uniq.push({name:'종합 비타민·미네랄',reason:'전반적인 식습관은 양호한 편이나, 기본적인 영양 균형 관리는 꾸준히 챙기시길 권해드립니다.',food:'다양한 식품군을 골고루 섭취해보세요.'});
+  return uniq.slice(0,5);
+}
+
+var RPT_ACTION_MAP = {
+  '에너지·피로 회복':'하루 20분 가벼운 유산소 운동으로 활력을 높여보세요.',
+  '뼈·관절·근육':'주 2회 이상 하체 근력 운동으로 관절 부담을 줄여보세요.',
+  '두뇌·기억·인지':'수면 시간을 7시간 이상 확보해 인지 기능 회복을 도와주세요.',
+  '면역·항산화':'채소·과일 섭취를 하루 3회 이상으로 늘려보세요.',
+  '소화·장 건강':'식사 시간을 규칙적으로 지키고 발효식품을 챙겨보세요.',
+  '심혈관·혈액순환':'짠 음식 섭취를 줄이고 하루 30분 걷기를 실천해보세요.',
+  '눈 건강':'50분 화면 사용 후 10분 눈 휴식을 습관화해보세요.',
+  '피부·미용':'하루 1.5L 이상 수분 섭취로 피부 보습을 챙겨보세요.',
+  '체중·체형 관리':'식사 순서를 채소→단백질→탄수화물 순으로 바꿔보세요.',
+  '근감소·단백질':'매 끼니 단백질 급원(달걀·두부·살코기)을 포함해보세요.',
+  '스트레스·수면':'취침 1시간 전 스마트폰 사용을 줄이고 이완 루틴을 만들어보세요.',
+  '혈압·혈중지질':'가공식품·나트륨 섭취를 줄이고 정기적으로 혈압을 체크해보세요.',
+  '모발·두피 건강':'두피 마사지와 함께 단백질·아연 섭취를 챙겨보세요.',
+  '여성 갱년기·호르몬':'규칙적인 운동과 콩 식품 섭취로 호르몬 균형을 도와보세요.'
+};
+
+function renderReport(){
+  var score = window.LAST_SCORE_DATA || {};
+  var cats = Object.keys(score).filter(function(c){return score[c]>0;}).sort(function(a,b){return score[b]-score[a];});
+  if(!cats.length) cats=['면역·항산화','에너지·피로 회복'];
+  var top3 = cats.slice(0,3);
+  var overall = rptOverallScore(cats, score);
+  var gradeTxt = overall>=80?'양호':overall>=60?'보통':'관리 필요';
+  var today = new Date();
+  var dateStr = today.getFullYear()+'.'+(today.getMonth()+1)+'.'+today.getDate();
+
+  var html='';
+
+  /* 표지 */
+  html+='<div class="rpt-cover">'
+      +'<div class="rpt-badge">건강창고 심화 건강 리포트</div>'
+      +'<div class="rpt-cover-title">'+(S.age||'')+'세 '+(S.gender||'')+'님을 위한<br>맞춤 건강 분석 리포트</div>'
+      +'<div class="rpt-cover-sub">문진 데이터를 기반으로 한 생활습관·영양 분석 결과입니다.</div>'
+      +'<div class="rpt-cover-meta">'
+        +'<div>발행일<strong>'+dateStr+'</strong></div>'
+        +'<div>분석 항목<strong>'+cats.length+'개 영역</strong></div>'
+        +'<div>협력 자문<strong>종오약국</strong></div>'
+      +'</div></div>';
+
+  /* 1부 종합 점수 */
+  html+='<div class="rpt-sec-label">1부 · 나의 건강 종합 점수</div>';
+  html+='<div class="rpt-score-hero"><div class="rpt-score-num">'+overall+'<span style="font-size:20px;">점</span></div>'
+      +'<div class="rpt-score-sub">종합 평가: <b style="color:#0C447C;">'+gradeTxt+'</b> · 100점 만점 기준<br>문진 답변을 종합한 추정 점수이며 의료적 진단이 아닙니다.</div></div>';
+  html+='<div class="rpt-detail-card" style="border-left-color:#378ADD;">';
+  cats.slice(0,10).forEach(function(c){
+    var v=Math.round(score[c]);
+    html+='<div class="rpt-bar-row"><div class="rpt-bar-label">'+c+'</div>'
+        +'<div class="rpt-bar-track"><div class="rpt-bar-fill" style="width:'+v+'%;"></div></div>'
+        +'<div class="rpt-bar-val">'+v+'</div></div>';
+  });
+  html+='</div>';
+
+  /* 2부 카테고리별 상세 분석 */
+  html+='<div class="rpt-sec-label">2부 · 취약 영역 심층 분석</div>';
+  top3.forEach(function(c,i){
+    html+='<div class="rpt-detail-card"><div class="rpt-detail-cat">'+(i+1)+'. '+c+'</div>'
+        +'<div class="rpt-detail-score">추정 점수 '+Math.round(score[c])+'점</div>'
+        +'<div class="rpt-detail-txt">'+rptDetailText(c, score[c])+'</div></div>';
+  });
+
+  /* 3부 결핍 성분 분석 */
+  html+='<div class="rpt-sec-label">3부 · 결핍 가능성 성분 분석</div>';
+  html+='<div class="rpt-detail-card" style="border-left-color:#F5A800;">';
+  rptNutriList().forEach(function(n,i){
+    html+='<div class="rpt-nutri-row"><div class="rpt-nutri-rank">'+(i+1)+'</div>'
+        +'<div><div class="rpt-nutri-name">'+n.name+'</div>'
+        +'<div class="rpt-nutri-desc">'+n.reason+'</div>'
+        +'<div class="rpt-nutri-food">🍽 '+n.food+'</div></div></div>';
+  });
+  html+='</div>';
+
+  /* 4부 안전 체크 요약 */
+  html+='<div class="rpt-sec-label">4부 · 안전 체크 요약</div>';
+  html+='<div class="rpt-detail-card" style="border-left-color:#dc2626;">';
+  if(S.rx==='있음'){
+    var drugTypes=S.drugType||[];
+    if(drugTypes.length){
+      drugTypes.forEach(function(d){
+        var blocks=HARD_BLOCK[d]||[];
+        html+='<div class="rpt-safety-item">⛔ <b style="color:#dc2626;">'+d+'</b> 복용 중 — '+(blocks.length?blocks.slice(0,3).join('·')+' 등 성분은 추천에서 자동 제외됩니다.':'해당 성분과의 상호작용 여부를 약사와 확인해보세요.')+'</div>';
+      });
+    } else {
+      html+='<div class="rpt-safety-item">⚠️ 전문의약품 복용 중이신 것으로 확인되어, 일부 성분은 약사 상담 후 구매를 권장드립니다.</div>';
+    }
+  } else {
+    html+='<div class="rpt-safety-item">✅ 현재 복용 중인 전문의약품이 없어 성분 충돌 위험이 낮은 편입니다.</div>';
+  }
+  var allergyList=(S.allergy||[]).filter(function(a){return a!=='없음';});
+  if(allergyList.length){
+    html+='<div class="rpt-safety-item">🚫 알레르기 성분(<b>'+allergyList.join(', ')+'</b>)이 포함된 제품은 추천에서 자동 제외됩니다.</div>';
+  }
+  var famHx=(S.familyHx||[]).filter(function(f){return f!=='없음';});
+  if(famHx.length){
+    html+='<div class="rpt-safety-item">🧬 가족력(<b>'+famHx.join(', ')+'</b>)이 있어 관련 영역을 예방적 관점에서 함께 살펴보았습니다.</div>';
+  }
+  html+='</div>';
+
+  /* 5부 가족 건강 요약 */
+  if((S.members||[]).length){
+    html+='<div class="rpt-sec-label">5부 · 가족 건강 요약</div>';
+    html+='<div class="rpt-detail-card" style="border-left-color:#1d4ed8;">';
+    var famInterestKey={spouse:'spouseInterest',child_young:'childYoungInterest',child_teen:'childTeenInterest',parent:'parentInterest'};
+    S.members.forEach(function(m){
+      var info=FAMILY_MEMBERS[m];
+      var interests=S[famInterestKey[m]]||[];
+      html+='<div class="rpt-fam-row"><div class="rpt-fam-icon">'+info.icon+'</div>'
+          +'<div><div class="rpt-fam-name">'+info.label+'</div>'
+          +'<div class="rpt-fam-txt">'+(interests.length?('관심 영역: '+interests.join(', ')+' — 관련 성분 위주로 살펴보시길 권해드립니다.'):'별도 관심 영역을 선택하지 않으셨어요.')+'</div></div></div>';
+    });
+    html+='</div>';
+  }
+
+  /* 6부 맞춤 액션 플랜 */
+  html+='<div class="rpt-sec-label">6부 · 맞춤 액션 플랜</div>';
+  html+='<div class="rpt-detail-card" style="border-left-color:#5E7C2F;">';
+  top3.forEach(function(c,i){
+    html+='<div class="rpt-action-item"><div class="rpt-action-num">'+(i+1)+'</div><div>'+(RPT_ACTION_MAP[c]||(c+' 관리에 신경 써보세요.'))+'</div></div>';
+  });
+  html+='<div class="rpt-goal-box"><div class="rpt-goal-title">🎯 6개월 목표</div>'
+      +'<div class="rpt-goal-txt">'+top3[0]+' 영역을 중심으로 생활습관 개선과 꾸준한 섭취를 병행하시면, 6개월 후 체감 변화를 기대해볼 수 있습니다.</div></div>';
+  html+='</div>';
+
+  html+='<div class="rpt-pharma-box"><div class="rpt-pharma-icon">🏥</div>'
+      +'<div class="rpt-pharma-txt"><b>종오약국</b> 자문 협력으로 준비된 리포트입니다.<br>궁금한 점은 약사 상담을 통해 확인하실 수 있습니다.</div></div>';
+
+  /* 부록: 분석 근거 안내 */
+  html+='<div class="rpt-sec-label">부록 · 분석 근거 안내</div>';
+  html+='<div class="rpt-detail-card" style="border-left-color:#4a5568;">'
+      +'<div class="rpt-detail-txt">본 리포트는 아래 자료를 참고하여 작성되었습니다.<br><br>'
+      +'· 식품의약품안전처 「건강기능식품 기능성 원료 및 기준·규격」<br>'
+      +'· 한국영양학회 「2020 한국인 영양소 섭취기준」<br>'
+      +'· 농촌진흥청 국가표준식품성분표<br>'
+      +'· 건강창고 자체 임상근거 아카이브(개별 문헌 검증 완료)<br><br>'
+      +'개별 성분에 대한 구체적인 문헌 출처는 건강창고 임상근거 아카이브를 통해 약사 상담 시 추가로 확인하실 수 있습니다.</div></div>';
+
+  html+='<div class="disclaimer" style="margin-top:16px;">'
+      +'※ 본 리포트는 문진 답변을 기반으로 한 생활습관 분석 정보이며, 의료적 진단·처방이 아닙니다.<br>'
+      +'모든 결과는 "가능성이 높습니다·추정됩니다"와 같은 추정적 표현으로 제공됩니다.<br>'
+      +'질환이 있거나 의약품을 복용 중이신 경우 반드시 전문가와 상담 후 섭취하세요.</div>';
+
+  document.getElementById('reportArea').innerHTML=html;
+}
+
+function downloadReportPDF(){
+  var btn=document.getElementById('pdfDownloadBtn');
+  var el=document.getElementById('reportArea');
+  if(!el||!el.innerHTML){ alert('먼저 리포트를 확인해주세요.'); return; }
+  if(typeof html2pdf==='undefined'){ alert('PDF 생성 모듈을 불러오지 못했어요. 인터넷 연결을 확인해주세요.'); return; }
+  var origTxt=btn.textContent;
+  btn.disabled=true; btn.textContent='📥 PDF 생성 중... (몇 초 소요)';
+  var fname='건강창고_심화리포트_'+(S.age||'')+(S.gender||'')+'_'+(new Date().getTime())+'.pdf';
+  var opt={
+    margin:[8,6,8,6],
+    filename:fname,
+    image:{type:'jpeg',quality:0.95},
+    html2canvas:{scale:2,useCORS:true,backgroundColor:'#f5f8fd'},
+    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+    pagebreak:{mode:['css','legacy']}
+  };
+  html2pdf().set(opt).from(el).save().then(function(){
+    btn.disabled=false; btn.textContent=origTxt;
+  }).catch(function(e){
+    console.warn('PDF 생성 실패:',e);
+    btn.disabled=false; btn.textContent=origTxt;
+    alert('PDF 생성에 실패했어요. 다시 시도해주세요.');
+  });
 }
 
 function restart(){
