@@ -2161,6 +2161,29 @@ var RPT_ACTION_MAP = {
   '여성 갱년기·호르몬':'규칙적인 운동과 콩 식품 섭취로 호르몬 균형을 도와보세요.'
 };
 
+var FAM_INTEREST_NUTRIENTS = {
+  '전립선 건강':'쏘팔메토·아연',
+  '에너지·활력':'비타민B군·코엔자임Q10',
+  '심혈관·혈압':'오메가3·코엔자임Q10·나토키나제',
+  '뼈·관절':'칼슘·마그네슘·비타민D',
+  '갱년기 관리':'이소플라본·마그네슘·비타민D',
+  '체중 관리':'가르시니아·L-카르니틴',
+  '성장 지원':'칼슘·아연·비타민D',
+  '면역력':'비타민C·아연·프로바이오틱스',
+  '두뇌·집중력':'오메가3·포스파티딜세린',
+  '피부·아토피':'프로바이오틱스·비타민D',
+  '집중력·학습':'오메가3·포스파티딜세린',
+  '눈 건강':'루테인·아스타잔틴',
+  '수면 질':'마그네슘·테아닌',
+  '뼈·골다공증':'칼슘·비타민D·비타민K2',
+  '관절 통증':'글루코사민·콜라겐',
+  '인지 기능·기억력':'오메가3·포스파티딜세린·은행잎추출물',
+  '혈압·혈당 관리':'나토키나제·크롬',
+  '심혈관 건강':'오메가3·코엔자임Q10',
+  '소화·장 건강':'프로바이오틱스·식이섬유',
+  '근감소 예방':'단백질·비타민D·류신'
+};
+
 function renderReport(){
   var score = window.LAST_SCORE_DATA || {};
   var cats = Object.keys(score).filter(function(c){return score[c]>0;}).sort(function(a,b){return score[b]-score[a];});
@@ -2267,7 +2290,7 @@ function renderReport(){
       var interests=S[famInterestKey[m]]||[];
       html+='<div class="rpt-fam-row"><div class="rpt-fam-icon">'+info.icon+'</div>'
           +'<div><div class="rpt-fam-name">'+info.label+'</div>'
-          +'<div class="rpt-fam-txt">'+(interests.length?('관심 영역: '+interests.join(', ')+' — 관련 성분 위주로 살펴보시길 권해드립니다.'):'별도 관심 영역을 선택하지 않으셨어요.')+'</div></div></div>';
+          +'<div class="rpt-fam-txt">'+(interests.length?('관심 영역: '+interests.join(', ')+'<br><b style="color:#0C447C;">확인해볼 성분:</b> '+interests.map(function(i){return FAM_INTEREST_NUTRIENTS[i]||i;}).join(' · ')+'<br>제품 뒷면 표시성분에 위 이름이 있는지 확인하시거나, 앱 문진을 배우자·자녀 기준으로 별도 진행하시면 더 정확한 추천을 받으실 수 있어요.'):'별도 관심 영역을 선택하지 않으셨어요.')+'</div></div></div>';
     });
     html+='</div>';
   }
