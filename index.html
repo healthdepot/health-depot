@@ -9,7 +9,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
 <style>
 :root {
   --blue-dark:#0C447C;  --blue-main:#1558A8;  --blue-mid:#378ADD;
@@ -442,6 +441,16 @@ input[type=number] { -moz-appearance:textfield; }
 .rpt-pharma-icon { font-size:24px; flex-shrink:0; }
 .rpt-pharma-txt { font-size:11.5px; color:var(--gy6); line-height:1.6; }
 .rpt-pharma-txt b { color:#0C447C; }
+
+@media print {
+  .hd, .pw, #pdfDownloadBtn, .btn-restart, .report-unlock, .pay-card, .pay-loading, .btn-back { display:none !important; }
+  body { background:#fff !important; }
+  .wrap { max-width:100%; padding:0; margin:0; }
+  .scr { display:none !important; }
+  #sReport.scr.on { display:block !important; }
+  .rpt-cover, .rpt-detail-card, .rpt-score-hero, .rpt-pharma-box, .disclaimer { box-shadow:none !important; break-inside:avoid; }
+  .rpt-sec-label { break-after:avoid; }
+}
 </style>
 </head>
 <body>
@@ -989,6 +998,7 @@ input[type=number] { -moz-appearance:textfield; }
 <div class="scr" id="sReport">
   <div id="reportArea"></div>
   <button class="pay-btn" id="pdfDownloadBtn" onclick="downloadReportPDF()" style="margin-top:14px;">📥 PDF로 저장하기</button>
+  <div class="pay-test-note" style="text-align:center;">인쇄 화면이 뜨면 "대상"을 <b>PDF로 저장</b>으로 선택 후 저장해주세요.</div>
   <button class="btn-restart" onclick="go('sResult')" style="margin-top:4px;">← 결과 화면으로</button>
 </div>
 
@@ -2157,28 +2167,10 @@ function renderReport(){
 }
 
 function downloadReportPDF(){
-  var btn=document.getElementById('pdfDownloadBtn');
   var el=document.getElementById('reportArea');
   if(!el||!el.innerHTML){ alert('먼저 리포트를 확인해주세요.'); return; }
-  if(typeof html2pdf==='undefined'){ alert('PDF 생성 모듈을 불러오지 못했어요. 인터넷 연결을 확인해주세요.'); return; }
-  var origTxt=btn.textContent;
-  btn.disabled=true; btn.textContent='📥 PDF 생성 중... (몇 초 소요)';
-  var fname='건강창고_심화리포트_'+(S.age||'')+(S.gender||'')+'_'+(new Date().getTime())+'.pdf';
-  var opt={
-    margin:[8,6,8,6],
-    filename:fname,
-    image:{type:'jpeg',quality:0.95},
-    html2canvas:{scale:2,useCORS:true,backgroundColor:'#f5f8fd'},
-    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
-    pagebreak:{mode:['css','legacy']}
-  };
-  html2pdf().set(opt).from(el).save().then(function(){
-    btn.disabled=false; btn.textContent=origTxt;
-  }).catch(function(e){
-    console.warn('PDF 생성 실패:',e);
-    btn.disabled=false; btn.textContent=origTxt;
-    alert('PDF 생성에 실패했어요. 다시 시도해주세요.');
-  });
+  document.title='건강창고_심화리포트_'+(S.age||'')+(S.gender||'')+'세';
+  window.print();
 }
 
 function restart(){
