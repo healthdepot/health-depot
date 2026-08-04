@@ -1182,21 +1182,28 @@ async function loadAllCompanyProducts() {
   if (COMPANY_ALL_LOADING) { while (COMPANY_ALL_LOADING) { await new Promise(function(r){ setTimeout(r,100); }); } return COMPANY_ALL_PRODUCTS || []; }
   COMPANY_ALL_LOADING = true;
   if (!COMPANY_API_PROXY_URL) { COMPANY_ALL_LOADING=false; console.warn('[본사몰 API] 프록시 URL 미설정'); return []; }
-  try {
-    // status 필터 제거: 실제 상태값 표기를 몰라 잘못 거르면 정상 상품이 누락될 수 있어 전체를 받아온다.
-    var url = COMPANY_API_PROXY_URL + '?size=200';
-    var res = await fetch(url);
-    var data = await res.json();
-    if (data && data.error) { console.warn('[본사몰 API] 프록시 오류:', data.message); COMPANY_ALL_PRODUCTS=[]; }
-    else {
-      var raw = (data && data.content) || [];
-      COMPANY_ALL_PRODUCTS = raw.filter(function(p){ return !(p.deletedYn === 'Y' || p.deletedYn === 'y' || p.deletedYn === true); });
+  var url = COMPANY_API_PROXY_URL + '?size=200';
+  var lastErr = null;
+  for (var attempt = 1; attempt <= 2; attempt++) {
+    try {
+      var res = await fetch(url);
+      var text = await res.text();
+      var data = JSON.parse(text); // Apps Script가 배포 직후 잠깐 HTML 에러 페이지를 줄 수 있어 명시적으로 파싱 시도
+      if (data && data.error) { console.warn('[본사몰 API] 프록시 오류:', data.message); COMPANY_ALL_PRODUCTS=[]; }
+      else {
+        var raw = (data && data.content) || [];
+        COMPANY_ALL_PRODUCTS = raw.filter(function(p){ return !(p.deletedYn === 'Y' || p.deletedYn === 'y' || p.deletedYn === true); });
+      }
+      console.log('[본사몰 API] 전체 상품 '+COMPANY_ALL_PRODUCTS.length+'개 로드됨. (시도 '+attempt+'회차)', COMPANY_ALL_PRODUCTS.map(function(p){return p.name+' / '+p.categoryName+' / '+(p.status||'');}));
+      lastErr = null;
+      break;
+    } catch(e) {
+      lastErr = e;
+      console.warn('[본사몰 API] 전체 상품 로드 실패 (시도 '+attempt+'회차):', e);
+      if (attempt < 2) await new Promise(function(r){ setTimeout(r,800); });
     }
-    console.log('[본사몰 API] 전체 상품 '+COMPANY_ALL_PRODUCTS.length+'개 로드됨.', COMPANY_ALL_PRODUCTS.map(function(p){return p.name+' / '+p.categoryName+' / '+(p.status||'');}));
-  } catch(e) {
-    console.warn('[본사몰 API] 전체 상품 로드 실패:', e);
-    COMPANY_ALL_PRODUCTS = [];
   }
+  if (lastErr) COMPANY_ALL_PRODUCTS = [];
   COMPANY_ALL_LOADING = false;
   return COMPANY_ALL_PRODUCTS;
 }
@@ -1236,6 +1243,8 @@ async function loadCompanyProduct(cat) {
       return null;
     }
     list.sort(function(a,b){ return (a.sortOrder||0)-(b.sortOrder||0); });
+    // 어떤 상품을 우선 노출할지는 코드가 아니라 몰 관리자 화면의 "정렬순서(sortOrder)"로 제어한다.
+    // 특정 상품을 밀고 싶으면 몰 관리자에서 해당 카테고리 내 정렬순서를 1번으로 올리면 됨.
     var item = list[0];
     var p = {
       id: 'HB' + item.id,
