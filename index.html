@@ -1171,19 +1171,39 @@ function companyProductLink(p) {
 
 /* 앱 카테고리 기준으로 본사몰(카테고리 매핑된) 상품 1건을 불러온다.
    인증 헤더가 아직 없으면 조용히 실패하고 null을 반환 → 구글시트 제품DB로 자동 폴백된다. */
+var COMPANY_ALL_PRODUCTS = null;
+var COMPANY_ALL_LOADING = false;
+
+/* 1472 서버에 category 파라미터로 필터 요청하면 카테고리명 중복 데이터 때문에
+   'NonUniqueResultException' 서버 오류가 발생하는 것으로 확인됨(2026-08).
+   → category 파라미터 없이 전체 상품을 한 번만 받아와서 우리 쪽에서 categoryName으로 직접 필터링. */
+async function loadAllCompanyProducts() {
+  if (COMPANY_ALL_PRODUCTS) return COMPANY_ALL_PRODUCTS;
+  if (COMPANY_ALL_LOADING) { while (COMPANY_ALL_LOADING) { await new Promise(function(r){ setTimeout(r,100); }); } return COMPANY_ALL_PRODUCTS || []; }
+  COMPANY_ALL_LOADING = true;
+  if (!COMPANY_API_PROXY_URL) { COMPANY_ALL_LOADING=false; console.warn('[본사몰 API] 프록시 URL 미설정'); return []; }
+  try {
+    var url = COMPANY_API_PROXY_URL + '?status=SALE&size=200';
+    var res = await fetch(url);
+    var data = await res.json();
+    if (data && data.error) { console.warn('[본사몰 API] 프록시 오류:', data.message); COMPANY_ALL_PRODUCTS=[]; }
+    else { COMPANY_ALL_PRODUCTS = (data && data.content) || []; }
+  } catch(e) {
+    console.warn('[본사몰 API] 전체 상품 로드 실패:', e);
+    COMPANY_ALL_PRODUCTS = [];
+  }
+  COMPANY_ALL_LOADING = false;
+  return COMPANY_ALL_PRODUCTS;
+}
+
 async function loadCompanyProduct(cat) {
   if (COMPANY_PRODUCTS_LOADED[cat]) return COMPANY_PRODUCTS[cat] || null;
   COMPANY_PRODUCTS_LOADED[cat] = true;
   var mallCat = COMPANY_CATEGORY_MAP[cat];
   if (!mallCat) return null;
-  if (!COMPANY_API_PROXY_URL) { console.warn('[본사몰 API] 프록시 URL 미설정 — company_api_proxy.gs 배포 후 COMPANY_API_PROXY_URL 채워넣을 것'); return null; }
   try {
-    var url = COMPANY_API_PROXY_URL + '?category=' + encodeURIComponent(mallCat) + '&status=SALE&size=5';
-    var res = await fetch(url);
-    if (!res.ok) { console.warn('[본사몰 API] 응답 오류', res.status); return null; }
-    var data = await res.json();
-    if (data && data.error) { console.warn('[본사몰 API] 프록시 오류:', data.message); return null; }
-    var list = (data && data.content) || [];
+    var all = await loadAllCompanyProducts();
+    var list = all.filter(function(item){ return item.categoryName === mallCat; });
     if (!list.length) return null;
     list.sort(function(a,b){ return (a.sortOrder||0)-(b.sortOrder||0); });
     var item = list[0];
