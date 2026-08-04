@@ -262,6 +262,7 @@ input[type=range] { flex:1; accent-color:#1558A8; cursor:pointer; }
 .ad-tag { background:rgba(255,255,255,.12); padding:4px 10px; border-radius:99px; font-size:11px; font-weight:600; border:1px solid rgba(255,255,255,.15); }
 .ad-meta { display:flex; align-items:center; gap:10px; margin-bottom:14px; position:relative; }
 .ad-price { font-size:20px; font-weight:900; letter-spacing:-0.5px; }
+.ad-price.locked { font-size:14px; font-weight:700; color:#F5D98A; }
 .ad-monthly { font-size:12px; color:rgba(255,255,255,.6); }
 .ad-btn { width:100%; padding:14px; background:#F5A800; color:#1A1200; border:none; border-radius:12px; font-size:14px; font-weight:900; cursor:pointer; transition:all .2s; position:relative; letter-spacing:-0.2px; }
 .ad-btn:hover { background:#FFD044; transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,0.15); }
@@ -1135,6 +1136,76 @@ function isProductBlacklisted(productName, cat) {
   return false;
 }
 
+/* ══════════════ 본사몰(1472 헬스박스) 관리자 상품 API 연동 ══════════════ */
+/* 참고: 건강창고_본사_상품_API_전문.pdf 기준. 인증 헤더는 불필요(노타이틀 확인 완료).
+   단, cloud.1472.ai 서버가 CORS를 허용하지 않아 브라우저에서 직접 호출 불가 →
+   Google Apps Script 프록시(company_api_proxy.gs)를 경유해서 호출한다.
+   (쿠팡 API와 동일한 구조 — COUPANG_PROXY_URL 참고) */
+var COMPANY_API_PROXY_URL = 'https://script.google.com/macros/s/AKfycbwWTpcrNBRDu65bqeZJMqddKOOYu_Z_6PhmMg9_YK_Df1xNZEBVPI_0mClfSCEBVqpATQ/exec';
+var COMPANY_PRODUCT_URL_BASE = 'https://everybuy.co.kr/product/';
+var COMPANY_PRODUCTS = {};
+var COMPANY_PRODUCTS_LOADED = {};
+
+/* 앱 카테고리(A~O 계열, 화면에 쓰는 이름) → 몰(everybuy.co.kr) 카테고리명 매핑 */
+var COMPANY_CATEGORY_MAP = {
+  '에너지·피로 회복':   '영양·에너지',
+  '뼈·관절·근육':       '뼈·관절·근육',
+  '두뇌·기억·인지':     '두뇌·신경',
+  '면역·항산화':        '면역·항산화',
+  '소화·장 건강':       '소화·장·대사',
+  '심혈관·혈액순환':    '혈행·혈압',
+  '눈 건강':            '눈 건강',
+  '피부·미용':          '피부·미용',
+  '체중·체형 관리':     null,
+  '근감소·단백질':      null,
+  '스트레스·수면':      '수면',
+  '혈압·혈중지질':      '혈행·혈압',
+  '모발·두피 건강':     null,
+  '여성 갱년기·호르몬': '성별·연령 특화'
+};
+
+function companyProductLink(p) {
+  if (p && p.slug) return COMPANY_PRODUCT_URL_BASE + encodeURIComponent(p.slug);
+  return '';
+}
+
+/* 앱 카테고리 기준으로 본사몰(카테고리 매핑된) 상품 1건을 불러온다.
+   인증 헤더가 아직 없으면 조용히 실패하고 null을 반환 → 구글시트 제품DB로 자동 폴백된다. */
+async function loadCompanyProduct(cat) {
+  if (COMPANY_PRODUCTS_LOADED[cat]) return COMPANY_PRODUCTS[cat] || null;
+  COMPANY_PRODUCTS_LOADED[cat] = true;
+  var mallCat = COMPANY_CATEGORY_MAP[cat];
+  if (!mallCat) return null;
+  if (!COMPANY_API_PROXY_URL) { console.warn('[본사몰 API] 프록시 URL 미설정 — company_api_proxy.gs 배포 후 COMPANY_API_PROXY_URL 채워넣을 것'); return null; }
+  try {
+    var url = COMPANY_API_PROXY_URL + '?category=' + encodeURIComponent(mallCat) + '&status=SALE&size=5';
+    var res = await fetch(url);
+    if (!res.ok) { console.warn('[본사몰 API] 응답 오류', res.status); return null; }
+    var data = await res.json();
+    if (data && data.error) { console.warn('[본사몰 API] 프록시 오류:', data.message); return null; }
+    var list = (data && data.content) || [];
+    if (!list.length) return null;
+    list.sort(function(a,b){ return (a.sortOrder||0)-(b.sortOrder||0); });
+    var item = list[0];
+    var p = {
+      id: 'HB' + item.id,
+      name: item.name || '',
+      cats: [cat],
+      warningTag: '',
+      price: item.consumerPrice || 0,      // 가격 미입력 시 0 → 화면에서 "회원가 확인"으로 노출
+      memberPrice: item.memberPrice || 0,
+      link: COMPANY_PRODUCT_URL_BASE + encodeURIComponent(item.slug || ''),
+      thumbnailUrl: item.thumbnailUrl || '',
+      source: 'company_api'
+    };
+    COMPANY_PRODUCTS[cat] = p;
+    return p;
+  } catch(e) {
+    console.warn('[본사몰 API] 호출 실패:', e);
+    return null;
+  }
+}
+
 async function loadProductDB() {
   if (PRODUCTS_LOADED) return;
   try {
@@ -1154,7 +1225,11 @@ async function loadProductDB() {
   } catch(e) { console.warn('제품DB 로드 실패:', e); }
 }
 
-function getBestProduct(cat) {
+/* 카테고리에 맞는 광고 슬롯용 제품 1건을 고른다.
+   1순위: 본사몰 API (인증 헤더 설정된 이후부터 동작) → 2순위: 구글시트 제품DB */
+async function getBestProduct(cat) {
+  var companyP = await loadCompanyProduct(cat);
+  if (companyP) return companyP;
   var matched = PRODUCTS.filter(function(p){ return p.cats.indexOf(cat) !== -1; });
   if (!matched.length) return null;
   var primary = matched.filter(function(p){ return p.cats[0] === cat; });
@@ -1716,7 +1791,7 @@ async function renderCat(cat, isRx, budgetMax) {
   var mainLabel=coupang?'쿠팡 베스트':'시장 베스트';
   var mainColor=coupang?'#e9463c':'#1558A8';
 
-  var adP=getBestProduct(cat);
+  var adP=await getBestProduct(cat);
   var html='';
 
   var reason=CAT_REASON[cat]||'';
@@ -1806,12 +1881,19 @@ function aCard(p,isRx){
   var level=getSafetyLevel(p.name);
   if(level===1) return '';
   var tagsHtml=(p.cats||[]).map(function(t){return '<span class="ad-tag">'+t+'</span>';}).join('');
-  var priceHtml=p.price?'<div class="ad-price">'+p.price.toLocaleString()+'원</div>':'';
-  var warnHtml='',btnText='🛒 건강창고에서 구매하기',btnClass='ad-btn';
+  var hasPrice = !!p.price;
+  var priceHtml = hasPrice
+    ? '<div class="ad-price">'+p.price.toLocaleString()+'원</div>'
+    : '<div class="ad-price locked">🔒 회원가 확인 — 로그인/가입 후 확인</div>';
+  var warnHtml='',btnText=hasPrice?'🛒 건강창고에서 구매하기':'🔑 로그인하고 가격 확인',btnClass='ad-btn';
   if(level===2){warnHtml='<div class="badge-caution" style="margin-bottom:8px;">⚠️ 복용 약물과 성분 확인 필요</div>';btnText='💬 약사 상담 후 구매';btnClass='btn-consult';}
   else if(isRx){btnText='💬 약사 상담 후 구매';}
   var pid=p.id||'';
-  return '<div class="ad-slot"><div class="ad-badge">건강창고 추천</div>'+warnHtml+'<div class="ad-name">'+p.name+'</div><div class="ad-tags">'+tagsHtml+'</div>'+(priceHtml?'<div class="ad-meta">'+priceHtml+'</div>':'')+'<button class="'+btnClass+'" onclick="buyProduct(\''+pid+'\')">'+btnText+'</button></div>';
+  var isCompany = p.source==='company_api';
+  var onclickAttr = isCompany
+    ? ("goMarket(" + JSON.stringify(p.link||'') + ")")
+    : ("buyProduct(" + JSON.stringify(pid) + ")");
+  return '<div class="ad-slot"><div class="ad-badge">건강창고 추천</div>'+warnHtml+'<div class="ad-name">'+p.name+'</div><div class="ad-tags">'+tagsHtml+'</div>'+'<div class="ad-meta">'+priceHtml+'</div>'+'<button class="'+btnClass+'" onclick="'+onclickAttr.replace(/"/g,'&quot;')+'">'+btnText+'</button></div>';
 }
 
 function goMarket(link){
