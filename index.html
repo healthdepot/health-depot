@@ -1559,9 +1559,15 @@ function initS5() {
   document.getElementById('seniorCatSection').style.display=isSr?'block':'none';
   document.getElementById('normalSymSection').style.display=isSr?'none':'block';
 }
+function stopScreenMedia(scr) {
+  if(!scr) return;
+  scr.querySelectorAll('iframe').forEach(function(f){
+    f.setAttribute('src','about:blank');
+  });
+}
 function go(id) {
   var cur=document.querySelector('.scr.on');
-  if(cur) screenStack.push(cur.id);
+  if(cur){ screenStack.push(cur.id); stopScreenMedia(cur); }
   document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
   document.getElementById(id).classList.add('on');
   window.scrollTo(0,0); updateProgress(id);
@@ -1569,6 +1575,8 @@ function go(id) {
 }
 function goBack() {
   if(!screenStack.length) return;
+  var cur=document.querySelector('.scr.on');
+  stopScreenMedia(cur);
   var prev=screenStack.pop();
   document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
   document.getElementById(prev).classList.add('on');
@@ -1960,12 +1968,14 @@ function aCard(p,isRx){
 }
 
 function goMarket(link){
+  stopScreenMedia(document.querySelector('.scr.on'));
   if(link&&link.length>0)window.open(link,'_blank');
   else alert('준비 중입니다.');
 }
 function buyProduct(pid){
   var p=PRODUCTS.filter(function(x){return x.id===pid;})[0];
   if(!p) return;
+  stopScreenMedia(document.querySelector('.scr.on'));
   if(p.link)window.open(p.link,'_blank');
   else alert('준비 중입니다.');
 }
